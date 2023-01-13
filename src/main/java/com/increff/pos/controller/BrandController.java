@@ -31,6 +31,13 @@ public class BrandController {
         service.add(pojo);
     }
 
+    @ApiOperation(value = "Adds a list of Brands")
+    @RequestMapping(path = "/api/Brands", method = RequestMethod.POST)
+    public void add(@RequestBody List<BrandForm> forms) throws ApiException {
+        List<BrandPojo> pojos = dto.validate(forms);
+        service.add(pojos);
+    }
+
     @ApiOperation(value = "Gets a Brand by ID")
     @RequestMapping(path = "/api/Brand/{id}", method = RequestMethod.GET)
     public BrandData get(@PathVariable Integer id) throws ApiException {
@@ -64,7 +71,6 @@ public class BrandController {
         service.update(id, pojo);
     }
 
-
     private static BrandData convert(BrandPojo p) {
         BrandData d = new BrandData();
         d.setName(p.getName());
@@ -72,7 +78,5 @@ public class BrandController {
         d.setId(p.getId());
         return d;
     }
-
-
 
 }

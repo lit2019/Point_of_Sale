@@ -1,5 +1,7 @@
 package com.increff.pos.dao;
 
-public class ProductDao {
+import com.increff.pos.pojo.ProductPojo;
+
+public class ProductDao extends AbstractDao<ProductPojo> {
 
 }

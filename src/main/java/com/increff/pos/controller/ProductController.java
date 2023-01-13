@@ -1,10 +1,14 @@
-package com.increff.pos.controller;//package com.increff.pos.controller;
+//package com.increff.pos.controller;
 //
+//import com.increff.pos.api.BrandService;
+//import com.increff.pos.dto.BrandDto;
+//import com.increff.pos.dto.ProductDto;
 //import com.increff.pos.model.ProductData;
 //import com.increff.pos.model.ProductForm;
+//import com.increff.pos.pojo.BrandPojo;
 //import com.increff.pos.pojo.ProductPojo;
-//import com.increff.pos.service.ApiException;
-//import com.increff.pos.service.ProductService;
+//import com.increff.pos.api.ApiException;
+//import com.increff.pos.api.ProductService;
 //import io.swagger.annotations.Api;
 //import io.swagger.annotations.ApiOperation;
 //import org.springframework.beans.factory.annotation.Autowired;
@@ -17,12 +21,16 @@ package com.increff.pos.controller;//package com.increff.pos.controller;
 //public class ProductController {
 //
 //    @Autowired
+//    private ProductDto dto;
+//
+//    @Autowired
 //    private ProductService service;
 //
 //    @ApiOperation(value = "Adds an Product")
 //    @RequestMapping(path = "/api/Product", method = RequestMethod.POST)
-//    public void add(@RequestBody ProductForm form) {
-//        service.add(convert(form));
+//    public void add(@RequestBody ProductForm form) throws ApiException {
+//        ProductPojo pojo = dto.validate(form);
+//        service.add(pojo);
 //    }
 //
 //

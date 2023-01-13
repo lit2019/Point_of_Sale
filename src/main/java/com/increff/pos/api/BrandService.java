@@ -54,4 +54,10 @@ public class BrandService {
         BrandPojo p = dao.select(name,category);
         return p;
     }
+
+    public void add(List<BrandPojo> pojos) {
+        for(BrandPojo pojo:pojos){
+            add(pojo);
+        }
+    }
 }

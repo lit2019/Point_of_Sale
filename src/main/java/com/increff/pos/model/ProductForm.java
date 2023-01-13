@@ -1,11 +1,15 @@
 package com.increff.pos.model;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
 public class ProductForm {
 
-    String ProductName;
+    String name;
 
-
-    String BrandCategory;
+    String brand;
 
 
 }

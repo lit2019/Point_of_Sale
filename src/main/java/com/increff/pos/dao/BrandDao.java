@@ -32,6 +32,7 @@ public class BrandDao extends AbstractDao<BrandPojo>{
     }
 
     public void update(BrandPojo p) {
+
     }
 
 
