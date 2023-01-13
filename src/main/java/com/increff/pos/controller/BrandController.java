@@ -1,5 +1,6 @@
 package com.increff.pos.controller;
 
+import com.increff.pos.dto.BrandDto;
 import com.increff.pos.model.BrandData;
 import com.increff.pos.model.BrandForm;
 import com.increff.pos.pojo.BrandPojo;
@@ -20,16 +21,19 @@ public class BrandController {
     @Autowired
     private BrandService service;
 
+    @Autowired
+    private BrandDto dto;
+
     @ApiOperation(value = "Adds an Brand")
     @RequestMapping(path = "/api/Brand", method = RequestMethod.POST)
-    public void add(@RequestBody BrandForm form) {
-
-        service.add(convert(form));
+    public void add(@RequestBody BrandForm form) throws ApiException {
+        BrandPojo pojo = dto.validate(form);
+        service.add(pojo);
     }
 
     @ApiOperation(value = "Gets a Brand by ID")
     @RequestMapping(path = "/api/Brand/{id}", method = RequestMethod.GET)
-    public BrandData get(@PathVariable int id) throws ApiException {
+    public BrandData get(@PathVariable Integer id) throws ApiException {
         BrandPojo p = service.get(id);
         return convert(p);
     }
@@ -43,37 +47,32 @@ public class BrandController {
     @ApiOperation(value = "Gets list of all Brands")
     @RequestMapping(path = "/api/Brand", method = RequestMethod.GET)
     public List<BrandData> getAll() {
-        List<BrandPojo> list = service.getAll();
-        List<BrandData> list2 = new ArrayList<BrandData>();
-        for (BrandPojo p : list) {
-            list2.add(convert(p));
+        List<BrandPojo> pojos = service.getAll();
+        List<BrandData> datas = new ArrayList<BrandData>();
+        for (BrandPojo p : pojos) {
+            datas.add(convert(p));
         }
-        return list2;
+        return datas;
     }
 
 
 
     @ApiOperation(value = "Updates an Brand")
     @RequestMapping(path = "/api/Brand/{id}", method = RequestMethod.PUT)
-    public void update(@PathVariable int id, @RequestBody BrandForm f) throws ApiException {
-        BrandPojo p = convert(f);
-        service.update(id, p);
+    public void update(@PathVariable Integer id, @RequestBody BrandForm form) throws ApiException {
+        BrandPojo pojo = dto.validate(form);
+        service.update(id, pojo);
     }
 
 
     private static BrandData convert(BrandPojo p) {
         BrandData d = new BrandData();
-        d.setBrandName(p.getName());
+        d.setName(p.getName());
         d.setCategory(p.getCategory());
         d.setId(p.getId());
         return d;
     }
 
-    private static BrandPojo convert(BrandForm f) {
-        BrandPojo p = new BrandPojo();
-        p.setName(f.getBrandName());
-        p.setCategory(f.getCategory());
-        return p;
-    }
+
 
 }
