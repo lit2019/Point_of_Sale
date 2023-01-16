@@ -1,6 +1,5 @@
 package com.increff.pos.dao;
 
-import com.increff.pos.pojo.BrandPojo;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
@@ -13,7 +12,6 @@ import java.util.List;
 
 
 @Repository
-@Transactional
 public abstract class AbstractDao<T> {
     Class<T> clazz;
     @PersistenceContext

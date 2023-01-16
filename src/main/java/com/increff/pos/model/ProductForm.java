@@ -6,10 +6,13 @@ import lombok.Setter;
 @Getter
 @Setter
 public class ProductForm {
+    String barcode;
 
-    String name;
+    String brandName;
 
-    String brand;
+    String category;
 
+    String productName;
 
+    Double mrp;
 }

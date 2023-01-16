@@ -17,7 +17,7 @@ import java.util.Properties;
 @Configuration
 public class DbConfig {
 
-	public static final String PACKAGE_POJO = "com.increff.pos.pojo";
+	public static final String PACKAGE_POJO = "com.increff.pos.entity";
 	
 	@Value("${jdbc.driverClassName}")
 	private String jdbcDriver;

@@ -5,5 +5,6 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class ProductData {
+public class ProductData extends ProductForm {
+    private Integer id;
 }

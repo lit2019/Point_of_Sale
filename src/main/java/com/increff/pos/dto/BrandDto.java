@@ -1,9 +1,11 @@
 package com.increff.pos.dto;
 
 import com.increff.pos.api.ApiException;
+import com.increff.pos.api.BrandService;
 import com.increff.pos.dao.BrandDao;
+import com.increff.pos.model.BrandData;
 import com.increff.pos.model.BrandForm;
-import com.increff.pos.pojo.BrandPojo;
+import com.increff.pos.entity.BrandPojo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,7 +18,10 @@ public class BrandDto {
     @Autowired
     private BrandDao dao;
 
-    public BrandPojo validate(BrandForm form) throws ApiException {
+    @Autowired
+    private BrandService service;
+
+    public void validate(BrandForm form) throws ApiException {
         if (form==null){
             throw new ApiException("Brand form cannot be null");
         }
@@ -30,22 +35,55 @@ public class BrandDto {
             throw new ApiException("Brand with given name and category already exists");
         }
 
-        return convert(form);
+        service.add(form);
+
     }
 
-    public List<BrandPojo> validate(List<BrandForm> forms) throws ApiException {
+    public void validate(List<BrandForm> forms) throws ApiException {
         List<BrandPojo> pojos = new ArrayList<>();
         for(BrandForm form:forms){
-            BrandPojo pojo = validate(form);
-            pojos.add(pojo);
+            validate(form);
         }
-        return pojos;
     }
 
-    private static BrandPojo convert(BrandForm f) {
-        BrandPojo p = new BrandPojo();
-        p.setName(f.getName());
-        p.setCategory(f.getCategory());
-        return p;
+
+    public BrandData get(Integer id) throws ApiException {
+        return convert(service.get(id));
+    }
+
+    private static BrandData convert(BrandPojo p) {
+        BrandData d = new BrandData();
+        d.setName(p.getName());
+        d.setCategory(p.getCategory());
+        d.setId(p.getId());
+        return d;
+    }
+
+    public BrandData get(String name, String category) {
+        return convert(service.get(name, category));
+    }
+
+    public List<BrandData> getAll() {
+
+
+        List<BrandPojo> pojos = service.getAll();
+        List<BrandData> datas = new ArrayList<BrandData>();
+        for (BrandPojo p : pojos) {
+            datas.add(convert(p));
+        }
+        return datas;
+    }
+
+    public List<BrandData> get(String name) {
+        List<BrandPojo> pojos = service.get(name);
+        List<BrandData> datas = new ArrayList<BrandData>();
+        for (BrandPojo p : pojos) {
+            datas.add(convert(p));
+        }
+        return datas;
+    }
+
+    public void validateUpdate(Integer id, BrandForm form) throws ApiException {
+        service.update(id, form);
     }
 }
