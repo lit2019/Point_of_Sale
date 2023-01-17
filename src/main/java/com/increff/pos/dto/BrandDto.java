@@ -15,13 +15,16 @@ import java.util.List;
 @Service
 public class BrandDto {
 
-    @Autowired
-    private BrandDao dao;
 
     @Autowired
     private BrandService service;
 
     public void validate(BrandForm form) throws ApiException {
+        checkNull(form);
+        service.add(form);
+    }
+
+    private void checkNull(BrandForm form) throws ApiException {
         if (form==null){
             throw new ApiException("Brand form cannot be null");
         }
@@ -31,12 +34,6 @@ public class BrandDto {
         if (form.getCategory()==null || form.getCategory().trim().equals("")){
             throw new ApiException("Brand category cannot be empty");
         }
-        if (dao.select(form.getName(),form.getCategory())!=null){
-            throw new ApiException("Brand with given name and category already exists");
-        }
-
-        service.add(form);
-
     }
 
     public void validate(List<BrandForm> forms) throws ApiException {
@@ -84,6 +81,7 @@ public class BrandDto {
     }
 
     public void validateUpdate(Integer id, BrandForm form) throws ApiException {
+        checkNull(form);
         service.update(id, form);
     }
 }

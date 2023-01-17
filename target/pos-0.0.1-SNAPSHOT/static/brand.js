@@ -140,7 +140,6 @@ function displayBrandList(data){
 		var e = data[i];
 		var buttonHtml = ' <button onclick="displayEditBrand(' + e.id + ')">edit</button>'
 		var row = '<tr>'
-		+ '<td>' + e.id + '</td>'
 		+ '<td>' + e.name + '</td>'
 		+ '<td>'  + e.category + '</td>'
 		+ '<td>' + buttonHtml + '</td>'
@@ -176,6 +175,7 @@ function resetUploadDialog(){
 	errorData = [];
 	//Update counts	
 	updateUploadDialog();
+	getBrandList();
 }
 
 function updateUploadDialog(){

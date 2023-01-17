@@ -19,32 +19,26 @@ public class ProductController {
     @Autowired
     private ProductDto dto;
 
-    @Autowired
-    private ProductService service;
-
-
     @ApiOperation(value = "Gets list of all Products")
     @RequestMapping(path = "/api/products", method = RequestMethod.GET)
     public List<ProductData> getAll() throws ApiException {
-        return service.get();
+        return dto.get();
     }
     @ApiOperation(value = "Adds a Product")
     @RequestMapping(path = "/api/products", method = RequestMethod.POST)
     public void add(@RequestBody ProductForm form) throws ApiException {
         dto.validate(form);
-        service.add(form);
     }
-
 
     @ApiOperation(value = "Gets a Product by ID")
     @RequestMapping(path = "/api/products/{id}", method = RequestMethod.GET)
-    public ProductData get(@PathVariable int id) throws ApiException {
-        return service.get(id);
+    public ProductData get(@PathVariable Integer id) throws ApiException {
+        return dto.get(id);
     }
 
     @ApiOperation(value = "Updates a Product")
     @RequestMapping(path = "/api/products/{id}", method = RequestMethod.PUT)
-    public void update(@PathVariable int id, @RequestBody ProductForm f) throws ApiException {
-
+    public void update(@PathVariable Integer id, @RequestBody ProductForm form) throws ApiException {
+        dto.validateUpdate(id,form);
     }
 }

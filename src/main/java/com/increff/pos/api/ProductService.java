@@ -75,4 +75,18 @@ public class ProductService {
         pojo.setBarcode(form.getBarcode());
         return pojo;
     }
+
+    public void update(Integer id, ProductForm form) throws ApiException {
+        BrandPojo brandPojo = brandService.get(form.getBrandName(),form.getCategory());
+        if (brandPojo==null){
+            throw new ApiException("given combination of brand and category doesn't exist");
+        }
+        ProductPojo pojo = dao.select(id);
+        Integer brandCategoryId = brandPojo.getId();
+        pojo.setName(form.getProductName());
+        pojo.setBrandCategoryId(brandCategoryId);
+        pojo.setMrp(form.getMrp());
+        pojo.setBarcode(form.getBarcode());
+
+    }
 }

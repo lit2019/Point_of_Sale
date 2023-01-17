@@ -77,6 +77,60 @@ function getProductList(){
 	});
 }
 
+// FILE UPLOAD METHODS
+var fileData = [];
+var errorData = [];
+var processCount = 0;
+
+
+function processData(){
+	var file = $('#productFile')[0].files[0];
+	readFileData(file, readFileDataCallback);
+}
+
+function readFileDataCallback(results){
+	fileData = results.data;
+	uploadRows();
+}
+
+function uploadRows(){
+	//Update progress
+	updateUploadDialog();
+	//If everything processed then return
+	if(processCount==fileData.length){
+		return;
+	}
+
+	//Process next row
+	var row = fileData[processCount];
+	processCount++;
+
+	var json = JSON.stringify(row);
+	var url = getProductUrl();
+
+	//Make ajax call
+	$.ajax({
+	   url: url,
+	   type: 'POST',
+	   data: json,
+	   headers: {
+       	'Content-Type': 'application/json'
+       },
+	   success: function(response) {
+	   		uploadRows();
+	   },
+	   error: function(response){
+	   		row.error=response.responseText
+	   		errorData.push(row);
+	   		uploadRows();
+	   }
+	});
+
+}
+
+function downloadErrors(){
+	writeFileData(errorData);
+}
 
 //UI DISPLAY METHODS
 
@@ -88,7 +142,6 @@ function displayProductList(data){
 		var e = data[i];
 		var buttonHtml = ' <button onclick="displayEditProduct(' + e.id + ')">edit</button>'
 		var row = '<tr>'
-		+ '<td>' + e.id + '</td>'
 		+ '<td>' + e.barcode + '</td>'
 		+ '<td>' + e.brandName + '</td>'
 		+ '<td>'  + e.category + '</td>'
@@ -99,7 +152,51 @@ function displayProductList(data){
         $tbody.append(row);
 	}
 }
+function displayEditProduct(id){
+	var url = getProductUrl() + "/" + id;
+	$.ajax({
+	   url: url,
+	   type: 'GET',
+	   success: function(data) {
+	   		console.log("Product data fetched");
+	   		console.log(data);
+	   		displayProduct(data);     //...
+	   },
+	   error: function(){
+	   		alert("An error has occurred");
+	   }
+	});
+}
 
+function resetUploadDialog(){
+	//Reset file name
+	var $file = $('#productFile');
+	$file.val('');
+	$('#productFileName').html("Choose File");
+	//Reset various counts
+	processCount = 0;
+	fileData = [];
+	errorData = [];
+	//Update counts
+	updateUploadDialog();
+	getProductList();
+}
+function updateUploadDialog(){
+	$('#rowCount').html("" + fileData.length);
+	$('#processCount').html("" + processCount);
+	$('#errorCount').html("" + errorData.length);
+}
+
+function updateFileName(){
+	var $file = $('#productFile');
+	var fileName = $file.val();
+	$('#productFileName').html(fileName);
+}
+
+function displayUploadData(){
+ 	resetUploadDialog();
+	$('#upload-product-modal').modal('toggle');
+}
 function displayEditProduct(id){
 	var url = getProductUrl() + "/" + id;
 	$.ajax({
@@ -117,9 +214,12 @@ function displayEditProduct(id){
 }
 
 function displayProduct(data){
-	$("#product-edit-form input[name=name]").val(data.name);	
-	$("#product-edit-form input[name=category]").val(data.category);	
-	$("#product-edit-form input[name=id]").val(data.id);	
+	$("#product-edit-form input[name=productName]").val(data.productName);
+	$("#product-edit-form input[name=brandName]").val(data.brandName);
+	$("#product-edit-form input[name=category]").val(data.category);
+	$("#product-edit-form input[name=mrp]").val(data.mrp);
+	$("#product-edit-form input[name=category]").val(data.category);
+	$("#product-edit-form input[name=barcode]").val(data.barcode);
 	$('#edit-product-modal').modal('toggle');
 }
 
@@ -144,6 +244,10 @@ function init(){
 	$('#add-product').click(addProduct);
 	$('#update-product').click(updateProduct);
 	$('#refresh-data').click(getProductList);
+    $('#upload-data').click(displayUploadData);
+    $('#process-data').click(processData);
+    $('#download-errors').click(downloadErrors);
+    $('#productFile').on('change', updateFileName)
 }
 
 $(document).ready(init);

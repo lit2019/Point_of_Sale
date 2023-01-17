@@ -30,11 +30,6 @@ public class BrandDao extends AbstractDao<BrandPojo>{
         }
     }
 
-    public void update(BrandPojo p) {
-
-    }
-
-
     public List<BrandPojo> get(String name) {
         TypedQuery<BrandPojo> query = em.createQuery("select p from BrandPojo p where name=:name",BrandPojo.class);
         query.setParameter("name", name);
