@@ -19,8 +19,6 @@ public class ProductPojo {
     private Integer brandCategoryId;
     @Column(nullable = false)
     private Double mrp;
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String barcode;
-
-
 }

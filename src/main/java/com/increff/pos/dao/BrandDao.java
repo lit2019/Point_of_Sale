@@ -13,14 +13,14 @@ import java.util.List;
 @Repository
 public class BrandDao extends AbstractDao<BrandPojo>{
 
-    private static final String select_by_name_category = "select p from BrandPojo p where (p.name=:name and p.category=:category)";
+    private static final String SELECT_BY_NAME_CATEGORY = "select p from BrandPojo p where (p.name=:name and p.category=:category)";
 
     @PersistenceContext
     private EntityManager em;
 
 
-    public BrandPojo select(String name,String category) {
-        TypedQuery<BrandPojo> query = getQuery(select_by_name_category);
+    public BrandPojo select(String name, String category) {
+        TypedQuery<BrandPojo> query = getQuery(SELECT_BY_NAME_CATEGORY);
         query.setParameter("name", name);
         query.setParameter("category", category);
         try{

@@ -6,6 +6,7 @@ com/increff/pos/spring/WebInitializer.class
 com/increff/pos/model/ProductForm.class
 com/increff/pos/controller/ProductController.class
 com/increff/pos/dao/AbstractDao.class
+com/increff/pos/model/MessageData.class
 com/increff/pos/controller/UIController.class
 com/increff/pos/model/ProductData.class
 com/increff/pos/model/BrandForm.class
@@ -14,6 +15,7 @@ com/increff/pos/spring/ControllerConfig.class
 com/increff/pos/dto/ProductDto.class
 com/increff/pos/api/BrandService.class
 com/increff/pos/dto/BrandDto.class
+com/increff/pos/controller/AppRestControllerAdvice.class
 com/increff/pos/spring/DbConfig.class
 com/increff/pos/entity/BrandPojo.class
 com/increff/pos/dao/ProductDao.class

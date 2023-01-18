@@ -4,6 +4,7 @@
 /home/mark/IdeaProjects/pos/src/main/java/com/increff/pos/spring/ControllerConfig.java
 /home/mark/IdeaProjects/pos/src/main/java/com/increff/pos/model/BrandForm.java
 /home/mark/IdeaProjects/pos/src/main/java/com/increff/pos/spring/DbConfig.java
+/home/mark/IdeaProjects/pos/src/main/java/com/increff/pos/controller/AppRestControllerAdvice.java
 /home/mark/IdeaProjects/pos/src/main/java/com/increff/pos/entity/BrandPojo.java
 /home/mark/IdeaProjects/pos/src/main/java/com/increff/pos/api/ApiException.java
 /home/mark/IdeaProjects/pos/src/main/java/com/increff/pos/dto/ProductDto.java
@@ -17,6 +18,7 @@
 /home/mark/IdeaProjects/pos/src/main/java/com/increff/pos/spring/WebInitializer.java
 /home/mark/IdeaProjects/pos/src/main/java/com/increff/pos/controller/ProductController.java
 /home/mark/IdeaProjects/pos/src/main/java/com/increff/pos/spring/SpringConfig.java
+/home/mark/IdeaProjects/pos/src/main/java/com/increff/pos/model/MessageData.java
 /home/mark/IdeaProjects/pos/src/main/java/com/increff/pos/api/AboutAppService.java
 /home/mark/IdeaProjects/pos/src/main/java/com/increff/pos/controller/BrandController.java
 /home/mark/IdeaProjects/pos/src/main/java/com/increff/pos/dao/AbstractDao.java

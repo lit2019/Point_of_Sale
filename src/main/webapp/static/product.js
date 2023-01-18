@@ -5,11 +5,17 @@ function getProductUrl(){
 }
 
 //BUTTON ACTIONS
-function addProduct(event){
-	//Set the values to update
+function addProductDialog(event){
+	$('#product-form-modal').modal('toggle');
+	resetProductForm();
+
+}
+
+function uploadProduct(event){
+
+	//Set the values to upload
 	var $form = $("#product-form");
 	var json = toJson($form);
-	console.log(json);
 	var url = getProductUrl();
 
 	$.ajax({
@@ -20,7 +26,7 @@ function addProduct(event){
        	'Content-Type': 'application/json'
        },
 	   success: function(response) {
-	   		console.log("Product created");	
+	   		console.log("Product created");
 	   		getProductList();     //...
 	   },
 	   error: function(){
@@ -34,7 +40,8 @@ function addProduct(event){
 function updateProduct(event){
 	$('#edit-product-modal').modal('toggle');
 	//Get the ID
-	var id = $("#product-edit-form input[name=id]").val();	
+	var id = $("#product-edit-form input[name=id]").val();
+	console.log("id = "+id)
 	var url = getProductUrl() + "/" + id;
 
 	//Set the values to update
@@ -140,7 +147,8 @@ function displayProductList(data){
 	$tbody.empty();
 	for(var i in data){
 		var e = data[i];
-		var buttonHtml = ' <button onclick="displayEditProduct(' + e.id + ')">edit</button>'
+	    var buttonHtml ='<button class="btn" onclick="displayEditProduct(' + e.id + ')"><i class="fa fa-edit"></i> edit</button>'
+
 		var row = '<tr>'
 		+ '<td>' + e.barcode + '</td>'
 		+ '<td>' + e.brandName + '</td>'
@@ -160,7 +168,7 @@ function displayEditProduct(id){
 	   success: function(data) {
 	   		console.log("Product data fetched");
 	   		console.log(data);
-	   		displayProduct(data);     //...
+	   		displayProduct(data);
 	   },
 	   error: function(){
 	   		alert("An error has occurred");
@@ -193,24 +201,9 @@ function updateFileName(){
 	$('#productFileName').html(fileName);
 }
 
-function displayUploadData(){
+function displayUploadData(event){
  	resetUploadDialog();
 	$('#upload-product-modal').modal('toggle');
-}
-function displayEditProduct(id){
-	var url = getProductUrl() + "/" + id;
-	$.ajax({
-	   url: url,
-	   type: 'GET',
-	   success: function(data) {
-	   		console.log("Product data fetched");
-	   		console.log(data);	
-	   		displayProduct(data);     //...
-	   },
-	   error: function(){
-	   		alert("An error has occurred");
-	   }
-	});	
 }
 
 function displayProduct(data){
@@ -220,7 +213,19 @@ function displayProduct(data){
 	$("#product-edit-form input[name=mrp]").val(data.mrp);
 	$("#product-edit-form input[name=category]").val(data.category);
 	$("#product-edit-form input[name=barcode]").val(data.barcode);
+	$("#product-edit-form input[name=id]").val(data.id);
+
 	$('#edit-product-modal').modal('toggle');
+}
+
+function resetProductForm(){
+
+	$("#product-form input[name=productName]").val("");
+	$("#product-form input[name=brandName]").val("");
+	$("#product-form input[name=category]").val("");
+	$("#product-form input[name=mrp]").val("");
+	$("#product-form input[name=category]").val("");
+	$("#product-form input[name=barcode]").val("");
 }
 
 
@@ -241,13 +246,17 @@ function toJson($form){
 
 //INITIALIZATION CODE
 function init(){
-	$('#add-product').click(addProduct);
-	$('#update-product').click(updateProduct);
+	$('#add-product').click(addProductDialog);
 	$('#refresh-data').click(getProductList);
     $('#upload-data').click(displayUploadData);
     $('#process-data').click(processData);
     $('#download-errors').click(downloadErrors);
+	$('#form-add-product').click(uploadProduct);
+	$('#update-product').click(updateProduct);
+
+
     $('#productFile').on('change', updateFileName)
+
 }
 
 $(document).ready(init);

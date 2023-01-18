@@ -1,22 +1,16 @@
 package com.increff.pos.model;
 
+import com.sun.istack.Nullable;
+import lombok.Getter;
+import lombok.NonNull;
+import lombok.Setter;
+
+@Getter
+@Setter
 public class BrandForm {
+    @Nullable
     private String name;
+    @NonNull
     private String Category;
 
-    public String getName() {
-        return name;
-    }
-
-    public String getCategory() {
-        return Category;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setCategory(String category) {
-        Category = category;
-    }
 }

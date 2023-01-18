@@ -2,7 +2,6 @@ package com.increff.pos.dto;
 
 import com.increff.pos.api.ApiException;
 import com.increff.pos.api.BrandService;
-import com.increff.pos.dao.BrandDao;
 import com.increff.pos.model.BrandData;
 import com.increff.pos.model.BrandForm;
 import com.increff.pos.entity.BrandPojo;
@@ -19,28 +18,57 @@ public class BrandDto {
     @Autowired
     private BrandService service;
 
-    public void validate(BrandForm form) throws ApiException {
+    public void add(BrandForm form) throws ApiException {
         checkNull(form);
-        service.add(form);
+        normalize(form);
+        service.add(convert(form));
+    }
+
+    private BrandPojo convert(BrandForm brandForm) {
+        BrandPojo brandPojo = new BrandPojo();
+        brandPojo.setName(brandForm.getName());
+        brandPojo.setCategory(brandForm.getCategory());
+        return brandPojo;
     }
 
     private void checkNull(BrandForm form) throws ApiException {
-        if (form==null){
+        if (form == null) {
             throw new ApiException("Brand form cannot be null");
         }
-        if (form.getName()==null || form.getName().trim().equals("")){
+        if (form.getName() == null || form.getName().trim().equals("")) {
             throw new ApiException("Brand name cannot be null");
         }
-        if (form.getCategory()==null || form.getCategory().trim().equals("")){
+        if (form.getCategory() == null || form.getCategory().trim().equals("")) {
             throw new ApiException("Brand category cannot be empty");
         }
     }
 
-    public void validate(List<BrandForm> forms) throws ApiException {
+    //    TODO: check for duplication
+    public void add(List<BrandForm> brandForms) throws ApiException {
         List<BrandPojo> pojos = new ArrayList<>();
-        for(BrandForm form:forms){
-            validate(form);
+        for(BrandForm form: brandForms){
+            checkNull(form);
+            normalize(form);
         }
+
+        String errorMessage = "";
+        for (Integer i = 0; i < brandForms.size(); i++) {
+            BrandForm brandForm1 = brandForms.get(i);
+            for (Integer j = i+1; j < brandForms.size(); j++) {
+                BrandForm brandForm2 = brandForms.get(j);
+                if(brandForm1.getCategory().equals(brandForm2.getCategory()) && brandForm1.getName().equals(brandForm2.getName())){
+                    errorMessage+=brandForm1.getName()+":"+brandForm1.getCategory()+"\n";
+                }
+            }
+        }
+        if(!(errorMessage.equals(""))){
+            throw new ApiException("duplicate rows exist for brand:category \n"+errorMessage);
+        }
+        for(BrandForm brandForm:brandForms){
+
+            pojos.add(convert(brandForm));
+        }
+        service.add(pojos);
     }
 
 
@@ -57,7 +85,7 @@ public class BrandDto {
     }
 
     public BrandData get(String name, String category) {
-        return convert(service.get(name, category));
+        return convert(service.getByBrandNameCategory(name, category));
     }
 
     public List<BrandData> getAll() {
@@ -72,16 +100,22 @@ public class BrandDto {
     }
 
     public List<BrandData> get(String name) {
-        List<BrandPojo> pojos = service.get(name);
-        List<BrandData> datas = new ArrayList<BrandData>();
-        for (BrandPojo p : pojos) {
-            datas.add(convert(p));
+        List<BrandPojo> brandPojos = service.getByBrandName(name);
+        List<BrandData> brandDatas = new ArrayList<BrandData>();
+        for (BrandPojo p : brandPojos) {
+            brandDatas.add(convert(p));
         }
-        return datas;
+        return brandDatas;
     }
 
-    public void validateUpdate(Integer id, BrandForm form) throws ApiException {
+    public void update(Integer id, BrandForm form) throws ApiException {
         checkNull(form);
-        service.update(id, form);
+        normalize(form);
+        service.update(id, convert(form));
     }
+    protected  void normalize(BrandForm brandForm) {
+        brandForm.setName(brandForm.getName().toLowerCase().trim());
+        brandForm.setCategory(brandForm.getCategory().toLowerCase().trim());
+    }
+
 }

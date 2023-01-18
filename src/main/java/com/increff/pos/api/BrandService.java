@@ -1,18 +1,13 @@
 package com.increff.pos.api;
 
-import com.google.protobuf.Api;
 import com.increff.pos.dao.BrandDao;
-import com.increff.pos.model.BrandForm;
 import com.increff.pos.entity.BrandPojo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.Entity;
-import javax.persistence.EntityManager;
-import javax.persistence.NoResultException;
-import javax.persistence.TypedQuery;
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @Transactional(rollbackOn = ApiException.class)
@@ -21,14 +16,11 @@ public class BrandService {
     @Autowired
     private BrandDao dao;
 
-    public void add(BrandForm form) throws ApiException {
-        BrandPojo pojo = get(form.getName(),form.getCategory());
-        if(pojo!=null){
-            throw new ApiException("given name and category already exists");
+    public void add(BrandPojo brandPojo) throws ApiException {
+        if(Objects.nonNull(getByBrandNameCategory(brandPojo.getName(),brandPojo.getCategory()))){
+            return;
         }
-        pojo = convert(form);
-        normalize(pojo);
-        dao.insert(pojo);
+        dao.insert(brandPojo);
     }
 
     public BrandPojo get(Integer id) throws ApiException {
@@ -39,56 +31,48 @@ public class BrandService {
         return dao.selectAll();
     }
 
-    public List<BrandPojo> get(String name) {
-        return dao.get(name);
+    public List<BrandPojo> getByBrandName(String name) {
+        return dao.selectByMember("name",name);
     }
 
-    public void update(Integer id, BrandForm form) throws ApiException {
-        BrandPojo pojo = get(form.getName(),form.getCategory());
-        if(pojo!=null){
-            throw new ApiException("given name and category already exists");
-        }
-        pojo = dao.select(id);
-        pojo = convert(form);
-        normalize(pojo);
+    public void update(Integer id, BrandPojo brandPojo) throws ApiException {
         BrandPojo ex = getCheck(id);
-        ex.setCategory(pojo.getCategory());
-        ex.setName(pojo.getName());
+        if(Objects.nonNull(getByBrandNameCategory(brandPojo.getName(),brandPojo.getCategory()))){
+//            TODO: show values of name and category here
+            throw new ApiException("given name:"+brandPojo.getName()+" and category:"+brandPojo.getCategory()+" already exists");
+        }
+        ex.setCategory(brandPojo.getCategory());
+        ex.setName(brandPojo.getName());
     }
 
     public BrandPojo getCheck(Integer id) throws ApiException {
         BrandPojo pojo = dao.select(id);
-        if (pojo == null) {
-            throw new ApiException("Brand with given ID does not exit, id: " + id);
+        if (Objects.isNull(pojo)) {
+            throw new ApiException("Brand with given ID does not exist, id: " + id);
         }
         return pojo;
     }
 
-    protected  void normalize(BrandPojo p) {
-        p.setName(p.getName().toLowerCase().trim());
-        p.setCategory(p.getCategory().toLowerCase().trim());
-    }
+//    TODO: should be in dto layer
 
-    public BrandPojo get(String name, String category) {
 
-        if (category==null){
-
-        }
+    public BrandPojo getByBrandNameCategory(String name, String category) {
         BrandPojo p = dao.select(name,category);
         return p;
     }
 
-    public void add(List<BrandForm> forms) throws ApiException {
-        for(BrandForm form:forms){
-            add(form);
+    public void add(List<BrandPojo> brandPojos) throws ApiException {
+        String errorMessage = "";
+        for(BrandPojo brandPojo : brandPojos){
+            if(Objects.nonNull(getByBrandNameCategory(brandPojo.getName(),brandPojo.getCategory()))){
+                errorMessage+=" ["+brandPojo.getName()+":"+brandPojo.getCategory()+"] ";
+            }
+        }
+        if(!errorMessage.equals("")){
+            throw new ApiException("given brand:category combination Already exists "+errorMessage);
+        }
+        for(BrandPojo brandPojo : brandPojos){
+            add(brandPojo);
         }
     }
-    private BrandPojo convert(BrandForm f) {
-        BrandPojo p = new BrandPojo();
-        p.setName(f.getName());
-        p.setCategory(f.getCategory());
-        return p;
-    }
-
-
 }
