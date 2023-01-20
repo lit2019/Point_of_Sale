@@ -51,6 +51,12 @@ public class BrandController {
         return dto.get(name);
     }
 
+    @ApiOperation(value = "Gets Distinct Brand names")
+    @RequestMapping(path = "/distinct-brand", method = RequestMethod.GET)
+    public List<String> getDistinctBrands() {
+        return dto.getDistinctBrands();
+    }
+
     @ApiOperation(value = "Updates a Brand")
     @RequestMapping(path = "/brands/{id}", method = RequestMethod.PUT)
     public void update(@PathVariable Integer id, @RequestBody BrandUpsertForm brandUpsertForm) throws ApiException {

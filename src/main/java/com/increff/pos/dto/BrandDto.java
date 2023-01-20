@@ -101,6 +101,11 @@ public class BrandDto {
         return brandDatas;
     }
 
+    public List<String> getDistinctBrands() {
+        return service.getDistinctBrands();
+
+    }
+
     public void update(Integer id, BrandUpsertForm form) throws ApiException {
         checkNull(form);
         normalize(form);
@@ -111,5 +116,4 @@ public class BrandDto {
         brandForm.setName(StringUtil.normaliseText(brandForm.getName()));
         brandForm.setCategory(StringUtil.normaliseText(brandForm.getCategory()));
     }
-
 }

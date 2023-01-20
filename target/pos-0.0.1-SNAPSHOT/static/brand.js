@@ -9,8 +9,6 @@ function getAddBrandListUrl(){
 	return baseUrl + "/api/add-brands";
 }
 
-
-
 //BUTTON ACTIONS
 function addBrand(event){
 	//Set the values to update
@@ -26,6 +24,7 @@ function addBrand(event){
        	'Content-Type': 'application/json'
        }, 
 	   success: function(response) {
+	        $("#brand-form-modal").hide();
 	   		console.log("Brand created");
 	   		getBrandList();
 	   }, 
@@ -66,7 +65,6 @@ function updateBrand(event){
 
 	return false;
 }
-
 
 function getBrandList(){
 	var url = getBrandUrl();
@@ -203,7 +201,6 @@ function displayBrand(data){
 	$('#edit-brand-modal').modal('toggle');
 }
 
-
 //HELPER METHOD
 function toJson($form){
     var serialized = $form.serializeArray();
@@ -216,6 +213,19 @@ function toJson($form){
     var json = JSON.stringify(data);
     console.log(json);
     return json;
+}
+
+function setSelectOptions(form, options, initialValue){
+    form.empty();
+    for(var value in options){
+        selectValues[value] = value;
+    }
+    $.each(selectValues, function(key, value) {
+         form.append($("<option></option>")
+                        .attr("value", key)
+                        .text(value));
+    });
+    form.val(initialValue);
 }
 
 

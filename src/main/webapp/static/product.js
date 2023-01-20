@@ -9,6 +9,18 @@ function getAddProductsUrl(){
 	return baseUrl + "/api/add-products";
 }
 
+function getBrandListUrl(){
+	var baseUrl = $("meta[name=baseUrl]").attr("content")
+	return baseUrl + "/api/distinct-brand";
+}
+
+function getCategoriesListUrl(brandName){
+	var baseUrl = $("meta[name=baseUrl]").attr("content")
+	return baseUrl + "/api/categories-by-brand/"+brandName;
+}
+
+
+
 //BUTTON ACTIONS
 function addProductDialog(event){
 	$('#product-form-modal').modal('toggle');
@@ -17,7 +29,6 @@ function addProductDialog(event){
 }
 
 function uploadProduct(event){
-
 	//Set the values to upload
 	var $form = $("#product-form");
 	var json = "["+toJson($form)+"]";
@@ -207,10 +218,97 @@ function displayUploadData(event){
 	$('#upload-product-modal').modal('toggle');
 }
 
+//function setSelectOptions(dropDown, options, initialValue){
+//    dropDown.empty();
+//    for(var value in options){
+//        selectValues[value] = value;
+//    }
+//    $.each(selectValues, function(key, value) {
+//         dropDown.append($("<option></option>")
+//                        .attr("value", key)
+//                        .text(value));
+//    });
+//    dropDown.val(initialValue);
+//}
+
+function emptyDropdown(dropDown){
+     dropDown.empty();
+     dropDown.append($("<option></option>")
+                    .attr("value", null)
+                    .text("select"));
+     dropDown.val("select");
+}
+
+function makeDropdowns(dropDownBrand,initialBrand,dropDownCategory,initialCategory){
+    emptyDropdown(dropDownBrand);
+    url = getBrandListUrl();
+
+    $.ajax({
+       url: url,
+       type: 'GET',
+       headers: {
+        'Content-Type': 'application/json'
+       },
+       success: function(data) {
+            var selectValues = {}
+            console.log(data);
+            for(var value in data){
+                selectValues[data[value]] = data[value];
+            }
+            $.each(selectValues, function(key, value) {
+                 dropDownBrand.append($("<option></option>")
+                                .attr("value", key)
+                                .text(value));
+            });
+            if(initialBrand!=null){
+                dropDownBrand.val(initialBrand);
+            }
+
+            dropDownBrand.change(function () {
+                 makeCategoryDropDown(dropDownBrand.val(),dropDownCategory,null);
+            });
+
+            makeCategoryDropDown(initialBrand,dropDownCategory,initialCategory);
+       },
+       error: function(error){
+       }
+    });
+}
+
+function makeCategoryDropDown(brandName,dropDownCategory,initialCategory){
+        emptyDropdown(dropDownCategory);
+
+        url = getCategoriesListUrl(brandName);
+
+        $.ajax({
+           url: url,
+           type: 'GET',
+           headers: {
+            'Content-Type': 'application/json'
+           },
+           success: function(data) {
+                var selectValues = {}
+                console.log(data);
+                for(var value in data){
+                    selectValues[data[value]] = data[value];
+                }
+                $.each(selectValues, function(key, value) {
+                     dropDownCategory.append($("<option></option>")
+                                    .attr("value", key)
+                                    .text(value));
+                });
+                if(initialCategory!=null){
+                    dropDownCategory.val(initialCategory);
+                }
+           },
+           error: function(error){
+           }
+        });
+}
+
 function displayProduct(data){
+    makeDropdowns($("#edit-brand-select"),data.brandName,$("#edit-category-select"),data.category)
 	$("#product-edit-form input[name=productName]").val(data.productName);
-	$("#product-edit-form input[name=brandName]").val(data.brandName);
-	$("#product-edit-form input[name=category]").val(data.category);
 	$("#product-edit-form input[name=mrp]").val(data.mrp);
 	$("#product-edit-form input[name=category]").val(data.category);
 	$("#product-edit-form input[name=barcode]").val(data.barcode);
@@ -220,7 +318,7 @@ function displayProduct(data){
 }
 
 function resetProductForm(){
-
+    makeDropdowns($("#form-brand-select"),null,$("#form-category-select"),null)
 	$("#product-form input[name=productName]").val("");
 	$("#product-form input[name=brandName]").val("");
 	$("#product-form input[name=category]").val("");

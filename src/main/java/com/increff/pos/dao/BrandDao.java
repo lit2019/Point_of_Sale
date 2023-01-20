@@ -7,6 +7,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -37,6 +38,15 @@ public class BrandDao extends AbstractDao<BrandPojo>{
             return (List<BrandPojo>) query.getResultList();
         }catch (NoResultException e){
             return null;
+        }
+    }
+
+    public List<String> selectDistinctBrands() {
+        TypedQuery<String> query = getEntityManager().createQuery("select DISTINCT(c.name) from " + clazz.getSimpleName()+ " c",String.class);
+        try{
+            return query.getResultList();
+        }catch (NoResultException e){
+            return new ArrayList<String>();
         }
     }
 }

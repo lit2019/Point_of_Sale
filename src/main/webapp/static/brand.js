@@ -201,7 +201,6 @@ function displayBrand(data){
 	$('#edit-brand-modal').modal('toggle');
 }
 
-
 //HELPER METHOD
 function toJson($form){
     var serialized = $form.serializeArray();
@@ -214,6 +213,19 @@ function toJson($form){
     var json = JSON.stringify(data);
     console.log(json);
     return json;
+}
+
+function setSelectOptions(form, options, initialValue){
+    form.empty();
+    for(var value in options){
+        selectValues[value] = value;
+    }
+    $.each(selectValues, function(key, value) {
+         form.append($("<option></option>")
+                        .attr("value", key)
+                        .text(value));
+    });
+    form.val(initialValue);
 }
 
 
