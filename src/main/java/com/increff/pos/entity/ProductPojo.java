@@ -11,7 +11,12 @@ import javax.persistence.*;
 @Table(name = "pos_products")
 public class ProductPojo {
     @Id
-    @GeneratedValue(strategy= GenerationType.IDENTITY)
+    @GeneratedValue(strategy= GenerationType.TABLE,
+            generator = "products-table-generator")
+    @TableGenerator(name = "products-table-generator",
+            table = "product_ids",
+            pkColumnName = "seq_id",
+            valueColumnName = "seq_value")
     private Integer id;
     @Column(nullable = false)
     private String name;

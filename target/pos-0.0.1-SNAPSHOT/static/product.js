@@ -4,6 +4,11 @@ function getProductUrl(){
 	return baseUrl + "/api/products";
 }
 
+function getAddProductsUrl(){
+	var baseUrl = $("meta[name=baseUrl]").attr("content")
+	return baseUrl + "/api/add-products";
+}
+
 //BUTTON ACTIONS
 function addProductDialog(event){
 	$('#product-form-modal').modal('toggle');
@@ -15,8 +20,8 @@ function uploadProduct(event){
 
 	//Set the values to upload
 	var $form = $("#product-form");
-	var json = toJson($form);
-	var url = getProductUrl();
+	var json = "["+toJson($form)+"]";
+	var url = getAddProductsUrl();
 
 	$.ajax({
 	   url: url,
@@ -40,9 +45,7 @@ function uploadProduct(event){
 function updateProduct(event){
 	$('#edit-product-modal').modal('toggle');
 	//Get the ID
-	var id = $("#product-edit-form input[name=id]").val();
-	console.log("id = "+id)
-	var url = getProductUrl() + "/" + id;
+	var url = getProductUrl() ;
 
 	//Set the values to update
 	var $form = $("#product-edit-form");
@@ -59,8 +62,9 @@ function updateProduct(event){
 	   		console.log("Product update");	
 	   		getProductList();     //...
 	   },
-	   error: function(){
-	   		alert("An error has occurred");
+	   error: function(error){
+	        console.log("error object:")
+	        console.log(error)
 	   }
 	});
 
@@ -100,20 +104,10 @@ function readFileDataCallback(results){
 	uploadRows();
 }
 
+
 function uploadRows(){
-	//Update progress
-	updateUploadDialog();
-	//If everything processed then return
-	if(processCount==fileData.length){
-		return;
-	}
-
-	//Process next row
-	var row = fileData[processCount];
-	processCount++;
-
-	var json = JSON.stringify(row);
-	var url = getProductUrl();
+	var json = JSON.stringify(fileData);
+	var url = getAddProductsUrl();
 
 	//Make ajax call
 	$.ajax({
@@ -124,15 +118,22 @@ function uploadRows(){
        	'Content-Type': 'application/json'
        },
 	   success: function(response) {
-	   		uploadRows();
+	        $('#upload-product-modal').modal('toggle');
+	   		makeToast(true, "TSV uploaded", null);
+            getBrandList();
+
 	   },
-	   error: function(response){
-	   		row.error=response.responseText
-	   		errorData.push(row);
-	   		uploadRows();
+	   error: function(error){
+	        $('#upload-product-modal').modal('toggle');
+	        var message =  error.responseJSON.message;
+	        errorData = message;
+	        var pos1 = message.indexOf("\n");
+            var pos2 = message.indexOf("\n", pos1 + 1);
+            message = message.slice(0, pos2);
+            message += "...."
+	   		makeToast(false, message, downloadErrors);
 	   }
 	});
-
 }
 
 function downloadErrors(){

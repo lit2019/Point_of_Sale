@@ -14,9 +14,14 @@ import javax.persistence.*;
 )
 //TODO: use Unique Constraint
 public class BrandPojo {
-    @Id
 //    TODO: use generation type table here
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @Id
+    @GeneratedValue(strategy = GenerationType.TABLE,
+    generator = "brands-table-generator")
+    @TableGenerator(name = "brands-table-generator",
+            table = "brand_ids",
+            pkColumnName = "seq_id",
+            valueColumnName = "seq_value")
     private Integer id;
     @Column(nullable = false)
     private String name;

@@ -24,7 +24,6 @@ public class UIController {
 
     private ModelAndView mav(String page) {
         ModelAndView mav = new ModelAndView(page);
-//        mav.addObject("info", new InfoData());
         mav.addObject("baseUrl", baseUrl);
         return mav;
     }

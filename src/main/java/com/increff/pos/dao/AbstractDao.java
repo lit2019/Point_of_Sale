@@ -58,7 +58,6 @@ public abstract class AbstractDao<T> {
         }
     }
 
-
     protected TypedQuery<T> getQuery(String jpql) {
         return entityManager.createQuery(jpql, clazz);
     }

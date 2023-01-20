@@ -29,6 +29,35 @@ function readFileData(file, callback){
 	Papa.parse(file, config);
 }
 
+function makeToast(isSuccessful, message, onClick){
+    var toastHeading = document.getElementById('toast-heading');
+    var toastMessage = document.getElementById('toast-message');
+
+    if(isSuccessful){
+        toastHeading.innerHTML = "Success";
+        toastHeading.style.color = 'green';
+        $("#download-errors").hide();
+
+    }else{
+        toastHeading.innerHTML = "Error";
+        toastHeading.style.color = 'red';
+        $("#download-errors").show();
+        $("#download-errors").click(onClick);
+
+    }
+    toastMessage.innerHTML = message;
+
+    var options = {
+        animation : true,
+        delay : 3000
+    };
+
+    var toastHTMLElement = document.getElementById("toast");
+
+    var toastElement = new bootstrap.Toast(toastHTMLElement, options)
+
+    toastElement.show();
+}
 
 function writeFileData(arr){
 	var config = {
@@ -37,8 +66,8 @@ function writeFileData(arr){
 		delimiter: "\t"
 	};
 	
-	var data = Papa.unparse(arr, config);
-    var blob = new Blob([data], {type: 'text/tsv;charset=utf-8;'});
+//	var data = Papa.unparse(arr, config);
+    var blob = new Blob([arr], {type: 'text/plain'});
     var fileUrl =  null;
 
     if (navigator.msSaveBlob) {

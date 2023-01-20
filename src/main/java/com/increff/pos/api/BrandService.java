@@ -2,6 +2,7 @@ package com.increff.pos.api;
 
 import com.increff.pos.dao.BrandDao;
 import com.increff.pos.entity.BrandPojo;
+import io.swagger.models.auth.In;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,7 +18,7 @@ public class BrandService {
     private BrandDao dao;
 
     public void add(BrandPojo brandPojo) throws ApiException {
-        if(Objects.nonNull(getByBrandNameCategory(brandPojo.getName(),brandPojo.getCategory()))){
+        if(Objects.nonNull(getByBrandNameCategory(brandPojo.getName(), brandPojo.getCategory()))){
             return;
         }
         dao.insert(brandPojo);
@@ -32,14 +33,13 @@ public class BrandService {
     }
 
     public List<BrandPojo> getByBrandName(String name) {
-        return dao.selectByMember("name",name);
+        return dao.selectByMember("name", name);
     }
 
     public void update(Integer id, BrandPojo brandPojo) throws ApiException {
         BrandPojo ex = getCheck(id);
-        if(Objects.nonNull(getByBrandNameCategory(brandPojo.getName(),brandPojo.getCategory()))){
-//            TODO: show values of name and category here
-            throw new ApiException("given name:"+brandPojo.getName()+" and category:"+brandPojo.getCategory()+" already exists");
+        if(Objects.nonNull(getByBrandNameCategory(brandPojo.getName(), brandPojo.getCategory()))){
+            throw new ApiException(String.format("given name:%s and category:%s already exists",brandPojo.getName(),brandPojo.getCategory()));
         }
         ex.setCategory(brandPojo.getCategory());
         ex.setName(brandPojo.getName());
@@ -53,23 +53,25 @@ public class BrandService {
         return pojo;
     }
 
-//    TODO: should be in dto layer
-
-
     public BrandPojo getByBrandNameCategory(String name, String category) {
-        BrandPojo p = dao.select(name,category);
+        BrandPojo p = dao.select(name, category);
         return p;
     }
 
     public void add(List<BrandPojo> brandPojos) throws ApiException {
         String errorMessage = "";
-        for(BrandPojo brandPojo : brandPojos){
-            if(Objects.nonNull(getByBrandNameCategory(brandPojo.getName(),brandPojo.getCategory()))){
-                errorMessage+=" ["+brandPojo.getName()+":"+brandPojo.getCategory()+"] ";
+        for(Integer i = 0; i<brandPojos.size(); i++){
+            BrandPojo brandPojo = brandPojos.get(i);
+            if(Objects.nonNull(getByBrandNameCategory(brandPojo.getName(), brandPojo.getCategory()))){
+                if(brandPojos.size()>1){
+                    errorMessage+=String.format("%s:%s in row %d\n", brandPojo.getName(), brandPojo.getCategory(),i+1);
+                }else{
+                    errorMessage+=String.format("%s:%s\n", brandPojo.getName(), brandPojo.getCategory());
+                }
             }
         }
         if(!errorMessage.equals("")){
-            throw new ApiException("given brand:category combination Already exists "+errorMessage);
+            throw new ApiException("given brand:category combination Already exists \n"+errorMessage);
         }
         for(BrandPojo brandPojo : brandPojos){
             add(brandPojo);
