@@ -10,7 +10,7 @@ public class BrandUpsertForm {
     @NonNull
     private String name;
     @NonNull
-    private String Category;
+    private String category;
     @NonNull
     private Integer id;
 }

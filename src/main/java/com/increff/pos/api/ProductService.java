@@ -20,7 +20,7 @@ public class ProductService {
     }
 
 
-    public ProductPojo get(int id) throws ApiException {
+    public ProductPojo get(Integer id) throws ApiException {
         return productDao.select(id);
     }
 
@@ -31,13 +31,12 @@ public class ProductService {
     }
 
 
-
     public void update(Integer id, ProductPojo newProductPojo) throws ApiException {
         ProductPojo oldProductPojo = productDao.select(id);
-        if (!oldProductPojo.getBarcode().equals(newProductPojo.getBarcode())){
+        if (!oldProductPojo.getBarcode().equals(newProductPojo.getBarcode())) {
 //        barcode is changed
-            if(productDao.selectByMember("barcode",newProductPojo.getBarcode()).size()>0){
-                throw new ApiException(String.format("given barcode:%s Already Exists",newProductPojo.getBarcode()));
+            if (productDao.selectByMember("barcode", newProductPojo.getBarcode()).size() > 0) {
+                throw new ApiException(String.format("given barcode:%s Already Exists", newProductPojo.getBarcode()));
             }
         }
         oldProductPojo.setName(newProductPojo.getName());
@@ -48,8 +47,8 @@ public class ProductService {
     }
 
     public ProductPojo getByBarcode(String barcode) {
-        List<ProductPojo> productPojos = productDao.selectByMember("barcode",barcode);
-        if(productPojos.size()>0){
+        List<ProductPojo> productPojos = productDao.selectByMember("barcode", barcode);
+        if (productPojos.size() > 0) {
             return productPojos.get(0);
         }
         return null;

@@ -29,6 +29,7 @@ function addBrand(event){
 	   		getBrandList();
 	   }, 
 	   error: function(error){
+	        console.log(error);
 	        alert(error.responseJSON.message);
 	   }
 	});
@@ -40,7 +41,7 @@ function updateBrand(event){
 	$('#edit-brand-modal').modal('toggle');
 	//Get the ID
 	var id = $("#brand-edit-form input[name=id]").val();	
-	var url = getBrandUrl() + "/" + id;
+	var url = getBrandUrl();
 
 	//Set the values to update
 	var $form = $("#brand-edit-form");

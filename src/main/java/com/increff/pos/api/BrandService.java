@@ -2,12 +2,10 @@ package com.increff.pos.api;
 
 import com.increff.pos.dao.BrandDao;
 import com.increff.pos.entity.BrandPojo;
-import io.swagger.models.auth.In;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 

@@ -121,6 +121,7 @@ function uploadRows(){
 	var url = getAddProductsUrl();
 
 	//Make ajax call
+	console.log(json);
 	$.ajax({
 	   url: url,
 	   type: 'POST',
@@ -148,6 +149,7 @@ function uploadRows(){
 }
 
 function downloadErrors(){
+    console.log("download errors called")
 	writeFileData(errorData);
 }
 
@@ -241,6 +243,7 @@ function emptyDropdown(dropDown){
 
 function makeDropdowns(dropDownBrand,initialBrand,dropDownCategory,initialCategory){
     emptyDropdown(dropDownBrand);
+    emptyDropdown(dropDownCategory);
     url = getBrandListUrl();
 
     $.ajax({
@@ -327,7 +330,6 @@ function resetProductForm(){
 	$("#product-form input[name=barcode]").val("");
 }
 
-
 //HELPER METHOD
 function toJson($form){
     var serialized = $form.serializeArray();
@@ -341,7 +343,6 @@ function toJson($form){
     console.log(json);
     return json;
 }
-
 
 //INITIALIZATION CODE
 function init(){
