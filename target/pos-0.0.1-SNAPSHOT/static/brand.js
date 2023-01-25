@@ -17,17 +17,17 @@ function addBrand(event){
 	var url = getAddBrandListUrl();
 
 	$.ajax({
-	   url: url, 
-	   type: 'POST', 
-	   data: json, 
+	   url: url,
+	   type: 'POST',
+	   data: json,
 	   headers: {
        	'Content-Type': 'application/json'
-       }, 
+       },
 	   success: function(response) {
-	        $("#brand-form-modal").hide();
+	        $("#brand-form-modal").modal('toggle');
 	   		console.log("Brand created");
 	   		getBrandList();
-	   }, 
+	   },
 	   error: function(error){
 	        console.log(error);
 	        alert(error.responseJSON.message);
@@ -40,7 +40,7 @@ function addBrand(event){
 function updateBrand(event){
 	$('#edit-brand-modal').modal('toggle');
 	//Get the ID
-	var id = $("#brand-edit-form input[name=id]").val();	
+	var id = $("#brand-edit-form input[name=id]").val();
 	var url = getBrandUrl();
 
 	//Set the values to update
@@ -48,17 +48,17 @@ function updateBrand(event){
 	var json = toJson($form);
 
 	$.ajax({
-	   url: url, 
-	   type: 'PUT', 
-	   data: json, 
+	   url: url,
+	   type: 'PUT',
+	   data: json,
 	   headers: {
        	'Content-Type': 'application/json'
-       }, 	   
+       },
 	   success: function(response) {
-	   		console.log("Brand update");	
+	   		console.log("Brand update");
 	   		getBrandList();     //...
-	   }, 
-	   error: function(){
+	   },
+	   error: function(error){
 	   	        alert(error.responseJSON.message);
 
 	   }
@@ -70,13 +70,13 @@ function updateBrand(event){
 function getBrandList(){
 	var url = getBrandUrl();
 	$.ajax({
-	   url: url, 
-	   type: 'GET', 
+	   url: url,
+	   type: 'GET',
 	   success: function(data) {
 	   		console.log("Brand data fetched");
-	   		console.log(data);	
+	   		console.log(data);
 	   		displayBrandList(data);     //...
-	   }, 
+	   },
 	   error: function(){
 	   	        alert(error.responseJSON.message);
 
@@ -106,25 +106,24 @@ function uploadRows(){
 
 	//Make ajax call
 	$.ajax({
-	   url: url, 
-	   type: 'POST', 
-	   data: json, 
+	   url: url,
+	   type: 'POST',
+	   data: json,
 	   headers: {
        	'Content-Type': 'application/json'
-       }, 	   
+       },
 	   success: function(response) {
 	        $('#upload-brand-modal').modal('toggle');
 	   		makeToast(true, "TSV uploaded", null);
             getBrandList();
 
-	   }, 
+	   },
 	   error: function(error){
 	        $('#upload-brand-modal').modal('toggle');
 	        var message =  error.responseJSON.message;
 	        errorData = message;
-	        var pos1 = message.indexOf("\n");
-            var pos2 = message.indexOf("\n", pos1 + 1);
-            message = message.slice(0, pos2);
+	        var pos = message.indexOf(",");
+            message = message.slice(0, pos);
             message += "...."
 	   		makeToast(false, message, downloadErrors);
 	   }
@@ -155,17 +154,17 @@ function displayBrandList(data){
 function displayEditBrand(id){
 	var url = getBrandUrl() + "/" + id;
 	$.ajax({
-	   url: url, 
-	   type: 'GET', 
+	   url: url,
+	   type: 'GET',
 	   success: function(data) {
 	   		console.log("Brand data fetched");
-	   		console.log(data);	
+	   		console.log(data);
 	   		displayBrand(data);     //...
-	   }, 
+	   },
 	   error: function(){
 	   		alert("An error has occurred");
 	   }
-	});	
+	});
 }
 
 function resetUploadDialog(){
@@ -177,7 +176,7 @@ function resetUploadDialog(){
 	processCount = 0;
 	fileData = [];
 	errorData = "";
-	//Update counts	
+	//Update counts
 	getBrandList();
 }
 
@@ -188,7 +187,7 @@ function updateFileName(){
 }
 
 function displayUploadData(){
- 	resetUploadDialog(); 	
+ 	resetUploadDialog();
 	$('#upload-brand-modal').modal('toggle');
 }
 function displayAddDialog(){
@@ -196,9 +195,9 @@ function displayAddDialog(){
 }
 
 function displayBrand(data){
-	$("#brand-edit-form input[name=name]").val(data.name);	
-	$("#brand-edit-form input[name=category]").val(data.category);	
-	$("#brand-edit-form input[name=id]").val(data.id);	
+	$("#brand-edit-form input[name=name]").val(data.name);
+	$("#brand-edit-form input[name=category]").val(data.category);
+	$("#brand-edit-form input[name=id]").val(data.id);
 	$('#edit-brand-modal').modal('toggle');
 }
 
@@ -243,5 +242,4 @@ function init(){
 
 $(document).ready(init);
 $(document).ready(getBrandList);
-
 

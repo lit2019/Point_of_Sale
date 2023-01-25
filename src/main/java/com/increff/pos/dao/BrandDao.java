@@ -12,7 +12,7 @@ import java.util.List;
 
 
 @Repository
-public class BrandDao extends AbstractDao<BrandPojo>{
+public class BrandDao extends AbstractDao<BrandPojo> {
 
     private static final String SELECT_BY_NAME_CATEGORY = "select p from BrandPojo p where (p.name=:name and p.category=:category)";
 
@@ -24,28 +24,18 @@ public class BrandDao extends AbstractDao<BrandPojo>{
         TypedQuery<BrandPojo> query = getQuery(SELECT_BY_NAME_CATEGORY);
         query.setParameter("name", name);
         query.setParameter("category", category);
-        try{
-            return query.getSingleResult();
-        }catch (NoResultException e){
-            return null;
-        }
+//        TODO:make method for getSingleResult
+        return getSingleResult(query);
     }
 
-    public List<BrandPojo> get(String name) {
-        TypedQuery<BrandPojo> query = em.createQuery("select p from BrandPojo p where name=:name",BrandPojo.class);
-        query.setParameter("name", name);
-        try{
-            return (List<BrandPojo>) query.getResultList();
-        }catch (NoResultException e){
-            return null;
-        }
-    }
+    //    TODO: use getbymember
 
     public List<String> selectDistinctBrands() {
-        TypedQuery<String> query = getEntityManager().createQuery("select DISTINCT(c.name) from " + clazz.getSimpleName()+ " c",String.class);
-        try{
+//        TODO: change clazz to pojo
+        TypedQuery<String> query = getEntityManager().createQuery("select DISTINCT(c.name) from BrandPojo c", String.class);
+        try {
             return query.getResultList();
-        }catch (NoResultException e){
+        } catch (NoResultException e) {
             return new ArrayList<String>();
         }
     }

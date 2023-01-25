@@ -122,9 +122,8 @@ function uploadRows(){
 	        $('#upload-inventory-modal').modal('toggle');
 	        var message =  error.responseJSON.message;
 	        errorData = message;
-	        var pos1 = message.indexOf("\n");
-            var pos2 = message.indexOf("\n", pos1 + 1);
-            message = message.slice(0, pos2);
+	        var pos = message.indexOf(",");
+            message = message.slice(0, pos);
             message += "...."
 	   		makeToast(false, message, downloadErrors);
 	   }

@@ -45,8 +45,9 @@ function uploadProduct(event){
 	   		console.log("Product created");
 	   		getProductList();     //...
 	   },
-	   error: function(){
-	   		alert("An error has occurred");
+	   error: function(error){
+	   	    alert(error.responseJSON.message);
+
 	   }
 	});
 
@@ -70,12 +71,12 @@ function updateProduct(event){
        	'Content-Type': 'application/json'
        },	   
 	   success: function(response) {
-	   		console.log("Product update");	
-	   		getProductList();     //...
+            console.log("Product update");
+            $("#product-form").hide();
+            getProductList();     //...
 	   },
 	   error: function(error){
-	        console.log("error object:")
-	        console.log(error)
+	        alert(error.responseJSON.message);
 	   }
 	});
 
@@ -93,8 +94,9 @@ function getProductList(){
 	   		console.log(data);	
 	   		displayProductList(data);     //...
 	   },
-	   error: function(){
-	   		alert("An error has occurred");
+	   error: function(error){
+	   		alert(error.responseJSON.message);
+
 	   }
 	});
 }
@@ -139,9 +141,8 @@ function uploadRows(){
 	        $('#upload-product-modal').modal('toggle');
 	        var message =  error.responseJSON.message;
 	        errorData = message;
-	        var pos1 = message.indexOf("\n");
-            var pos2 = message.indexOf("\n", pos1 + 1);
-            message = message.slice(0, pos2);
+	        var pos = message.indexOf(",");
+            message = message.slice(0, pos);
             message += "...."
 	   		makeToast(false, message, downloadErrors);
 	   }
@@ -184,8 +185,9 @@ function displayEditProduct(id){
 	   		console.log(data);
 	   		displayProduct(data);
 	   },
-	   error: function(){
-	   		alert("An error has occurred");
+	   error: function(error){
+	        alert(error.responseJSON.message);
+
 	   }
 	});
 }
@@ -219,19 +221,6 @@ function displayUploadData(event){
  	resetUploadDialog();
 	$('#upload-product-modal').modal('toggle');
 }
-
-//function setSelectOptions(dropDown, options, initialValue){
-//    dropDown.empty();
-//    for(var value in options){
-//        selectValues[value] = value;
-//    }
-//    $.each(selectValues, function(key, value) {
-//         dropDown.append($("<option></option>")
-//                        .attr("value", key)
-//                        .text(value));
-//    });
-//    dropDown.val(initialValue);
-//}
 
 function emptyDropdown(dropDown){
      dropDown.empty();
@@ -274,6 +263,7 @@ function makeDropdowns(dropDownBrand,initialBrand,dropDownCategory,initialCatego
             makeCategoryDropDown(initialBrand,dropDownCategory,initialCategory);
        },
        error: function(error){
+
        }
     });
 }
@@ -353,8 +343,6 @@ function init(){
     $('#download-errors').click(downloadErrors);
 	$('#form-add-product').click(uploadProduct);
 	$('#update-product').click(updateProduct);
-
-
     $('#productFile').on('change', updateFileName)
 
 }

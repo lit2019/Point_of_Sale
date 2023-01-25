@@ -4,24 +4,25 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.PositiveOrZero;
+
 @Getter
 @Setter
 public class ProductUpsertForm {
     @NonNull
     String barcode;
 
-    @NonNull
+    @NotBlank(message = "brand name cannot be null")
     String brandName;
 
-    @NonNull
+    @NotBlank(message = "category cannot be null")
     String category;
 
-    @NonNull
+    @NotBlank(message = "product name cannot be null")
     String productName;
 
-    @NonNull
+    @PositiveOrZero(message = "quantity must be a non negative integer")
     Double mrp;
 
-    @NonNull
-    Integer id;
 }

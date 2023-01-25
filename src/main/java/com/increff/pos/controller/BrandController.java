@@ -21,7 +21,7 @@ public class BrandController {
 
     //    TODO: make limit for batch addition
     @ApiOperation(value = "Adds a list of Brands")
-    @RequestMapping(path = "/add-brands", method = RequestMethod.POST)
+    @RequestMapping(path = "/brands", method = RequestMethod.POST)
     public void add(@RequestBody List<BrandUpsertForm> forms) throws ApiException {
         dto.add(forms);
     }
@@ -38,11 +38,7 @@ public class BrandController {
         return dto.getAll();
     }
 
-    @ApiOperation(value = "Gets Categories by Brand")
-    @RequestMapping(path = "/categories-by-brand/{name}", method = RequestMethod.GET)
-    public List<String> getCategories(@PathVariable String name) {
-        return dto.get(name);
-    }
+//    TODO:use the above api with requestbody as brandsearch instead
 
     @ApiOperation(value = "Gets Distinct Brand names")
     @RequestMapping(path = "/distinct-brand", method = RequestMethod.GET)
@@ -50,9 +46,10 @@ public class BrandController {
         return dto.getDistinctBrands();
     }
 
+    //    TODO:pass id as pathvariable
     @ApiOperation(value = "Updates a Brand")
-    @RequestMapping(path = "/brands", method = RequestMethod.PUT)
-    public void update(@RequestBody BrandUpsertForm brandUpsertForm) throws ApiException {
-        dto.update(brandUpsertForm);
+    @RequestMapping(path = "/brands/{id}", method = RequestMethod.PUT)
+    public void update(@PathVariable Integer id, @RequestBody BrandUpsertForm brandUpsertForm) throws ApiException {
+        dto.update(id, brandUpsertForm);
     }
 }

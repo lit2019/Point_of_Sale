@@ -1,8 +1,8 @@
 package com.increff.pos.dto;
 
 import com.increff.pos.api.ApiException;
-import com.increff.pos.api.BrandService;
-import com.increff.pos.api.ProductService;
+import com.increff.pos.api.BrandApi;
+import com.increff.pos.api.ProductApi;
 import com.increff.pos.entity.BrandPojo;
 import com.increff.pos.entity.ProductPojo;
 import com.increff.pos.model.ProductData;
@@ -12,105 +12,109 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 
 @Service
-public class ProductDto {
+public class ProductDto extends AbstractDto {
 
     @Autowired
-    private ProductService productService;
+    private ProductApi productApi;
     @Autowired
-    private BrandService brandService;
+    private BrandApi brandApi;
 
-    public void add(ProductUpsertForm productForm) throws ApiException {
-        normalize(productForm);
-        checkNull(productForm);
-        if(Objects.nonNull(productService.getByBarcode(productForm.getBarcode()))){
-            throw new ApiException("barcode already exists \n"+productForm.getBarcode()+"\n");
-        }
-        productService.add(convert(productForm));
-    }
 
-//    TODO: add pagination (end priority)
+    //    TODO: add pagination (end priority)
     public List<ProductData> get() throws ApiException {
-        return convert(productService.get());
+        return convert(productApi.get());
     }
 
     public ProductData get(Integer id) throws ApiException {
-        return convert(productService.get(id));
+        return convert(productApi.get(id));
     }
 //TODO move public methods to top
 
+    public void update(Integer id, ProductUpsertForm productForm) throws ApiException {
+        checkNull(productForm);
+        normalize(productForm);
+        productApi.update(id, convert(productForm));
+    }
+
     public void add(List<ProductUpsertForm> forms) throws ApiException {
-
-        String errorMessage = "";
-        for (Integer i = 0; i < forms.size(); i++) {
-            ProductUpsertForm productForm1 = forms.get(i);
-            for (Integer j = i+1; j < forms.size(); j++) {
-                ProductUpsertForm productForm2 = forms.get(j);
-                if(productForm1.getBarcode().equals(productForm2.getBarcode())){
-                    errorMessage+=String.format("%s in rows %d and %d\n",productForm1.getBarcode(),i+1,j+1);
-                }
-            }
-        }
-        if(!(errorMessage.equals(""))){
-            throw new ApiException("duplicate barcode exist \n"+errorMessage);
-        }
-
-        errorMessage = "";
-
         for (Integer i = 0; i < forms.size(); i++) {
             ProductUpsertForm productForm = forms.get(i);
-            if(Objects.nonNull(productService.getByBarcode(productForm.getBarcode()))){
-                errorMessage+=String.format("%s in row %d\n",productForm.getBarcode(),i+1);
+            normalize(productForm);
+            checkNull(productForm);
+        }
 
+        checkDuplicateBarcode(forms);
+        checkExistingBarcode(forms);
+        checkBrandCategory(forms);
+
+        List<ProductPojo> productPojos = new ArrayList<>();
+        for (ProductUpsertForm form : forms) {
+            productPojos.add(convert(form));
+        }
+        productApi.add(productPojos);
+    }
+
+    private void checkBrandCategory(List<ProductUpsertForm> forms) throws ApiException {
+        ArrayList<String> erroneousCombinations = new ArrayList<>();
+        for (ProductUpsertForm productForm : forms) {
+            if (Objects.isNull(brandApi.getByNameCategory(productForm.getBrandName(), productForm.getCategory()))) {
+                erroneousCombinations.add(productForm.getBrandName() + "_" + productForm.getCategory());
             }
         }
-        if(!(errorMessage.equals(""))){
-            throw new ApiException("barcode already exists \n"+errorMessage);
-        }
-
-        for(ProductUpsertForm form:forms){
-            normalize(form);
-            checkNull(form);
-            add(form);
-        }
+        checkNonEmptyList(erroneousCombinations, "combinations for brand name and category dose not exist : " + erroneousCombinations.toString());
     }
-    public void update(ProductUpsertForm productForm) throws ApiException {
-        checkNull(productForm);
-        productService.update(productForm.getId(), convert(productForm));
+
+    private void checkExistingBarcode(List<ProductUpsertForm> forms) throws ApiException {
+        ArrayList<String> existingBarcodes = new ArrayList<>();
+        for (ProductUpsertForm form : forms) {
+            if (Objects.nonNull(productApi.getByBarcode(form.getBarcode()))) {
+                existingBarcodes.add(form.getBarcode());
+            }
+        }
+        checkNonEmptyList(existingBarcodes, "barcode already exists : " + existingBarcodes.toString());
+    }
+
+    private void checkDuplicateBarcode(List<ProductUpsertForm> forms) throws ApiException {
+        HashSet<String> barcodeSet = new HashSet<>();
+        ArrayList<String> duplicates = new ArrayList<>();
+        for (ProductUpsertForm productForm : forms) {
+            String key = productForm.getBarcode();
+            if (barcodeSet.contains(key)) {
+                duplicates.add(key);
+            } else {
+                barcodeSet.add(key);
+            }
+        }
+        checkNonEmptyList(duplicates, "duplicate barcodes exist : " + duplicates.toString());
     }
 
     private void checkNull(ProductUpsertForm productForm) throws ApiException {
-        if (Objects.isNull(productForm)){
-            throw new ApiException("Product form cannot be null");
+        checkNullObject(productForm, "Product form cannot be null");
+        StringUtil.checkEmptyString(productForm.getProductName(), "Product name cannot be empty");
+        StringUtil.checkEmptyString(productForm.getBarcode(), "Product barcode cannot be empty");
+        checkNullObject(productForm.getMrp(), "Product mrp cannot be null");
+        if (productForm.getMrp() < 0) {
+            throw new ApiException("Product MRP cannot be negative:" + productForm.getMrp());
         }
-        if (Objects.isNull(productForm.getProductName()) || productForm.getProductName().equals("")){
-            throw new ApiException("Product name cannot be null");
-        }
-        if (Objects.isNull(productForm.getBarcode()) || productForm.getBarcode().equals("")){
-            throw new ApiException("Product barcode cannot be null");
-        }
-        if (Objects.isNull(productForm.getMrp())){
-            throw new ApiException("Product mrp cannot be null");
-        }
-        if (Objects.isNull(productForm.getCategory()) || productForm.getCategory().equals("")){
-            throw new ApiException("Product category cannot be null");
-        }
+        StringUtil.checkEmptyString(productForm.getCategory(), "Product category cannot be empty");
     }
 
     private List<ProductData> convert(List<ProductPojo> productPojos) throws ApiException {
         List<ProductData> productDatas = new ArrayList<>();
 
-        for(ProductPojo productPojo:productPojos){
+        for (ProductPojo productPojo : productPojos) {
             productDatas.add(convert(productPojo));
         }
         return productDatas;
     }
 
     private ProductData convert(ProductPojo productPojo) throws ApiException {
-        BrandPojo brandPojo = brandService.get(productPojo.getBrandCategoryId());
+        BrandPojo brandPojo = brandApi.get(productPojo.getBrandCategoryId());
         ProductData productData = new ProductData();
         productData.setId(productPojo.getId());
         productData.setMrp(productPojo.getMrp());
@@ -129,10 +133,7 @@ public class ProductDto {
     }
 
     private ProductPojo convert(ProductUpsertForm productForm) throws ApiException {
-        BrandPojo brandPojo = brandService.getByBrandNameCategory(productForm.getBrandName(),productForm.getCategory());
-        if (Objects.isNull(brandPojo)){
-            throw new ApiException(String.format("given brand:%s and category:%s doesn't exist",productForm.getBrandName(),productForm.getCategory()));
-        }
+        BrandPojo brandPojo = brandApi.getByNameCategory(productForm.getBrandName(), productForm.getCategory());
         Integer brandCategoryId = brandPojo.getId();
         ProductPojo pojo = new ProductPojo();
         pojo.setName(productForm.getProductName());

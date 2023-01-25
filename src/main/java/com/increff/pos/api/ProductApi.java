@@ -10,7 +10,7 @@ import java.util.List;
 
 @Service
 @Transactional(rollbackOn = ApiException.class)
-public class ProductService {
+public class ProductApi {
 
     @Autowired
     private ProductDao productDao;
@@ -25,9 +25,7 @@ public class ProductService {
     }
 
     public List<ProductPojo> get() throws ApiException {
-        List<ProductPojo> productPojos = productDao.selectAll();
-
-        return productPojos;
+        return productDao.selectAll();
     }
 
 
@@ -43,7 +41,6 @@ public class ProductService {
         oldProductPojo.setBrandCategoryId(newProductPojo.getBrandCategoryId());
         oldProductPojo.setMrp(newProductPojo.getMrp());
         oldProductPojo.setBarcode(newProductPojo.getBarcode());
-
     }
 
     public ProductPojo getByBarcode(String barcode) {
@@ -52,5 +49,11 @@ public class ProductService {
             return productPojos.get(0);
         }
         return null;
+    }
+
+    public void add(List<ProductPojo> productPojos) {
+        for (ProductPojo productPojo : productPojos) {
+            productDao.insert(productPojo);
+        }
     }
 }

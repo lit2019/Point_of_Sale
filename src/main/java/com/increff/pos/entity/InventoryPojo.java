@@ -14,7 +14,7 @@ import javax.persistence.Table;
 @Table(name = "pos_inventory")
 public class InventoryPojo {
     @Id
-    private Integer id;
+    private Integer productId;
     @Column(nullable = false)
     private Integer quantity;
 }

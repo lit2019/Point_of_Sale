@@ -1,16 +1,16 @@
 package com.increff.pos.model;
 
 import lombok.Getter;
-import lombok.NonNull;
 import lombok.Setter;
+
+import javax.validation.constraints.NotBlank;
+
 
 @Getter
 @Setter
 public class BrandUpsertForm {
-    @NonNull
+    @NotBlank(message = "brand name cannot be null")
     private String name;
-    @NonNull
+    @NotBlank(message = "category cannot be null")
     private String category;
-    @NonNull
-    private Integer id;
 }

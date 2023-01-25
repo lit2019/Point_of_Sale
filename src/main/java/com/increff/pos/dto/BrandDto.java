@@ -1,7 +1,7 @@
 package com.increff.pos.dto;
 
 import com.increff.pos.api.ApiException;
-import com.increff.pos.api.BrandService;
+import com.increff.pos.api.BrandApi;
 import com.increff.pos.entity.BrandPojo;
 import com.increff.pos.model.BrandData;
 import com.increff.pos.model.BrandUpsertForm;
@@ -10,15 +10,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 
 @Service
-public class BrandDto {
+public class BrandDto extends AbstractDto<BrandUpsertForm> {
 
 
     @Autowired
-    private BrandService service;
+    private BrandApi service;
 
     private static BrandData convert(BrandPojo p) {
         BrandData d = new BrandData();
@@ -35,43 +36,47 @@ public class BrandDto {
         return brandPojo;
     }
 
-    private void checkNull(BrandUpsertForm form) throws ApiException {
-        if (Objects.isNull(form)) {
-            throw new ApiException("Brand form cannot be null");
-        }
-        if (Objects.isNull(form.getName()) || form.getName().trim().equals("")) {
-            throw new ApiException("Brand name cannot be null");
-        }
-        if (Objects.isNull(form.getCategory()) || form.getCategory().trim().equals("")) {
-            throw new ApiException("Brand category cannot be empty");
-        }
-    }
 
-    //    TODO: check for duplication
+    //    TODO: create methods for throwing exceptions
     public void add(List<BrandUpsertForm> brandForms) throws ApiException {
         List<BrandPojo> pojos = new ArrayList<>();
         for (BrandUpsertForm form : brandForms) {
-            checkNull(form);
-            normalize(form);
+            validate(form); //TODO: use checkValid javax validation {validate->normalize ->service}
+            normalize(form); //TODO:use normalize in api level
         }
+        checkDuplicate(brandForms);
+        checkExistingBrandCategory(brandForms);
 
-        String errorMessage = "";
-        for (Integer i = 0; i < brandForms.size(); i++) {
-            BrandUpsertForm brandForm1 = brandForms.get(i);
-            for (Integer j = i + 1; j < brandForms.size(); j++) {
-                BrandUpsertForm brandForm2 = brandForms.get(j);
-                if (brandForm1.getCategory().equals(brandForm2.getCategory()) && brandForm1.getName().equals(brandForm2.getName())) {
-                    errorMessage += String.format("%s:%s in rows %d and %d\n", brandForm1.getName(), brandForm1.getCategory(), i + 1, j + 1);
-                }
-            }
-        }
-        if (!(errorMessage.equals(""))) {
-            throw new ApiException("duplicate rows exist for brand:category \n" + errorMessage);
-        }
         for (BrandUpsertForm brandForm : brandForms) {
             pojos.add(convert(brandForm));
         }
         service.add(pojos);
+    }
+
+    private void checkDuplicate(List<BrandUpsertForm> brandForms) throws ApiException {
+        HashSet<String> brandCategorySet = new HashSet<>();
+        ArrayList<String> duplicateCombinations = new ArrayList<>();
+        for (BrandUpsertForm brandForm : brandForms) {
+            String key = brandForm.getName() + "_" + brandForm.getCategory();
+            if (brandCategorySet.contains(key)) {
+                duplicateCombinations.add(key);
+            } else {
+                brandCategorySet.add(key);
+            }
+        }
+        checkNonEmptyList(duplicateCombinations, "duplicate combinations for brand name and category : " + duplicateCombinations.toString());
+    }
+
+    //TODO:move to api
+    private void checkExistingBrandCategory(List<BrandUpsertForm> brandForms) throws ApiException {
+        ArrayList<String> existingCombinations = new ArrayList<>();
+//        TODO:use foreach instead
+        for (BrandUpsertForm brandForm : brandForms) {
+            if (Objects.nonNull(service.getByNameCategory(brandForm.getName(), brandForm.getCategory()))) {
+                existingCombinations.add(brandForm.getName() + "_" + brandForm.getCategory());
+            }
+        }
+        checkNonEmptyList(existingCombinations, "existing combinations for brand name and category : " + existingCombinations.toString());
     }
 
     public BrandData get(Integer id) throws ApiException {
@@ -79,7 +84,7 @@ public class BrandDto {
     }
 
     public BrandData get(BrandUpsertForm brandUpsertForm) {
-        return convert(service.getByBrandNameCategory(brandUpsertForm.getName(), brandUpsertForm.getCategory()));
+        return convert(service.getByNameCategory(brandUpsertForm.getName(), brandUpsertForm.getCategory()));
     }
 
     public List<BrandData> getAll() {
@@ -92,7 +97,7 @@ public class BrandDto {
     }
 
     public List<String> get(String name) {
-        List<BrandPojo> brandPojos = service.getByBrandName(name);
+        List<BrandPojo> brandPojos = service.getByName(name);
         List<String> brandDatas = new ArrayList<String>();
         for (BrandPojo p : brandPojos) {
             brandDatas.add(p.getCategory());
@@ -105,10 +110,20 @@ public class BrandDto {
 
     }
 
-    public void update(BrandUpsertForm form) throws ApiException {
-        checkNull(form);
+    public void update(Integer id, BrandUpsertForm form) throws ApiException {
+        validate(form);
         normalize(form);
-        service.update(form.getId(), convert(form));
+        BrandPojo exBrandPojo = getCheck(id);
+//        TODO: use checknull from AbstractDTo
+        checkNonNullObject(service.getByNameCategory(form.getName(), form.getCategory()), String.format("given name:%s and category:%s already exists", form.getName(), form.getCategory()));
+        service.update(id, convert(form));
+    }
+
+    public BrandPojo getCheck(Integer id) throws ApiException {
+        BrandPojo brandPojo = service.get(id);
+//        TODO: use checknull from AbstractDTo
+        checkNullObject(brandPojo, "Brand with given ID does not exist, id: " + id);
+        return brandPojo;
     }
 
     protected void normalize(BrandUpsertForm brandForm) {

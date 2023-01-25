@@ -5,18 +5,16 @@ import lombok.Setter;
 
 import javax.persistence.*;
 
+import static com.increff.pos.entity.TableConstants.SEQ_OUTWARD_ORDER;
+
 @Getter
 @Setter
 @Entity
 @Table(name = "pos_products")
 public class ProductPojo {
     @Id
-    @GeneratedValue(strategy= GenerationType.TABLE,
-            generator = "products-table-generator")
-    @TableGenerator(name = "products-table-generator",
-            table = "product_ids",
-            pkColumnName = "seq_id",
-            valueColumnName = "seq_value")
+    @TableGenerator(name = SEQ_OUTWARD_ORDER, pkColumnValue = SEQ_OUTWARD_ORDER)
+    @GeneratedValue(strategy = GenerationType.TABLE, generator = SEQ_OUTWARD_ORDER)
     private Integer id;
     @Column(nullable = false)
     private String name;
@@ -24,6 +22,8 @@ public class ProductPojo {
     private Integer brandCategoryId;
     @Column(nullable = false)
     private Double mrp;
+
+    //    TODO: use unique constraints annotation in class
     @Column(nullable = false, unique = true)
     private String barcode;
 }

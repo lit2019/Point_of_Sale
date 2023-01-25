@@ -18,7 +18,7 @@ public abstract class AbstractDao<T> {
     private EntityManager entityManager;
 
     public AbstractDao() {
-        this.clazz = (Class)((ParameterizedType)this.getClass().getGenericSuperclass()).getActualTypeArguments()[0];
+        this.clazz = (Class) ((ParameterizedType) this.getClass().getGenericSuperclass()).getActualTypeArguments()[0];
     }
 
     public void insert(T pojo) {
@@ -26,35 +26,35 @@ public abstract class AbstractDao<T> {
     }
 
     public List<T> selectAll() {
-        TypedQuery<T> query = getQuery("select p from " + clazz.getSimpleName()+ " p");
-        return (List<T>) query.getResultList();
+        TypedQuery<T> query = getQuery("select p from " + clazz.getSimpleName() + " p");
+        return query.getResultList();
     }
 
     public T select(Integer id) {
-        TypedQuery<T> query = getQuery("select p from " + clazz.getSimpleName()+ " p where id=:id");
+        TypedQuery<T> query = getQuery("select p from " + clazz.getSimpleName() + " p where id=:id");
         query.setParameter("id", id);
         return getSingleResult(query);
     }
 
 
     public List<T> selectByMember(String member, String value) {
-        TypedQuery<T> query = getQuery("select p from " + clazz.getSimpleName()+ " p where "+member+"=:value");
+        TypedQuery<T> query = getQuery("select p from " + clazz.getSimpleName() + " p where " + member + "=:value");
         query.setParameter("value", value);
         return getResultList(query);
     }
 
-    private List<T> getResultList(TypedQuery<T> query) {
-        try{
-            return (List<T>) query.getResultList();
-        }catch (NoResultException e){
+    protected List<T> getResultList(TypedQuery<T> query) {
+        try {
+            return query.getResultList();
+        } catch (NoResultException e) {
             return new ArrayList<T>();
         }
     }
 
-    private T getSingleResult(TypedQuery<T> query) {
-        try{
-            return (T) query.getSingleResult();
-        }catch (NoResultException e){
+    protected T getSingleResult(TypedQuery<T> query) {
+        try {
+            return query.getSingleResult();
+        } catch (NoResultException e) {
             return null;
         }
     }

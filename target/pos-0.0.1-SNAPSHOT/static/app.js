@@ -66,17 +66,16 @@ function writeFileData(arr){
 		delimiter: "\t"
 	};
 	
-//	var data = Papa.unparse(arr, config);
     var blob = new Blob([arr], {type: 'text/plain'});
     var fileUrl =  null;
 
     if (navigator.msSaveBlob) {
-        fileUrl = navigator.msSaveBlob(blob, 'download.tsv');
+        fileUrl = navigator.msSaveBlob(blob, 'download.txt');
     } else {
         fileUrl = window.URL.createObjectURL(blob);
     }
     var tempLink = document.createElement('a');
     tempLink.href = fileUrl;
-    tempLink.setAttribute('download', 'download.tsv');
+    tempLink.setAttribute('download', 'download.txt');
     tempLink.click(); 
 }

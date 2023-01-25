@@ -24,16 +24,19 @@ public class InventoryController {
     public List<InventoryData> getAll() throws ApiException {
         return dto.get();
     }
+
     @ApiOperation(value = "Adds a list of Inventories")
     @RequestMapping(path = "/add-inventory", method = RequestMethod.POST)
     public void add(@RequestBody List<InventoryUpsertForm> forms) throws ApiException {
         dto.add(forms);
     }
+
     @ApiOperation(value = "Gets an Inventory by ID")
     @RequestMapping(path = "/inventory/{id}", method = RequestMethod.GET)
     public InventoryData get(@PathVariable Integer id) throws ApiException {
         return dto.get(id);
     }
+
     @ApiOperation(value = "Updates an Inventory")
     @RequestMapping(path = "/inventory", method = RequestMethod.PUT)
     public void update(@RequestBody InventoryUpsertForm form) throws ApiException {

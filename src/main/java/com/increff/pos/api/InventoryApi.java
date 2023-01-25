@@ -7,20 +7,23 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 @Service
 @Transactional(rollbackOn = ApiException.class)
-public class InventoryService {
+public class InventoryApi {
 
     @Autowired
     private InventoryDao dao;
     @Autowired
-    private ProductService productService;
+    private ProductApi productApi;
 
-    public void add(InventoryPojo inventoryPojo) throws ApiException {
-        dao.insert(inventoryPojo);
+    public void add(ArrayList<InventoryPojo> inventoryPojos) throws ApiException {
+        for (InventoryPojo inventoryPojo : inventoryPojos) {
+            dao.insert(inventoryPojo);
+        }
     }
 
     public InventoryPojo get(Integer id) throws ApiException {
@@ -29,10 +32,6 @@ public class InventoryService {
 
     public List<InventoryPojo> getAll() {
         return dao.selectAll();
-    }
-
-    public List<InventoryPojo> getByInventoryName(String name) {
-        return dao.selectByMember("name", name);
     }
 
     public void update(Integer id, InventoryPojo inventoryPojo) throws ApiException {
@@ -49,7 +48,7 @@ public class InventoryService {
     }
 
     public InventoryPojo getByBarcode(String barcode) throws ApiException {
-        ProductPojo productPojo = productService.getByBarcode(barcode);
+        ProductPojo productPojo = productApi.getByBarcode(barcode);
         return dao.select(productPojo.getId());
     }
 }
