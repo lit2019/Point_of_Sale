@@ -5,6 +5,7 @@ import com.increff.pos.entity.InventoryPojo;
 import com.increff.pos.entity.OrderItemPojo;
 import com.increff.pos.entity.OrderPojo;
 import com.increff.pos.entity.ProductPojo;
+import com.increff.pos.model.OrderData;
 import com.increff.pos.model.OrderForm;
 import com.increff.pos.model.OrderItemData;
 import com.increff.pos.model.OrderItemForm;
@@ -13,13 +14,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
+
+import static com.increff.pos.util.ListUtils.checkNonEmptyList;
 
 @Service
-public class OrderDto extends AbstractDto {
+public class OrderDto extends AbstractDto<OrderForm> {
 
     @Autowired
     private InventoryApi inventoryApi;
@@ -27,12 +28,13 @@ public class OrderDto extends AbstractDto {
     private OrderApi orderApi;
     @Autowired
     private OrderItemApi orderItemApi;
-
     @Autowired
     private ProductApi productApi;
+    @Autowired
+    private OrderItemDto orderItemDto;
 
     public void add(OrderForm orderForm) throws ApiException {
-        checkNull(orderForm);
+        validate(orderForm);
         normalize(orderForm);
         List<OrderItemForm> orderItemsList = orderForm.getOrderItemForms();
 
@@ -92,37 +94,24 @@ public class OrderDto extends AbstractDto {
     private OrderPojo convert(OrderForm orderForm) {
         OrderPojo orderPojo = new OrderPojo();
         Instant instant = Instant.now();
-        orderPojo.setTime(instant.toEpochMilli());
         return orderPojo;
     }
 
     private void normalize(OrderForm orderForm) {
         List<OrderItemForm> orderItemsList = orderForm.getOrderItemForms();
 
-        for (OrderItemForm orderItemForm : orderItemsList) {
+        orderItemsList.forEach((orderItemForm) -> {
             orderItemForm.setBarcode(StringUtil.normaliseText(orderItemForm.getBarcode()));
-        }
+        });
     }
 
-    private void checkNull(OrderForm orderForm) throws ApiException {
-        if (Objects.isNull(orderForm)) {
-            throw new ApiException("Order form cannot be null");
-        }
-        if (Objects.isNull(orderForm.getOrderItemForms())) {
-            throw new ApiException("Order items cannot be null");
-        }
-        String errorMessage = "";
-        List<OrderItemForm> orderItemsList = orderForm.getOrderItemForms();
-        for (Integer i = 0; i < orderItemsList.size(); i++) {
-            OrderItemForm orderItemForm = orderItemsList.get(i);
-            if (Objects.isNull(orderItemForm)) {
-                errorMessage += String.format("null row in %d", i + 1);
-            }
-        }
-        if (!(errorMessage.equals(""))) {
-            throw new ApiException("null order items exist \n" + errorMessage);
-        }
+    @Override
+    protected void validate(OrderForm orderForm) throws ApiException {
+        super.validate(orderForm);
 
+        for (OrderItemForm orderItemForm : orderForm.getOrderItemForms()) {
+            orderItemDto.validate(orderItemForm);
+        }
     }
 
     public List<OrderItemData> get(Integer orderId) throws ApiException {
@@ -136,9 +125,11 @@ public class OrderDto extends AbstractDto {
 
     private OrderItemData convert(OrderItemPojo orderItemPojo) throws ApiException {
         OrderItemData orderItemData = new OrderItemData();
-        orderItemData.setBarcode(productApi.get(orderItemPojo.getProductId()).getBarcode());
+        ProductPojo productPojo = productApi.get(orderItemPojo.getProductId());
+        orderItemData.setBarcode(productPojo.getBarcode());
         orderItemData.setQuantity(orderItemPojo.getQuantity());
         orderItemData.setId(orderItemPojo.getId());
+        orderItemData.setProductName(productPojo.getName());
         return orderItemData;
     }
 
@@ -151,5 +142,22 @@ public class OrderDto extends AbstractDto {
 
     public void updateItem(Integer id, OrderItemForm orderItemForm) {
         orderItemApi.update(id, orderItemForm);
+    }
+
+    public List<OrderData> get() {
+        List<OrderPojo> pojos = orderApi.get();
+        ArrayList<OrderData> datas = new ArrayList<>();
+        for (OrderPojo pojo : pojos) {
+            datas.add(convert(pojo));
+        }
+        return datas;
+    }
+
+    private OrderData convert(OrderPojo pojo) {
+        OrderData orderData = new OrderData();
+        DateTimeFormatter df = DateTimeFormatter.ofPattern("dd-MMM-yyyy, HH:mm:ss z", Locale.ENGLISH);
+        orderData.setCreatedAt(pojo.getCreatedAt().format(df));
+        orderData.setId(pojo.getId());
+        return orderData;
     }
 }

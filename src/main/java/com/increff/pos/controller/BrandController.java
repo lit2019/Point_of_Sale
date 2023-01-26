@@ -32,10 +32,10 @@ public class BrandController {
         return dto.get(id);
     }
 
-    @ApiOperation(value = "Gets list of all Brands")
-    @RequestMapping(path = "/brands", method = RequestMethod.GET)
-    public List<BrandData> getAll() {
-        return dto.getAll();
+    @ApiOperation(value = "Gets list of Brands with name/category")
+    @RequestMapping(path = "/brands-list", method = RequestMethod.POST)
+    public List<BrandData> getByBrandNameCategory(@RequestBody BrandUpsertForm brandForm) {
+        return dto.get(brandForm);
     }
 
 //    TODO:use the above api with requestbody as brandsearch instead

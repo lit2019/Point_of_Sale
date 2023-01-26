@@ -2,6 +2,7 @@ package com.increff.pos.controller;
 
 import com.increff.pos.api.ApiException;
 import com.increff.pos.dto.OrderDto;
+import com.increff.pos.model.OrderData;
 import com.increff.pos.model.OrderForm;
 import com.increff.pos.model.OrderItemData;
 import com.increff.pos.model.OrderItemForm;
@@ -25,10 +26,16 @@ public class OrderController {
         dto.add(orderForm);
     }
 
-    @ApiOperation(value = "gets order by id")
+    @ApiOperation(value = "gets orderItems by orderId")
     @RequestMapping(path = "/orders/{orderId}", method = RequestMethod.GET)
     public List<OrderItemData> get(@PathVariable Integer orderId) throws ApiException {
         return dto.get(orderId);
+    }
+
+    @ApiOperation(value = "gets all orders")
+    @RequestMapping(path = "/orders", method = RequestMethod.GET)
+    public List<OrderData> getAll() throws ApiException {
+        return dto.get();
     }
 
     @ApiOperation(value = "adds an order item to the given orderId")

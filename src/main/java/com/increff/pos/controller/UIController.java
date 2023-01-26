@@ -27,6 +27,11 @@ public class UIController {
         return mav("inventory.html");
     }
 
+    @RequestMapping(value = "/ui/orders")
+    public ModelAndView orders() {
+        return mav("orders.html");
+    }
+
     private ModelAndView mav(String page) {
         ModelAndView mav = new ModelAndView(page);
         mav.addObject("baseUrl", baseUrl);

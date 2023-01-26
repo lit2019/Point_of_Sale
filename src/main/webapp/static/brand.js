@@ -3,18 +3,18 @@ function getBrandUrl(){
 	var baseUrl = $("meta[name=baseUrl]").attr("content")
 	return baseUrl + "/api/brands";
 }
-
-function getAddBrandListUrl(){
+function getBrandCategoryListUrl(){
 	var baseUrl = $("meta[name=baseUrl]").attr("content")
-	return baseUrl + "/api/add-brands";
+	return baseUrl + "/api/brands-list";
 }
+
 
 //BUTTON ACTIONS
 function addBrand(event){
 	//Set the values to update
 	var $form = $("#brand-form");
 	var json = "["+toJson($form)+"]";
-	var url = getAddBrandListUrl();
+	var url = getBrandUrl();
 
 	$.ajax({
 	   url: url,
@@ -31,6 +31,7 @@ function addBrand(event){
 	   error: function(error){
 	        console.log(error);
 	        alert(error.responseJSON.message);
+
 	   }
 	});
 
@@ -38,10 +39,9 @@ function addBrand(event){
 }
 
 function updateBrand(event){
-	$('#edit-brand-modal').modal('toggle');
 	//Get the ID
 	var id = $("#brand-edit-form input[name=id]").val();
-	var url = getBrandUrl();
+	var url = getBrandUrl()+"/"+id;
 
 	//Set the values to update
 	var $form = $("#brand-edit-form");
@@ -55,6 +55,7 @@ function updateBrand(event){
        	'Content-Type': 'application/json'
        },
 	   success: function(response) {
+	$('#edit-brand-modal').modal('toggle');
 	   		console.log("Brand update");
 	   		getBrandList();     //...
 	   },
@@ -68,18 +69,24 @@ function updateBrand(event){
 }
 
 function getBrandList(){
-	var url = getBrandUrl();
+    resetBrandForm();
+	var url = getBrandCategoryListUrl();
+	data = toJson($("#brand-form"))
+
 	$.ajax({
 	   url: url,
-	   type: 'GET',
+	   type: 'POST',
+	   data:data,
+	   headers: {
+       	'Content-Type': 'application/json'
+       },
 	   success: function(data) {
 	   		console.log("Brand data fetched");
 	   		console.log(data);
 	   		displayBrandList(data);     //...
 	   },
-	   error: function(){
-	   	        alert(error.responseJSON.message);
-
+	   error: function(error){
+	   	    alert(error.responseJSON.message);
 	   }
 	});
 }
@@ -102,7 +109,7 @@ function readFileDataCallback(results){
 
 function uploadRows(){
 	var json = JSON.stringify(fileData);
-	var url = getAddBrandListUrl();
+	var url = getBrandUrl();
 
 	//Make ajax call
 	$.ajax({
@@ -199,6 +206,11 @@ function displayBrand(data){
 	$("#brand-edit-form input[name=category]").val(data.category);
 	$("#brand-edit-form input[name=id]").val(data.id);
 	$('#edit-brand-modal').modal('toggle');
+}
+function resetBrandForm(data){
+	$("#brand-form input[name=name]").val("");
+	$("#brand-form input[name=category]").val("");
+	$("#brand-form input[name=id]").val();
 }
 
 //HELPER METHOD

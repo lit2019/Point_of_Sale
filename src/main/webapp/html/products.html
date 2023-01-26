@@ -10,6 +10,7 @@
 <!-- Toast -->
 <div th:replace="snippets.html :: name_toast"></div>
 
+
 <div class="container">
 
 
@@ -63,32 +64,32 @@
                 <div class="modal-body">
                     <form id="product-form">
                         <div class="form-group">
-                            <label for="brandName">Brand Name</label>
+                            <label for="brandName"><b>Brand Name *</b></label>
                             <div class="col-sm-10">
                                 <select class="form-control" name="brandName" id="form-brand-select"  placeholder="select brand"></select>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="category">Category</label>
+                            <label for="category"><b>Category *</b></label>
                             <div class="col-sm-10">
                                 <select class="form-control" name="category"  id="form-category-select" placeholder="select category"></select>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="productName">Product Name</label>
+                            <label for="productName"><b>Product Name *</b></label>
                             <div class="col-sm-10">
                                 <input type="text" class="form-control" name="productName"
                                        placeholder="enter Product Name">
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="mrp">MRP</label>
+                            <label for="mrp"><b>MRP *</b></label>
                             <div class="col-sm-10">
                                 <input type="text" class="form-control" name="mrp" placeholder="enter MRP in Rs.">
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="barcode">Barcode</label>
+                            <label for="barcode"><b>Barcode *</b></label>
                             <div class="col-sm-10">
                                 <input type="text" class="form-control" name="barcode" placeholder="enter Barcode">
                             </div>
@@ -115,32 +116,32 @@
                 <div class="modal-body">
                     <form id="product-edit-form">
                         <div class="form-group">
-                            <label for="brandName">Brand Name</label>
+                            <label for="brandName"><b>Brand Name *</b></label>
                             <div class="col-sm-10">
                                 <select class="form-control" name="brandName"  id="edit-brand-select"></select>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="category">Category</label>
+                            <label for="category"><b>Category *</b></label>
                             <div class="col-sm-10">
                                 <select class="form-control" name="category"  id="edit-category-select"></select>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="productName">Product Name</label>
+                            <label for="productName"><b>Product Name *</b></label>
                             <div class="col-sm-10">
                                 <input type="text" class="form-control" name="productName"
                                        placeholder="enter Product Name">
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="mrp">MRP</label>
+                            <label for="mrp"><b>MRP *</b></label>
                             <div class="col-sm-10">
                                 <input type="text" class="form-control" name="mrp" placeholder="enter MRP in Rs.">
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="barcode">Barcode</label>
+                            <label for="barcode"><b>Barcode *</b></label>
                             <div class="col-sm-10">
                                 <input type="text" class="form-control" name="barcode" placeholder="enter Barcode">
                             </div>
@@ -172,7 +173,7 @@
                 <div class="modal-body">
                     <div class="product-file">
                         <input type="file" class="custom-file-input" id="productFile">
-                        <label class="custom-file-label" for="productFile" id="productFileName">Choose file</label>
+                        <label class="custom-file-label" for="productFile" id="productFileName">Choose file *</b></label>
                     </div>
                     <br>
 
@@ -185,6 +186,11 @@
             </div>
         </div>
     </div>
+
+    <form class="form-inline" id="brand-form">
+        <input type="hidden" name="name">
+        <input type="hidden" name="category">
+    </form>
 
 </div> <!-- Container end-->
 

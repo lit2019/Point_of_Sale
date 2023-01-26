@@ -8,7 +8,8 @@ import javax.validation.constraints.NotNull;
 @Getter
 @Setter
 public class OrderItemData extends OrderItemForm {
-
     @NotNull
     private Integer id;
+    @NotNull
+    private String productName;
 }

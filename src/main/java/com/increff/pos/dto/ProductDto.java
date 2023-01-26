@@ -16,8 +16,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 
+import static com.increff.pos.util.ListUtils.checkNonEmptyList;
+
 @Service
-public class ProductDto extends AbstractDto {
+public class ProductDto extends AbstractDto<ProductUpsertForm> {
 
     @Autowired
     private ProductApi productApi;
@@ -36,7 +38,7 @@ public class ProductDto extends AbstractDto {
 //TODO move public methods to top
 
     public void update(Integer id, ProductUpsertForm productForm) throws ApiException {
-        checkNull(productForm);
+        validate(productForm);
         normalize(productForm);
         productApi.update(id, convert(productForm));
     }
@@ -45,11 +47,10 @@ public class ProductDto extends AbstractDto {
         for (Integer i = 0; i < forms.size(); i++) {
             ProductUpsertForm productForm = forms.get(i);
             normalize(productForm);
-            checkNull(productForm);
+            validate(productForm);
         }
 
         checkDuplicateBarcode(forms);
-        checkExistingBarcode(forms);
         checkBrandCategory(forms);
 
         List<ProductPojo> productPojos = new ArrayList<>();
@@ -59,49 +60,29 @@ public class ProductDto extends AbstractDto {
         productApi.add(productPojos);
     }
 
-    private void checkBrandCategory(List<ProductUpsertForm> forms) throws ApiException {
-        ArrayList<String> erroneousCombinations = new ArrayList<>();
-        for (ProductUpsertForm productForm : forms) {
-            if (Objects.isNull(brandApi.getByNameCategory(productForm.getBrandName(), productForm.getCategory()))) {
-                erroneousCombinations.add(productForm.getBrandName() + "_" + productForm.getCategory());
-            }
-        }
-        checkNonEmptyList(erroneousCombinations, "combinations for brand name and category dose not exist : " + erroneousCombinations.toString());
-    }
-
-    private void checkExistingBarcode(List<ProductUpsertForm> forms) throws ApiException {
-        ArrayList<String> existingBarcodes = new ArrayList<>();
-        for (ProductUpsertForm form : forms) {
-            if (Objects.nonNull(productApi.getByBarcode(form.getBarcode()))) {
-                existingBarcodes.add(form.getBarcode());
-            }
-        }
-        checkNonEmptyList(existingBarcodes, "barcode already exists : " + existingBarcodes.toString());
-    }
 
     private void checkDuplicateBarcode(List<ProductUpsertForm> forms) throws ApiException {
         HashSet<String> barcodeSet = new HashSet<>();
         ArrayList<String> duplicates = new ArrayList<>();
-        for (ProductUpsertForm productForm : forms) {
-            String key = productForm.getBarcode();
+        forms.stream().map(ProductUpsertForm::getBarcode).forEach(key -> {
             if (barcodeSet.contains(key)) {
                 duplicates.add(key);
             } else {
                 barcodeSet.add(key);
             }
-        }
+        });
         checkNonEmptyList(duplicates, "duplicate barcodes exist : " + duplicates.toString());
     }
 
-    private void checkNull(ProductUpsertForm productForm) throws ApiException {
-        checkNullObject(productForm, "Product form cannot be null");
-        StringUtil.checkEmptyString(productForm.getProductName(), "Product name cannot be empty");
-        StringUtil.checkEmptyString(productForm.getBarcode(), "Product barcode cannot be empty");
-        checkNullObject(productForm.getMrp(), "Product mrp cannot be null");
-        if (productForm.getMrp() < 0) {
-            throw new ApiException("Product MRP cannot be negative:" + productForm.getMrp());
-        }
-        StringUtil.checkEmptyString(productForm.getCategory(), "Product category cannot be empty");
+
+    private void checkBrandCategory(List<ProductUpsertForm> forms) throws ApiException {
+        ArrayList<String> erroneousCombinations = new ArrayList<>();
+        forms.forEach((form) -> {
+            if (Objects.isNull(brandApi.getByNameCategory(form.getBrandName(), form.getCategory()))) {
+                erroneousCombinations.add(form.getBrandName() + "_" + form.getCategory());
+            }
+        });
+        checkNonEmptyList(erroneousCombinations, "combinations for brand name and category dose not exist : " + erroneousCombinations.toString());
     }
 
     private List<ProductData> convert(List<ProductPojo> productPojos) throws ApiException {

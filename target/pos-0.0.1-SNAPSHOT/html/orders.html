@@ -1,0 +1,117 @@
+<!doctype html>
+
+<html lang="en">
+
+<head th:replace="snippets.html :: name_head"></head>
+
+<body>
+
+<nav th:replace="snippets.html :: name_navbar"></nav>
+<!-- Toast -->
+
+<div class="container">
+    <div th:replace="snippets.html :: name_toast"></div>
+
+    <h3 style=" padding:10px;">Orders</h3>
+    <div class="row">
+        <div class="col">
+            <select class="form-control" name="orderID"  id="select-order"></select>
+        </div>
+        <div class="col">
+            <button type="button" class="btn btn-primary" id="get-order-details">Get Order Details</button>
+        </div>
+        <div class="col">
+            <button type="button" class="btn btn-primary" id="open-add-dialog">Create Order</button>
+        </div>
+    </div>
+    <div class="row">
+        &nbsp;
+    </div>
+    <div class="row">
+
+        <!-- Table -->
+        <div class="col-12">
+            <table class="table table-striped" id="order-table">
+                <thead>
+                <tr>
+                    <th scope="col">Product Name</th>
+                    <th scope="col">Barcode</th>
+                    <th scope="col">Quantity</th>
+                </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+
+
+
+    <div class="modal" tabindex="-1" role="dialog" id="order-form-modal" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modal-form-title">Create Order</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="container">
+                        <div class="row">
+                            <form>
+                                <div class="form-row" id = "order-item-form">
+                                    <div class="col">
+                                        <input type="text" class="form-control" name = "barcode" placeholder="Barcode">
+                                    </div>
+                                    <div class="col">
+                                        <input type="text" class="form-control" name = "quantity" placeholder="Quantity">
+                                    </div>
+                                    <div class="col">
+                                        <button type="button" class="btn btn-primary" id = "add-item">Add item</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="row">
+                            &nbsp;
+                        </div>
+                        <div class="row">
+
+                            <!-- Table -->
+                            <div class="col-12">
+                                <table class="table table-striped" id="brand-table">
+                                    <thead>
+                                    <tr>
+                                        <th scope="col">Barcode</th>
+                                        <th scope="col">Quantity</th>
+                                        <th scope="col">Remove</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    </tbody>
+                                </table>
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" id="form-create-order">Create</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div> <!-- Container end-->
+
+<footer th:replace="snippets.html :: name_footer"></footer>
+
+
+</body>
+<script th:src="@{/static/orders.js}"/>
+</script>
+
+</html>

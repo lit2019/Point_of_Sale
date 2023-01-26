@@ -16,8 +16,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 
+import static com.increff.pos.util.ListUtils.checkNonEmptyList;
+
 @Service
-public class InventoryDto extends AbstractDto {
+public class InventoryDto extends AbstractDto<InventoryUpsertForm> {
 
     @Autowired
     private InventoryApi inventoryApi;
@@ -36,10 +38,13 @@ public class InventoryDto extends AbstractDto {
 //TODO move public methods to top
 
     public void add(List<InventoryUpsertForm> forms) throws ApiException {
+        for (InventoryUpsertForm form : forms) {
+            validate(form);
+        }
 
         checkDuplicateBarcode(forms);
         checkBarcode(forms);
-        checkExistingBarcode(forms);
+        checkExistingInventory(forms);
 
         ArrayList<InventoryPojo> inventoryPojos = new ArrayList<>();
         for (InventoryUpsertForm form : forms) {
@@ -49,7 +54,7 @@ public class InventoryDto extends AbstractDto {
         inventoryApi.add(inventoryPojos);
     }
 
-    private void checkExistingBarcode(List<InventoryUpsertForm> forms) throws ApiException {
+    private void checkExistingInventory(List<InventoryUpsertForm> forms) throws ApiException {
         ArrayList<String> existingBarcodes = new ArrayList<>();
         for (InventoryUpsertForm form : forms) {
             if (Objects.nonNull(inventoryApi.getByBarcode(form.getBarcode()))) {
@@ -60,47 +65,33 @@ public class InventoryDto extends AbstractDto {
     }
 
     private void checkBarcode(List<InventoryUpsertForm> forms) throws ApiException {
-        String errorMessage = "";
-
-        for (Integer i = 0; i < forms.size(); i++) {
-            InventoryUpsertForm inventoryForm = forms.get(i);
-            if (Objects.isNull(productApi.getByBarcode(inventoryForm.getBarcode()))) {
-                errorMessage += String.format("%s in row %d\n", inventoryForm.getBarcode(), i + 1);
+        ArrayList<String> nonExistingBarcodes = new ArrayList<>();
+        forms.forEach((form) -> {
+            if (Objects.isNull(productApi.getByBarcode(form.getBarcode()))) {
+                nonExistingBarcodes.add(form.getBarcode());
             }
-        }
-        if (!(errorMessage.equals(""))) {
-            throw new ApiException("product with given barcode doesn't exist \n" + errorMessage);
-        }
+        });
+        checkNonEmptyList(nonExistingBarcodes, "Product with Barcode dose not exist exists : " + nonExistingBarcodes.toString());
     }
 
     private void checkDuplicateBarcode(List<InventoryUpsertForm> forms) throws ApiException {
         HashSet<String> barcodeSet = new HashSet<>();
         ArrayList<String> duplicates = new ArrayList<>();
-        for (InventoryUpsertForm form : forms) {
+        forms.forEach((form) -> {
             String key = form.getBarcode();
             if (barcodeSet.contains(key)) {
                 duplicates.add(key);
             } else {
                 barcodeSet.add(key);
             }
-        }
+        });
         checkNonEmptyList(duplicates, "duplicate barcodes exist : " + duplicates.toString());
     }
 
     public void update(InventoryUpsertForm inventoryForm) throws ApiException {
         normalize(inventoryForm);
-        checkNull(inventoryForm);
+        validate(inventoryForm);
         inventoryApi.update(productApi.getByBarcode(inventoryForm.getBarcode()).getId(), convert(inventoryForm));
-    }
-
-    private void checkNull(InventoryUpsertForm inventoryForm) throws ApiException {
-        checkNullObject(inventoryForm, "Inventory form cannot be null");
-        StringUtil.checkEmptyString(inventoryForm.getBarcode(), "Inventory barcode cannot be null");
-        checkNullObject(inventoryForm.getQuantity(), "Inventory quantity cannot be null");
-
-        if (inventoryForm.getQuantity() < 0) {
-            throw new ApiException("Inventory quantity cannot be negative");
-        }
     }
 
     private List<InventoryData> convert(List<InventoryPojo> inventoryPojos) throws ApiException {

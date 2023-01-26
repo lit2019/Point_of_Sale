@@ -49,6 +49,9 @@ public class InventoryApi {
 
     public InventoryPojo getByBarcode(String barcode) throws ApiException {
         ProductPojo productPojo = productApi.getByBarcode(barcode);
+        if (Objects.isNull(productPojo)) {
+            throw new ApiException(String.format("product with barcode:%s dose not exist", barcode));
+        }
         return dao.select(productPojo.getId());
     }
 }

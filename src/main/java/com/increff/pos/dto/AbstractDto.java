@@ -7,12 +7,13 @@ import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
 import java.lang.reflect.ParameterizedType;
-import java.util.List;
+import java.util.ArrayList;
 import java.util.Objects;
 import java.util.Set;
 
 public class AbstractDto<T> {
     Class<T> clazz;
+    ArrayList<String> strings;
 
     public AbstractDto() {
         this.clazz = (Class) ((ParameterizedType) this.getClass().getGenericSuperclass()).getActualTypeArguments()[0];
@@ -24,11 +25,6 @@ public class AbstractDto<T> {
         }
     }
 
-    public void checkNonEmptyList(List list, String message) throws ApiException {
-        if (!list.isEmpty()) { //TODO:use colleectionutols
-            throw new ApiException(message);
-        }
-    }
 
     public void checkNullObject(Object object, String message) throws ApiException {
         if (Objects.isNull(object)) {

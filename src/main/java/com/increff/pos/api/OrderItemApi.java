@@ -32,6 +32,5 @@ public class OrderItemApi {
     }
 
     public void update(Integer id, OrderItemForm orderItemForm) {
-
     }
 }

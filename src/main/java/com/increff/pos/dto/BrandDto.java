@@ -10,9 +10,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Objects;
+
+import static com.increff.pos.util.ListUtils.checkNonEmptyList;
 
 @Service
 public class BrandDto extends AbstractDto<BrandUpsertForm> {
@@ -38,53 +40,57 @@ public class BrandDto extends AbstractDto<BrandUpsertForm> {
 
 
     //    TODO: create methods for throwing exceptions
-    public void add(List<BrandUpsertForm> brandForms) throws ApiException {
+    public void add(List<BrandUpsertForm> forms) throws ApiException {
         List<BrandPojo> pojos = new ArrayList<>();
-        for (BrandUpsertForm form : brandForms) {
+        for (BrandUpsertForm form : forms) {
             validate(form); //TODO: use checkValid javax validation {validate->normalize ->service}
             normalize(form); //TODO:use normalize in api level
         }
-        checkDuplicate(brandForms);
-        checkExistingBrandCategory(brandForms);
+        checkDuplicate(forms);
 
-        for (BrandUpsertForm brandForm : brandForms) {
-            pojos.add(convert(brandForm));
-        }
+        forms.forEach((form) -> {
+            pojos.add(convert(form));
+        });
         service.add(pojos);
     }
 
-    private void checkDuplicate(List<BrandUpsertForm> brandForms) throws ApiException {
+    private void checkDuplicate(List<BrandUpsertForm> forms) throws ApiException {
         HashSet<String> brandCategorySet = new HashSet<>();
         ArrayList<String> duplicateCombinations = new ArrayList<>();
-        for (BrandUpsertForm brandForm : brandForms) {
-            String key = brandForm.getName() + "_" + brandForm.getCategory();
+        forms.forEach((form) -> {
+            String key = form.getName() + "_" + form.getCategory();
             if (brandCategorySet.contains(key)) {
                 duplicateCombinations.add(key);
             } else {
                 brandCategorySet.add(key);
             }
-        }
+        });
         checkNonEmptyList(duplicateCombinations, "duplicate combinations for brand name and category : " + duplicateCombinations.toString());
     }
 
     //TODO:move to api
-    private void checkExistingBrandCategory(List<BrandUpsertForm> brandForms) throws ApiException {
-        ArrayList<String> existingCombinations = new ArrayList<>();
-//        TODO:use foreach instead
-        for (BrandUpsertForm brandForm : brandForms) {
-            if (Objects.nonNull(service.getByNameCategory(brandForm.getName(), brandForm.getCategory()))) {
-                existingCombinations.add(brandForm.getName() + "_" + brandForm.getCategory());
-            }
-        }
-        checkNonEmptyList(existingCombinations, "existing combinations for brand name and category : " + existingCombinations.toString());
-    }
 
     public BrandData get(Integer id) throws ApiException {
         return convert(service.get(id));
     }
 
-    public BrandData get(BrandUpsertForm brandUpsertForm) {
-        return convert(service.getByNameCategory(brandUpsertForm.getName(), brandUpsertForm.getCategory()));
+    public List<BrandData> get(BrandUpsertForm brandUpsertForm) {
+        ArrayList<BrandData> datas = new ArrayList<>();
+        List<BrandPojo> pojos;
+        if (!StringUtil.isEmpty(brandUpsertForm.getName())) {
+            if (!StringUtil.isEmpty(brandUpsertForm.getCategory())) {
+                pojos = Collections.singletonList(service.getByNameCategory(brandUpsertForm.getName(), brandUpsertForm.getCategory()));
+            } else {
+                pojos = service.getByName(brandUpsertForm.getName());
+            }
+        } else {
+
+            pojos = service.getAll();
+        }
+        pojos.forEach(pojo -> {
+            datas.add(convert(pojo));
+        });
+        return datas;
     }
 
     public List<BrandData> getAll() {

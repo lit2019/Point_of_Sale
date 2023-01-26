@@ -6,7 +6,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+
+import static com.increff.pos.util.ListUtils.checkNonEmptyList;
 
 @Service
 @Transactional(rollbackOn = ApiException.class)
@@ -14,6 +18,8 @@ public class ProductApi {
 
     @Autowired
     private ProductDao productDao;
+    @Autowired
+    private BrandApi brandApi;
 
     public void add(ProductPojo productPojo) throws ApiException {
         productDao.insert(productPojo);
@@ -51,9 +57,23 @@ public class ProductApi {
         return null;
     }
 
-    public void add(List<ProductPojo> productPojos) {
+    public void add(List<ProductPojo> productPojos) throws ApiException {
+
+        checkExistingBarcode(productPojos);
         for (ProductPojo productPojo : productPojos) {
             productDao.insert(productPojo);
         }
     }
+
+    private void checkExistingBarcode(List<ProductPojo> pojos) throws ApiException {
+        ArrayList<String> existingBarcodes = new ArrayList<>();
+        pojos.forEach((pojo) -> {
+            if (Objects.nonNull(getByBarcode(pojo.getBarcode()))) {
+                existingBarcodes.add(pojo.getBarcode());
+            }
+        });
+        checkNonEmptyList(existingBarcodes, "barcode already exists : " + existingBarcodes.toString());
+    }
+
+
 }

@@ -4,17 +4,13 @@ function getInventoryUrl(){
 	return baseUrl + "/api/inventory";
 }
 
-function getAddInventoryListUrl(){
-	var baseUrl = $("meta[name=baseUrl]").attr("content")
-	return baseUrl + "/api/add-inventory";
-}
 
 //BUTTON ACTIONS
 function addInventory(event){
 	//Set the values to update
 	var $form = $("#inventory-form");
 	var json = "["+toJson($form)+"]";
-	var url = getAddInventoryListUrl();
+	var url = getInventoryUrl();
 
 	$.ajax({
 	   url: url, 
@@ -41,7 +37,7 @@ function updateInventory(event){
 	$('#edit-inventory-modal').modal('toggle');
 	//Get the ID
 	var id = $("#inventory-edit-form input[name=id]").val();	
-	var url = getInventoryUrl() ;
+	var url = getInventoryUrl();
 
 	//Set the values to update
 	var $form = $("#inventory-edit-form");
@@ -102,7 +98,7 @@ function readFileDataCallback(results){
 
 function uploadRows(){
 	var json = JSON.stringify(fileData);
-	var url = getAddInventoryListUrl();
+	var url = getInventoryUrl();
 
 	//Make ajax call
 	$.ajax({
@@ -114,7 +110,7 @@ function uploadRows(){
        }, 	   
 	   success: function(response) {
 	        $('#upload-inventory-modal').modal('toggle');
-	   		makeToast(true, "TSV uploaded", null);
+	   		makeToast(true, "", null);
             getInventoryList();
 
 	   }, 
@@ -141,7 +137,8 @@ function displayInventoryList(data){
 	$tbody.empty();
 	for(var i in data){
 		var e = data[i];
-	    var buttonHtml ='<button class="btn" onclick="displayEditInventory(' + e.id + ')"><i class="fa fa-edit"></i> edit</button>'
+	    console.log(e)
+	    var buttonHtml ='<button class="btn" onclick="displayEditInventory(' + e.productId + ')"><i class="fa fa-edit"></i> edit</button>'
 		var row = '<tr>'
 		+ '<td>' + e.barcode + '</td>'
 		+ '<td>'  + e.quantity + '</td>'
@@ -197,7 +194,7 @@ function displayAddDialog(){
 function displayInventory(data){
 	$("#inventory-edit-form input[name=barcode]").val(data.barcode);
 	$("#inventory-edit-form input[name=quantity]").val(data.quantity);
-	$("#inventory-edit-form input[name=id]").val(data.id);	
+	$("#inventory-edit-form input[name=productId]").val(data.productID);
 	$('#edit-inventory-modal').modal('toggle');
 }
 

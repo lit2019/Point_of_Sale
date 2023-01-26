@@ -19,6 +19,10 @@ function getCategoriesListUrl(brandName){
 	return baseUrl + "/api/categories-by-brand/"+brandName;
 }
 
+function getBrandCategoryListUrl(){
+	var baseUrl = $("meta[name=baseUrl]").attr("content")
+	return baseUrl + "/api/brands-list";
+}
 
 
 //BUTTON ACTIONS
@@ -57,7 +61,8 @@ function uploadProduct(event){
 function updateProduct(event){
 	$('#edit-product-modal').modal('toggle');
 	//Get the ID
-	var url = getProductUrl() ;
+	var id = $("#product-edit-form input[name=id]").val();
+	var url = getProductUrl() +"/"+id;
 
 	//Set the values to update
 	var $form = $("#product-edit-form");
@@ -69,7 +74,7 @@ function updateProduct(event){
 	   data: json,
 	   headers: {
        	'Content-Type': 'application/json'
-       },	   
+       },
 	   success: function(response) {
             console.log("Product update");
             $("#product-form").hide();
@@ -91,7 +96,7 @@ function getProductList(){
 	   type: 'GET',
 	   success: function(data) {
 	   		console.log("Product data fetched");
-	   		console.log(data);	
+	   		console.log(data);
 	   		displayProductList(data);     //...
 	   },
 	   error: function(error){
@@ -133,7 +138,7 @@ function uploadRows(){
        },
 	   success: function(response) {
 	        $('#upload-product-modal').modal('toggle');
-	   		makeToast(true, "TSV uploaded", null);
+	   		makeToast(true, "", null);
             getProductList();
 
 	   },
@@ -163,7 +168,7 @@ function displayProductList(data){
 	for(var i in data){
 		var e = data[i];
 	    var buttonHtml ='<button class="btn" onclick="displayEditProduct(' + e.id + ')"><i class="fa fa-edit"></i> edit</button>'
-
+        console.log(e.id);
 		var row = '<tr>'
 		+ '<td>' + e.barcode + '</td>'
 		+ '<td>' + e.brandName + '</td>'
@@ -271,32 +276,63 @@ function makeDropdowns(dropDownBrand,initialBrand,dropDownCategory,initialCatego
 function makeCategoryDropDown(brandName,dropDownCategory,initialCategory){
         emptyDropdown(dropDownCategory);
 
-        url = getCategoriesListUrl(brandName);
+        url = getBrandCategoryListUrl();
+	$("#brand-form input[name=name]").val(brandName);
 
-        $.ajax({
-           url: url,
-           type: 'GET',
-           headers: {
-            'Content-Type': 'application/json'
-           },
-           success: function(data) {
-                var selectValues = {}
-                console.log(data);
-                for(var value in data){
-                    selectValues[data[value]] = data[value];
-                }
-                $.each(selectValues, function(key, value) {
-                     dropDownCategory.append($("<option></option>")
-                                    .attr("value", key)
-                                    .text(value));
-                });
-                if(initialCategory!=null){
-                    dropDownCategory.val(initialCategory);
-                }
-           },
-           error: function(error){
-           }
-        });
+	data = toJson($("#brand-form"));
+    console.log(data);
+	$.ajax({
+	   url: url,
+	   type: 'POST',
+	   data:data,
+	   headers: {
+       	'Content-Type': 'application/json'
+       },
+	   success: function(data) {
+            var selectValues = {}
+            console.log(data);
+            for(var i in data){
+                var e = data[i];
+                var value = e.category;
+                selectValues[value] = value;
+            }
+            $.each(selectValues, function(key, value) {
+                 dropDownCategory.append($("<option></option>")
+                                .attr("value", key)
+                                .text(value));
+            });
+            if(initialCategory!=null){
+                dropDownCategory.val(initialCategory);
+            }
+	   },
+	   error: function(error){
+	   	    alert(error.responseJSON.message);
+	   }
+	});
+//        $.ajax({
+//           url: url,
+//           type: 'GET',
+//           headers: {
+//            'Content-Type': 'application/json'
+//           },
+//           success: function(data) {
+//                var selectValues = {}
+//                console.log(data);
+//                for(var value in data){
+//                    selectValues[data[value]] = data[value];
+//                }
+//                $.each(selectValues, function(key, value) {
+//                     dropDownCategory.append($("<option></option>")
+//                                    .attr("value", key)
+//                                    .text(value));
+//                });
+//                if(initialCategory!=null){
+//                    dropDownCategory.val(initialCategory);
+//                }
+//           },
+//           error: function(error){
+//           }
+//        });
 }
 
 function displayProduct(data){

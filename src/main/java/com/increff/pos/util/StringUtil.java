@@ -10,8 +10,12 @@ public class StringUtil {
     }
 
     public static void checkEmptyString(String string, String message) throws ApiException {
-        if (Objects.isNull(string) || string.trim().equals("")) {
+        if (isEmpty(string)) {
             throw new ApiException(message);
         }
+    }
+
+    public static boolean isEmpty(String string) {
+        return (Objects.isNull(string) || string.trim().equals(""));
     }
 }

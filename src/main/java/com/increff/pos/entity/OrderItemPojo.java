@@ -5,7 +5,7 @@ import lombok.Setter;
 
 import javax.persistence.*;
 
-import static com.increff.pos.entity.TableConstants.SEQ_OUTWARD_ORDER;
+import static com.increff.pos.entity.TableConstants.*;
 
 @Getter
 @Setter
@@ -13,10 +13,10 @@ import static com.increff.pos.entity.TableConstants.SEQ_OUTWARD_ORDER;
 @Table(
         name = "pos_orderitems"
 )
-public class OrderItemPojo {
+public class OrderItemPojo extends BaseEntity {
     @Id
-    @TableGenerator(name = SEQ_OUTWARD_ORDER, pkColumnValue = SEQ_OUTWARD_ORDER)
-    @GeneratedValue(strategy = GenerationType.TABLE, generator = SEQ_OUTWARD_ORDER)
+    @GeneratedValue(strategy = GenerationType.TABLE, generator = TABLE_GENERATOR_NAME)
+    @TableGenerator(name = TABLE_GENERATOR_NAME, table = TABLE_NAME, allocationSize = 1, pkColumnName = PK_COLUMN_NAME, valueColumnName = PK_COLUMN_VALUE)
     private Integer id;
 
     @Column(nullable = false, name = "order_id")
