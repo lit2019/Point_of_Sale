@@ -3,6 +3,10 @@ function getOrderUrl(){
 	var baseUrl = $("meta[name=baseUrl]").attr("content")
 	return baseUrl + "/api/orders";
 }
+function getInvoiceUrl(){
+	var baseUrl = $("meta[name=baseUrl]").attr("content")
+	return baseUrl + "/api/order-invoice";
+}
 
 function openCreateOrderDialog(event){
 console.log("openCreateOrderDialog called")
@@ -13,6 +17,7 @@ console.log("openCreateOrderDialog called")
 }
 
 var orderItems = [];
+var orderId = '';
 
 function addItem(){
     console.log("inside add item")
@@ -82,6 +87,11 @@ function makeOrderDropdown(){
                                 .text(value));
             });
 
+            dropDownOrder.change(function () {
+                  orderId = dropDownOrder.val().split(' ')[0];
+                  getOrderDetails();
+            });
+
        },
        error: function(error){
 
@@ -89,12 +99,13 @@ function makeOrderDropdown(){
     });
 }
 
+
 function emptyDropdown(dropDown){
      dropDown.empty();
      dropDown.append($("<option></option>")
                     .attr("value", null)
-                    .text("select"));
-     dropDown.val("select");
+                    .text("select order"));
+     dropDown.val("select order");
 }
 
 errorData = "";
@@ -113,7 +124,6 @@ function createOrder(){
         'Content-Type': 'application/json'
        },
        success: function(response) {
-            $('#upload-product-modal').modal('toggle');
             makeToast(true, "", null);
             getProductList();
             makeOrderDropdown();
@@ -141,8 +151,7 @@ function removeProduct(i){
 }
 
 function getOrderDetails(){
-    var id = dropDownOrder.val().split(' ')[0];
-    var url = getOrderUrl()+"/"+id;
+    var url = getOrderUrl()+"/"+orderId;
 
     //Make ajax call
     $.ajax({
@@ -158,6 +167,7 @@ function getOrderDetails(){
        },
        error: function(error){
              console.log(error)
+             displayOrderDetails();
        }
     });
 }
@@ -165,27 +175,62 @@ function displayOrderDetails(data){
 	console.log('Printing order details');
 	var $tbody = $('#order-table').find('tbody');
 	$tbody.empty();
+	var total = 0;
 	for(var i in data){
 		var e = data[i];
 //	    var buttonHtml ='<button class="btn" onclick="displayEditOrder(' + e.id + ')"><i class="fa fa-edit"></i> edit</button>'
         console.log(e.id);
+        var sno = parseInt(i)+1;
 		var row = '<tr>'
-		+ '<td>'  + e.productName + '</td>'
-		+ '<td>' + e.barcode + '</td>'
-		+ '<td>'  + e.quantity + '</td>'
-//		+ '<td>' + buttonHtml + '</td>'
+        + '<td>' + sno + '</td>'
+        + '<td>' + e.productName + '</td>'
+        + '<td>' + e.barcode + '</td>'
+        + '<td>' + e.quantity + '</td>'
+        + '<td>' + e.mrp + '</td>'
+        + '<td>' + (e.mrp*e.quantity) + '</td>'
+//        + '<td>' + buttonHtml + '</td>'
 		+ '</tr>';
         $tbody.append(row);
+        total+=(e.mrp*e.quantity);
 	}
+	var row = '<tr>'
+          + '<td></td>'
+          + '<td></td>'
+          + '<td></td>'
+          + '<td></td>'
+          + '<td><b>Total</b></td>'
+          + '<td><b>'+total+'</b></td>'
+  //        + '<td>' + buttonHtml + '</td>'
+        + '</tr>';
+        $tbody.append(row);
+
+}
+
+function generateInvoice(){
+    emptyDropdown(dropDownOrder);
+
+    url = getInvoiceUrl()+"/"+orderId;
+
+    $.ajax({
+       url: url,
+       type: 'GET',
+       headers: {
+        'Content-Type': 'application/json'
+       },
+       success: function(data) {
+
+                   },
+       error: function(error){
+
+       }
+    });
 }
 
 //INITIALIZATION CODE
 function init(){
 	$('#open-add-dialog').click(openCreateOrderDialog);
 	$('#form-create-order').click(createOrder);
-	$('#get-order-details').click(getOrderDetails);
-
-
+	$('#generate-invoice').click(generateInvoice);
 }
 $(document).ready(init);
 $(document).ready(makeOrderDropdown);

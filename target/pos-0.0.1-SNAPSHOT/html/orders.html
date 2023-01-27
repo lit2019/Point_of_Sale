@@ -18,9 +18,6 @@
             <select class="form-control" name="orderID"  id="select-order"></select>
         </div>
         <div class="col">
-            <button type="button" class="btn btn-primary" id="get-order-details">Get Order Details</button>
-        </div>
-        <div class="col">
             <button type="button" class="btn btn-primary" id="open-add-dialog">Create Order</button>
         </div>
     </div>
@@ -34,15 +31,25 @@
             <table class="table table-striped" id="order-table">
                 <thead>
                 <tr>
+                    <th scope="col">S.No.</th>
                     <th scope="col">Product Name</th>
                     <th scope="col">Barcode</th>
                     <th scope="col">Quantity</th>
+                    <th scope="col">Unit Price</th>
+                    <th scope="col">Total</th>
+
+
                 </tr>
                 </thead>
                 <tbody>
                 </tbody>
             </table>
 
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <button type="button" class="btn btn-primary" id="generate-invoice">Generate Invoice</button>
         </div>
     </div>
 

@@ -5,10 +5,7 @@ import com.increff.pos.entity.InventoryPojo;
 import com.increff.pos.entity.OrderItemPojo;
 import com.increff.pos.entity.OrderPojo;
 import com.increff.pos.entity.ProductPojo;
-import com.increff.pos.model.OrderData;
-import com.increff.pos.model.OrderForm;
-import com.increff.pos.model.OrderItemData;
-import com.increff.pos.model.OrderItemForm;
+import com.increff.pos.model.*;
 import com.increff.pos.util.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -114,7 +111,8 @@ public class OrderDto extends AbstractDto<OrderForm> {
         }
     }
 
-    public List<OrderItemData> get(Integer orderId) throws ApiException {
+    public List<OrderItemData> getOrderItems(Integer orderId) throws ApiException {
+        checkNullObject(orderApi.get(orderId), "order with given Id dose not exist");
         ArrayList<OrderItemData> orderItemDatas = new ArrayList<>();
         List<OrderItemPojo> orderItemPojos = orderItemApi.get(orderId);
         for (OrderItemPojo orderItemPojo : orderItemPojos) {
@@ -130,6 +128,7 @@ public class OrderDto extends AbstractDto<OrderForm> {
         orderItemData.setQuantity(orderItemPojo.getQuantity());
         orderItemData.setId(orderItemPojo.getId());
         orderItemData.setProductName(productPojo.getName());
+        orderItemData.setMrp(productPojo.getMrp());
         return orderItemData;
     }
 
@@ -144,7 +143,7 @@ public class OrderDto extends AbstractDto<OrderForm> {
         orderItemApi.update(id, orderItemForm);
     }
 
-    public List<OrderData> get() {
+    public List<OrderData> getOrderItems() {
         List<OrderPojo> pojos = orderApi.get();
         ArrayList<OrderData> datas = new ArrayList<>();
         for (OrderPojo pojo : pojos) {
@@ -159,5 +158,37 @@ public class OrderDto extends AbstractDto<OrderForm> {
         orderData.setCreatedAt(pojo.getCreatedAt().format(df));
         orderData.setId(pojo.getId());
         return orderData;
+    }
+
+    public String getInvoice(Integer orderId) throws ApiException {
+        OrderPojo orderData = orderApi.get(orderId);
+        List<OrderItemData> orderItems = getOrderItems(orderId);
+        InvoiceData invoiceData = new InvoiceData();
+        DateTimeFormatter df = DateTimeFormatter.ofPattern("dd-MMM-yyyy", Locale.ENGLISH);
+        invoiceData.setInvoiceDate(orderData.getCreatedAt().format(df));
+        df = DateTimeFormatter.ofPattern("HH:mm:ss z", Locale.ENGLISH);
+        invoiceData.setInvoiceTime(orderData.getCreatedAt().format(df));
+        invoiceData.setInvoiceNumber(orderId);
+
+        ArrayList<InvoiceLineItem> invoiceItems = new ArrayList<>();
+        double total = 0;
+        for (OrderItemData orderItemData : orderItems) {
+            InvoiceLineItem invoiceItem = new InvoiceLineItem();
+            invoiceItem.setProductName(orderItemData.getProductName());
+            invoiceItem.setBarcode(orderItemData.getBarcode());
+            invoiceItem.setQuantity(orderItemData.getQuantity());
+            invoiceItem.setUnitPrice(orderItemData.getMrp());
+            invoiceItem.setTotal(orderItemData.getMrp() * orderItemData.getQuantity());
+            invoiceItems.add(invoiceItem);
+            total += orderItemData.getMrp() * orderItemData.getQuantity();
+        }
+
+        invoiceData.setLineItems(invoiceItems);
+        invoiceData.setTotal(total);
+        return orderApi.getPDFBase64(invoiceData);
+    }
+
+    private OrderData getOrder(Integer orderId) {
+        return convert(orderApi.get(orderId));
     }
 }

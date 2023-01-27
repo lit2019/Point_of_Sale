@@ -29,13 +29,13 @@ public class OrderController {
     @ApiOperation(value = "gets orderItems by orderId")
     @RequestMapping(path = "/orders/{orderId}", method = RequestMethod.GET)
     public List<OrderItemData> get(@PathVariable Integer orderId) throws ApiException {
-        return dto.get(orderId);
+        return dto.getOrderItems(orderId);
     }
 
     @ApiOperation(value = "gets all orders")
     @RequestMapping(path = "/orders", method = RequestMethod.GET)
     public List<OrderData> getAll() throws ApiException {
-        return dto.get();
+        return dto.getOrderItems();
     }
 
     @ApiOperation(value = "adds an order item to the given orderId")
@@ -50,5 +50,9 @@ public class OrderController {
         dto.updateItem(id, orderItemForm);
     }
 
-
+    @ApiOperation(value = "get Invoice of an order by Id")
+    @RequestMapping(path = "/order-invoice/{orderId}", method = RequestMethod.GET)
+    public String getInvoice(@PathVariable Integer orderId) throws ApiException {
+        return dto.getInvoice(orderId);
+    }
 }
