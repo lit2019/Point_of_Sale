@@ -3,12 +3,14 @@ package com.increff.pos.controller;
 import com.increff.pos.api.ApiException;
 import com.increff.pos.dto.InventoryDto;
 import com.increff.pos.model.InventoryData;
+import com.increff.pos.model.InventoryReportData;
 import com.increff.pos.model.InventoryUpsertForm;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Api
@@ -41,5 +43,14 @@ public class InventoryController {
     @RequestMapping(path = "/inventory", method = RequestMethod.PUT)
     public void update(@RequestBody InventoryUpsertForm form) throws ApiException {
         dto.update(form);
+
     }
+
+    @ApiOperation(value = "gets Inventory report")
+    @RequestMapping(path = "/inventory-report", method = RequestMethod.GET)
+    public ArrayList<InventoryReportData> getInventoryReport() throws ApiException {
+        return dto.getInventoryReport();
+    }
+
+
 }

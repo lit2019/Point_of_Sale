@@ -19,54 +19,9 @@ import static com.increff.pos.util.ListUtils.checkNonEmptyList;
 @Service
 public class BrandDto extends AbstractDto<BrandUpsertForm> {
 
-
     @Autowired
     private BrandApi service;
 
-    private static BrandData convert(BrandPojo p) {
-        BrandData d = new BrandData();
-        d.setName(p.getName());
-        d.setCategory(p.getCategory());
-        d.setId(p.getId());
-        return d;
-    }
-
-    private BrandPojo convert(BrandUpsertForm brandForm) {
-        BrandPojo brandPojo = new BrandPojo();
-        brandPojo.setName(brandForm.getName());
-        brandPojo.setCategory(brandForm.getCategory());
-        return brandPojo;
-    }
-
-
-    //    TODO: create methods for throwing exceptions
-    public void add(List<BrandUpsertForm> forms) throws ApiException {
-        List<BrandPojo> pojos = new ArrayList<>();
-        for (BrandUpsertForm form : forms) {
-            validate(form); //TODO: use checkValid javax validation {validate->normalize ->service}
-            normalize(form); //TODO:use normalize in api level
-        }
-        checkDuplicate(forms);
-
-        forms.forEach((form) -> {
-            pojos.add(convert(form));
-        });
-        service.add(pojos);
-    }
-
-    private void checkDuplicate(List<BrandUpsertForm> forms) throws ApiException {
-        HashSet<String> brandCategorySet = new HashSet<>();
-        ArrayList<String> duplicateCombinations = new ArrayList<>();
-        forms.forEach((form) -> {
-            String key = form.getName() + "_" + form.getCategory();
-            if (brandCategorySet.contains(key)) {
-                duplicateCombinations.add(key);
-            } else {
-                brandCategorySet.add(key);
-            }
-        });
-        checkNonEmptyList(duplicateCombinations, "duplicate combinations for brand name and category : " + duplicateCombinations.toString());
-    }
 
     //TODO:move to api
 
@@ -130,6 +85,51 @@ public class BrandDto extends AbstractDto<BrandUpsertForm> {
 //        TODO: use checknull from AbstractDTo
         checkNullObject(brandPojo, "Brand with given ID does not exist, id: " + id);
         return brandPojo;
+    }
+
+    public void add(List<BrandUpsertForm> forms) throws ApiException {
+        List<BrandPojo> pojos = new ArrayList<>();
+        for (BrandUpsertForm form : forms) {
+            validate(form); //TODO: use checkValid javax validation {validate->normalize ->service}
+            normalize(form); //TODO:use normalize in api level
+        }
+        checkDuplicate(forms);
+
+        forms.forEach((form) -> {
+            pojos.add(convert(form));
+        });
+        service.add(pojos);
+    }
+
+    private BrandPojo convert(BrandUpsertForm brandForm) {
+        BrandPojo brandPojo = new BrandPojo();
+        brandPojo.setName(brandForm.getName());
+        brandPojo.setCategory(brandForm.getCategory());
+        return brandPojo;
+    }
+
+
+    //    TODO: create methods for throwing exceptions
+    private static BrandData convert(BrandPojo p) {
+        BrandData d = new BrandData();
+        d.setName(p.getName());
+        d.setCategory(p.getCategory());
+        d.setId(p.getId());
+        return d;
+    }
+
+    private void checkDuplicate(List<BrandUpsertForm> forms) throws ApiException {
+        HashSet<String> brandCategorySet = new HashSet<>();
+        ArrayList<String> duplicateCombinations = new ArrayList<>();
+        forms.forEach((form) -> {
+            String key = form.getName() + "_" + form.getCategory();
+            if (brandCategorySet.contains(key)) {
+                duplicateCombinations.add(key);
+            } else {
+                brandCategorySet.add(key);
+            }
+        });
+        checkNonEmptyList(duplicateCombinations, "duplicate combinations for brand name and category : " + duplicateCombinations.toString());
     }
 
     protected void normalize(BrandUpsertForm brandForm) {

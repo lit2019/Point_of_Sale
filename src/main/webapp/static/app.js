@@ -29,7 +29,7 @@ function readFileData(file, callback){
 	Papa.parse(file, config);
 }
 
-function makeToast(isSuccessful, message, onClick){
+function makeToast(isSuccessful, message){
     var toastHeading = document.getElementById('toast-heading');
     var toastMessage = document.getElementById('toast-message');
 
@@ -42,7 +42,6 @@ function makeToast(isSuccessful, message, onClick){
         toastHeading.innerHTML = "Error";
         toastHeading.style.color = 'red';
         $("#download-errors").show();
-        $("#download-errors").click(onClick);
 
     }
     toastMessage.innerHTML = message;

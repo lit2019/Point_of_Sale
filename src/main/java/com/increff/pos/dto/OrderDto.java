@@ -1,15 +1,13 @@
 package com.increff.pos.dto;
 
 import com.increff.pos.api.*;
-import com.increff.pos.entity.InventoryPojo;
-import com.increff.pos.entity.OrderItemPojo;
-import com.increff.pos.entity.OrderPojo;
-import com.increff.pos.entity.ProductPojo;
+import com.increff.pos.entity.*;
 import com.increff.pos.model.*;
 import com.increff.pos.util.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.time.Instant;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -29,8 +27,10 @@ public class OrderDto extends AbstractDto<OrderForm> {
     private ProductApi productApi;
     @Autowired
     private OrderItemDto orderItemDto;
+    @Autowired
+    private InvoiceApi invoiceApi;
 
-    public void add(OrderForm orderForm) throws ApiException {
+    public void add(OrderForm orderForm) throws ApiException, IOException {
         validate(orderForm);
         normalize(orderForm);
         List<OrderItemForm> orderItemsList = orderForm.getOrderItemForms();
@@ -43,14 +43,82 @@ public class OrderDto extends AbstractDto<OrderForm> {
 
         Integer orderId = orderPojo.getId();
         for (OrderItemForm orderItemForm : orderItemsList) {
-            add(convert(orderId, orderItemForm));
+            orderItemApi.add(convert(orderId, orderItemForm));
         }
+
+        generateInvoice(orderId);
+    }
+
+    public List<OrderItemData> getOrderItems(Integer orderId) throws ApiException {
+        checkNullObject(orderApi.get(orderId), "order with given Id dose not exist");
+        ArrayList<OrderItemData> orderItemDatas = new ArrayList<>();
+        List<OrderItemPojo> orderItemPojos = orderItemApi.get(orderId);
+        for (OrderItemPojo orderItemPojo : orderItemPojos) {
+            orderItemDatas.add(convert(orderItemPojo));
+        }
+        return orderItemDatas;
+    }
+
+    public void addItem(Integer orderId, OrderItemForm orderItemForm) throws ApiException {
+        if (Objects.isNull(orderApi.get(orderId))) {
+            throw new ApiException(String.format("order with given id : %d dose not exist", orderId));
+        }
+        orderItemApi.add(convert(orderId, orderItemForm));
+    }
+
+    public void updateItem(Integer id, OrderItemForm orderItemForm) {
+        orderItemApi.update(id, orderItemForm);
+    }
+
+    public List<OrderData> getOrderItems() {
+        List<OrderPojo> pojos = orderApi.get();
+        ArrayList<OrderData> datas = new ArrayList<>();
+        for (OrderPojo pojo : pojos) {
+            datas.add(convert(pojo));
+        }
+        return datas;
+    }
+
+    public void generateInvoice(Integer orderId) throws ApiException, IOException {
+        OrderPojo orderPojo = orderApi.get(orderId);
+        List<OrderItemData> orderItems = getOrderItems(orderId);
+        InvoiceData invoiceData = getInvoiceByOrderPojo(orderPojo);
+        invoiceData.setLineItems(convert(orderItems));
+        orderApi.getPdfBase64(orderId, invoiceData);
+    }
+
+    public InvoicePojo getInvoice(Integer orderId) throws ApiException {
+        InvoicePojo invoicePojo = invoiceApi.get(orderId);
+        return invoicePojo;
+    }
+
+    private InvoiceData getInvoiceByOrderPojo(OrderPojo orderPojo) {
+        InvoiceData invoiceData = new InvoiceData();
+        DateTimeFormatter df = DateTimeFormatter.ofPattern("dd-MMM-yyyy", Locale.ENGLISH);
+        invoiceData.setInvoiceDate(orderPojo.getCreatedAt().format(df));
+        df = DateTimeFormatter.ofPattern("HH:mm:ss z", Locale.ENGLISH);
+        invoiceData.setInvoiceTime(orderPojo.getCreatedAt().format(df));
+        invoiceData.setInvoiceNumber(orderPojo.getId());
+        return invoiceData;
+    }
+
+    private List<InvoiceItem> convert(List<OrderItemData> orderItems) {
+        ArrayList<InvoiceItem> invoiceItems = new ArrayList<>();
+        for (OrderItemData orderItemData : orderItems) {
+            InvoiceItem invoiceItem = new InvoiceItem();
+            invoiceItem.setProductName(orderItemData.getProductName());
+            invoiceItem.setBarcode(orderItemData.getBarcode());
+            invoiceItem.setQuantity(orderItemData.getQuantity());
+            invoiceItem.setUnitPrice(orderItemData.getMrp());
+            invoiceItem.setTotal(orderItemData.getMrp() * orderItemData.getQuantity());
+            invoiceItems.add(invoiceItem);
+        }
+        return invoiceItems;
     }
 
     private void checkExistingInventory(List<OrderItemForm> orderItemsList) throws ApiException {
         ArrayList<String> barcodesWithoutInventory = new ArrayList<>();
-        for (Integer i = 0; i < orderItemsList.size(); i++) {
-            OrderItemForm orderItemForm = orderItemsList.get(i);
+        for (OrderItemForm orderItemForm : orderItemsList) {
             InventoryPojo inventoryPojo = inventoryApi.getByBarcode(orderItemForm.getBarcode());
             if (Objects.isNull(inventoryPojo) || inventoryPojo.getQuantity() < orderItemForm.getQuantity()) {
                 barcodesWithoutInventory.add(orderItemForm.getBarcode());
@@ -72,10 +140,6 @@ public class OrderDto extends AbstractDto<OrderForm> {
         }
         checkNonEmptyList(duplicates, "duplicate barcodes exist : " + duplicates.toString());
 
-    }
-
-    private void add(OrderItemPojo orderItemPojo) throws ApiException {
-        orderItemApi.add(orderItemPojo);
     }
 
     private OrderItemPojo convert(Integer orderId, OrderItemForm orderItemForm) {
@@ -102,25 +166,6 @@ public class OrderDto extends AbstractDto<OrderForm> {
         });
     }
 
-    @Override
-    protected void validate(OrderForm orderForm) throws ApiException {
-        super.validate(orderForm);
-
-        for (OrderItemForm orderItemForm : orderForm.getOrderItemForms()) {
-            orderItemDto.validate(orderItemForm);
-        }
-    }
-
-    public List<OrderItemData> getOrderItems(Integer orderId) throws ApiException {
-        checkNullObject(orderApi.get(orderId), "order with given Id dose not exist");
-        ArrayList<OrderItemData> orderItemDatas = new ArrayList<>();
-        List<OrderItemPojo> orderItemPojos = orderItemApi.get(orderId);
-        for (OrderItemPojo orderItemPojo : orderItemPojos) {
-            orderItemDatas.add(convert(orderItemPojo));
-        }
-        return orderItemDatas;
-    }
-
     private OrderItemData convert(OrderItemPojo orderItemPojo) throws ApiException {
         OrderItemData orderItemData = new OrderItemData();
         ProductPojo productPojo = productApi.get(orderItemPojo.getProductId());
@@ -132,26 +177,6 @@ public class OrderDto extends AbstractDto<OrderForm> {
         return orderItemData;
     }
 
-    public void addItem(Integer orderId, OrderItemForm orderItemForm) throws ApiException {
-        if (Objects.isNull(orderApi.get(orderId))) {
-            throw new ApiException(String.format("order with given id : %d dose not exist", orderId));
-        }
-        orderItemApi.add(convert(orderId, orderItemForm));
-    }
-
-    public void updateItem(Integer id, OrderItemForm orderItemForm) {
-        orderItemApi.update(id, orderItemForm);
-    }
-
-    public List<OrderData> getOrderItems() {
-        List<OrderPojo> pojos = orderApi.get();
-        ArrayList<OrderData> datas = new ArrayList<>();
-        for (OrderPojo pojo : pojos) {
-            datas.add(convert(pojo));
-        }
-        return datas;
-    }
-
     private OrderData convert(OrderPojo pojo) {
         OrderData orderData = new OrderData();
         DateTimeFormatter df = DateTimeFormatter.ofPattern("dd-MMM-yyyy, HH:mm:ss z", Locale.ENGLISH);
@@ -160,35 +185,13 @@ public class OrderDto extends AbstractDto<OrderForm> {
         return orderData;
     }
 
-    public String getInvoice(Integer orderId) throws ApiException {
-        OrderPojo orderData = orderApi.get(orderId);
-        List<OrderItemData> orderItems = getOrderItems(orderId);
-        InvoiceData invoiceData = new InvoiceData();
-        DateTimeFormatter df = DateTimeFormatter.ofPattern("dd-MMM-yyyy", Locale.ENGLISH);
-        invoiceData.setInvoiceDate(orderData.getCreatedAt().format(df));
-        df = DateTimeFormatter.ofPattern("HH:mm:ss z", Locale.ENGLISH);
-        invoiceData.setInvoiceTime(orderData.getCreatedAt().format(df));
-        invoiceData.setInvoiceNumber(orderId);
+    @Override
+    protected void validate(OrderForm orderForm) throws ApiException {
+        super.validate(orderForm);
 
-        ArrayList<InvoiceLineItem> invoiceItems = new ArrayList<>();
-        double total = 0;
-        for (OrderItemData orderItemData : orderItems) {
-            InvoiceLineItem invoiceItem = new InvoiceLineItem();
-            invoiceItem.setProductName(orderItemData.getProductName());
-            invoiceItem.setBarcode(orderItemData.getBarcode());
-            invoiceItem.setQuantity(orderItemData.getQuantity());
-            invoiceItem.setUnitPrice(orderItemData.getMrp());
-            invoiceItem.setTotal(orderItemData.getMrp() * orderItemData.getQuantity());
-            invoiceItems.add(invoiceItem);
-            total += orderItemData.getMrp() * orderItemData.getQuantity();
+        for (OrderItemForm orderItemForm : orderForm.getOrderItemForms()) {
+            orderItemDto.validate(orderItemForm);
         }
 
-        invoiceData.setLineItems(invoiceItems);
-        invoiceData.setTotal(total);
-        return orderApi.getPDFBase64(invoiceData);
-    }
-
-    private OrderData getOrder(Integer orderId) {
-        return convert(orderApi.get(orderId));
     }
 }

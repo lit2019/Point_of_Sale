@@ -14,7 +14,7 @@ import static com.increff.pos.util.ListUtils.checkNonEmptyList;
 
 @Service
 @Transactional(rollbackOn = ApiException.class)
-public class ProductApi {
+public class ProductApi extends AbstractApi<ProductPojo> {
 
     @Autowired
     private ProductDao productDao;
@@ -23,11 +23,6 @@ public class ProductApi {
 
     public void add(ProductPojo productPojo) throws ApiException {
         productDao.insert(productPojo);
-    }
-
-
-    public ProductPojo get(Integer id) throws ApiException {
-        return productDao.select(id);
     }
 
     public List<ProductPojo> get() throws ApiException {

@@ -8,6 +8,7 @@
 
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
     <link rel="stylesheet" th:href="@{/static/app.css}">
+    <link href="https://cdn.datatables.net/1.13.1/css/jquery.dataTables.min.css" rel="stylesheet">
 
 </head>
 
@@ -33,6 +34,9 @@
             <li class="nav-item">
                 <a class="nav-link" th:href="@{/ui/orders}">Orders</a>
             </li>
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/ui/inventory-report}">Inventory Report</a>
+            </li>
         </ul>
     </div>
 </nav>
@@ -50,17 +54,19 @@
             <div class="toast-body">
                 <h12 id="toast-message">Success</h12>
                 <br>
-                <button class="btn" id="download-errors"><i class="fa fa-download"></i> Download Errors</button>
+                <button class="btn" id="download-errors" ><i class="fa fa-download"></i> Download Errors</button>
 
             </div>
         </div>
     </div>
+
 </div>
 
 <footer class="footer" th:fragment="name_footer">
     &nbsp;
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"></script>
     <script th:src="@{/static/app.js}"/>
     </script>
     <script th:src="@{/static/papaparse.min.js}"/>

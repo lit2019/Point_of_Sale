@@ -1,20 +1,20 @@
 package com.increff.pos.dto;
 
 import com.increff.pos.api.ApiException;
+import com.increff.pos.api.BrandApi;
 import com.increff.pos.api.InventoryApi;
 import com.increff.pos.api.ProductApi;
+import com.increff.pos.entity.BrandPojo;
 import com.increff.pos.entity.InventoryPojo;
 import com.increff.pos.entity.ProductPojo;
 import com.increff.pos.model.InventoryData;
+import com.increff.pos.model.InventoryReportData;
 import com.increff.pos.model.InventoryUpsertForm;
 import com.increff.pos.util.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 import static com.increff.pos.util.ListUtils.checkNonEmptyList;
 
@@ -26,6 +26,8 @@ public class InventoryDto extends AbstractDto<InventoryUpsertForm> {
 
     @Autowired
     private ProductApi productApi;
+    @Autowired
+    private BrandApi brandApi;
 
     //    TODO: add pagination (end priority)
     public List<InventoryData> get() throws ApiException {
@@ -52,6 +54,42 @@ public class InventoryDto extends AbstractDto<InventoryUpsertForm> {
         }
 
         inventoryApi.add(inventoryPojos);
+    }
+
+    public ArrayList<InventoryReportData> getInventoryReport() throws ApiException {
+        List<InventoryData> inventoryDatas = get();
+        HashMap<String, Integer> brandCategoryQuantity = new HashMap<>();
+
+
+        for (InventoryData inventoryData : inventoryDatas) {
+            ProductPojo productPojo = productApi.get(inventoryData.getProductId());
+            BrandPojo brandPojo = brandApi.get(productPojo.getBrandCategoryId());
+            String brandName = brandPojo.getName();
+            String category = brandPojo.getCategory();
+            String key = brandName + "_" + category;
+            brandCategoryQuantity.put(key, brandCategoryQuantity.getOrDefault(key, 0) + inventoryData.getQuantity());
+
+        }
+        ArrayList<InventoryReportData> inventoryReportDatas = new ArrayList<>();
+
+        for (String brandCategory : brandCategoryQuantity.keySet()) {
+            String brandName = brandCategory.split("_")[0];
+            String category = brandCategory.split("_")[1];
+            InventoryReportData reportData = new InventoryReportData();
+            reportData.setBrandName(brandName);
+            reportData.setCategory(category);
+            reportData.setQuantity(brandCategoryQuantity.get(brandCategory));
+            inventoryReportDatas.add(reportData);
+        }
+
+
+        return inventoryReportDatas;
+    }
+
+    public void update(InventoryUpsertForm inventoryForm) throws ApiException {
+        normalize(inventoryForm);
+        validate(inventoryForm);
+        inventoryApi.update(productApi.getByBarcode(inventoryForm.getBarcode()).getId(), convert(inventoryForm));
     }
 
     private void checkExistingInventory(List<InventoryUpsertForm> forms) throws ApiException {
@@ -88,12 +126,6 @@ public class InventoryDto extends AbstractDto<InventoryUpsertForm> {
         checkNonEmptyList(duplicates, "duplicate barcodes exist : " + duplicates.toString());
     }
 
-    public void update(InventoryUpsertForm inventoryForm) throws ApiException {
-        normalize(inventoryForm);
-        validate(inventoryForm);
-        inventoryApi.update(productApi.getByBarcode(inventoryForm.getBarcode()).getId(), convert(inventoryForm));
-    }
-
     private List<InventoryData> convert(List<InventoryPojo> inventoryPojos) throws ApiException {
         List<InventoryData> inventoryDatas = new ArrayList<>();
 
@@ -109,6 +141,7 @@ public class InventoryDto extends AbstractDto<InventoryUpsertForm> {
         inventoryData.setQuantity(inventoryPojo.getQuantity());
         inventoryData.setBarcode(productPojo.getBarcode());
         inventoryData.setProductId(productPojo.getId());
+        inventoryData.setProductName(productPojo.getName());
         return inventoryData;
     }
 

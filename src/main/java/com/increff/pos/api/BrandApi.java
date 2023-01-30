@@ -14,7 +14,7 @@ import static com.increff.pos.util.ListUtils.checkNonEmptyList;
 
 @Service
 @Transactional(rollbackOn = ApiException.class)
-public class BrandApi {
+public class BrandApi extends AbstractApi<BrandPojo> {
 
     @Autowired
     private BrandDao dao;
@@ -22,10 +22,6 @@ public class BrandApi {
     // TODO:use checknull in abstractdto
 
     //     TODO:remove single add funtion directly call dao.insert
-
-    public BrandPojo get(Integer id) throws ApiException {
-        return dao.select(id);
-    }
 
     public List<BrandPojo> getAll() {
         return dao.selectAll();
@@ -56,6 +52,10 @@ public class BrandApi {
         }
     }
 
+    public List<String> getDistinctBrands() {
+        return dao.selectDistinctBrands();
+    }
+
     private void checkExistingBrandCategory(List<BrandPojo> forms) throws ApiException {
         ArrayList<String> existingCombinations = new ArrayList<>();
 //        TODO:use foreach instead
@@ -67,8 +67,4 @@ public class BrandApi {
         checkNonEmptyList(existingCombinations, "existing combinations for brand name and category : " + existingCombinations.toString());
     }
 
-
-    public List<String> getDistinctBrands() {
-        return dao.selectDistinctBrands();
-    }
 }

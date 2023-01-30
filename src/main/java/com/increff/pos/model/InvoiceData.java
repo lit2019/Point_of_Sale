@@ -3,25 +3,20 @@ package com.increff.pos.model;
 import lombok.Getter;
 import lombok.Setter;
 
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @Getter
 @Setter
 public class InvoiceData {
-    private Integer InvoiceNumber;
-    private String InvoiceDate;
+    @NotNull
+    private Integer invoiceNumber;
+    @NotNull
+    private String invoiceDate;
 
-    private String InvoiceTime;
+    @NotNull
+    private String invoiceTime;
 
-    private Double Total;
-
-    private List<InvoiceLineItem> LineItems;
-
-    public Double getTotal() {
-        Total = 0.0;
-        for (InvoiceLineItem item : LineItems) {
-            Total += item.getTotal();
-        }
-        return Total;
-    }
+    @NotNull
+    private List<InvoiceItem> lineItems;
 }

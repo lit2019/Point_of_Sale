@@ -10,4 +10,6 @@ import javax.validation.constraints.NotNull;
 public class InventoryData extends InventoryUpsertForm {
     @NotNull
     Integer productId;
+    @NotNull
+    String productName;
 }

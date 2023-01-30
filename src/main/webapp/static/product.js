@@ -149,7 +149,7 @@ function uploadRows(){
 	        var pos = message.indexOf(",");
             message = message.slice(0, pos);
             message += "...."
-	   		makeToast(false, message, downloadErrors);
+	   		makeToast(false, message);
 	   }
 	});
 }
@@ -179,6 +179,7 @@ function displayProductList(data){
 		+ '</tr>';
         $tbody.append(row);
 	}
+	paginate();
 }
 function displayEditProduct(id){
 	var url = getProductUrl() + "/" + id;
@@ -381,6 +382,10 @@ function init(){
 	$('#update-product').click(updateProduct);
     $('#productFile').on('change', updateFileName)
 
+}
+function paginate(){
+      $('#product-table').DataTable();
+      $('.dataTables_length').addClass('bs-select');
 }
 
 $(document).ready(init);

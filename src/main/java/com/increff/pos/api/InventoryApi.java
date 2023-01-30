@@ -13,7 +13,7 @@ import java.util.Objects;
 
 @Service
 @Transactional(rollbackOn = ApiException.class)
-public class InventoryApi {
+public class InventoryApi extends AbstractApi<InventoryPojo> {
 
     @Autowired
     private InventoryDao dao;
@@ -26,8 +26,9 @@ public class InventoryApi {
         }
     }
 
-    public InventoryPojo get(Integer id) throws ApiException {
-        return getCheck(id);
+    @Override
+    public InventoryPojo get(Integer productId) throws ApiException {
+        return getCheck(productId);
     }
 
     public List<InventoryPojo> getAll() {

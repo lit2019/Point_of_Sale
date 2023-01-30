@@ -2,6 +2,7 @@ package com.increff.pos.controller;
 
 import com.increff.pos.api.ApiException;
 import com.increff.pos.dto.OrderDto;
+import com.increff.pos.entity.InvoicePojo;
 import com.increff.pos.model.OrderData;
 import com.increff.pos.model.OrderForm;
 import com.increff.pos.model.OrderItemData;
@@ -11,6 +12,7 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.List;
 
 @Api
@@ -22,11 +24,11 @@ public class OrderController {
 
     @ApiOperation(value = "Creates an order")
     @RequestMapping(path = "/orders", method = RequestMethod.POST)
-    public void add(@RequestBody OrderForm orderForm) throws ApiException {
+    public void add(@RequestBody OrderForm orderForm) throws ApiException, IOException {
         dto.add(orderForm);
     }
 
-    @ApiOperation(value = "gets orderItems by orderId")
+    @ApiOperation(value = "gets list of order items by orderId")
     @RequestMapping(path = "/orders/{orderId}", method = RequestMethod.GET)
     public List<OrderItemData> get(@PathVariable Integer orderId) throws ApiException {
         return dto.getOrderItems(orderId);
@@ -44,15 +46,17 @@ public class OrderController {
         dto.addItem(orderId, orderItemForm);
     }
 
-    @ApiOperation(value = "adds an order item to the given orderId")
-    @RequestMapping(path = "/orders/{id}", method = RequestMethod.PUT)
-    public void update(@PathVariable Integer id, @RequestBody OrderItemForm orderItemForm) throws ApiException {
-        dto.updateItem(id, orderItemForm);
+    @ApiOperation(value = "edits an order item with orderItemId")
+    @RequestMapping(path = "/order-items/{orderItemId}", method = RequestMethod.PUT)
+    public void updateItem(@PathVariable Integer orderItemId, @RequestBody OrderItemForm orderItemForm) throws ApiException {
+        dto.updateItem(orderItemId, orderItemForm);
     }
 
-    @ApiOperation(value = "get Invoice of an order by Id")
+    @ApiOperation(value = "gets invoice with orderId")
     @RequestMapping(path = "/order-invoice/{orderId}", method = RequestMethod.GET)
-    public String getInvoice(@PathVariable Integer orderId) throws ApiException {
+    public InvoicePojo getInvoice(@PathVariable Integer orderId) throws ApiException {
         return dto.getInvoice(orderId);
     }
+
+
 }
