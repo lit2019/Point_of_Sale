@@ -32,12 +32,6 @@ public class ProductApi extends AbstractApi<ProductPojo> {
 
     public void update(Integer id, ProductPojo newProductPojo) throws ApiException {
         ProductPojo oldProductPojo = productDao.select(id);
-        if (!oldProductPojo.getBarcode().equals(newProductPojo.getBarcode())) {
-//        barcode is changed
-            if (productDao.selectByMember("barcode", newProductPojo.getBarcode()).size() > 0) {
-                throw new ApiException(String.format("given barcode:%s Already Exists", newProductPojo.getBarcode()));
-            }
-        }
         oldProductPojo.setName(newProductPojo.getName());
         oldProductPojo.setBrandCategoryId(newProductPojo.getBrandCategoryId());
         oldProductPojo.setMrp(newProductPojo.getMrp());
@@ -67,7 +61,7 @@ public class ProductApi extends AbstractApi<ProductPojo> {
                 existingBarcodes.add(pojo.getBarcode());
             }
         });
-        checkNonEmptyList(existingBarcodes, "barcode already exists : " + existingBarcodes.toString());
+        checkNonEmptyList(existingBarcodes, "product(s) with barcode(s) already exists : " + existingBarcodes.toString());
     }
 
 

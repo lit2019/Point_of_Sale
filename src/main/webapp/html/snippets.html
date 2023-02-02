@@ -12,16 +12,33 @@
 
 </head>
 
+<head th:fragment="name_head" xmlns="http://www.w3.org/1999/html">
 
-<nav class="navbar navbar-expand-lg navbar-light bg-light" th:fragment="name_navbar">
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
+    <meta name="baseUrl" th:attr="content=${baseUrl}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/static/app.css}">
+    <link href="https://cdn.datatables.net/1.13.1/css/jquery.dataTables.min.css" rel="stylesheet">
+
+</head>
 
 
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
-            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+<nav class="navbar navbar-expand-lg navbar-light bg-light  mb-1" th:fragment="name_app_navbar">
+    <a class="navbar-brand" th:href="@{/}">
+        <img th:src="@{/static/logo.jpg}" class="d-inline-block align-top" alt="">
+    </a>
+
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav">
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/ui/home}">Home</a>
+            </li>
             <li class="nav-item">
                 <a class="nav-link" th:href="@{/ui/brands}">Brands</a>
             </li>
@@ -29,17 +46,66 @@
                 <a class="nav-link" th:href="@{/ui/products}">Products</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" th:href="@{/ui/inventory}">Inventory</a>
+                <a class="nav-link" th:href="@{/ui/inventory}">Inventories</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" th:href="@{/ui/orders}">Orders</a>
             </li>
-            <li class="nav-item">
+            <li>
                 <a class="nav-link" th:href="@{/ui/inventory-report}">Inventory Report</a>
             </li>
+            <li>
+                <a class="nav-link" th:href="@{/ui/sales-report}">Sales Report</a>
+            </li>
+
+
+
         </ul>
+
+        <ul class="navbar-nav ml-auto">
+            <li class="navbar-text">
+                [[${info.getEmail()}]]
+                &nbsp;&gt;&nbsp;
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/session/logout}">Logout</a>
+            </li>
+        </ul>
+
+
     </div>
 </nav>
+
+<footer class="text-center text-lg-start bg-light text-muted footer" th:fragment="name_footer">
+    <!-- Section: Social media -->
+    <section class="d-flex justify-content-center justify-content-lg-between p-4 border-bottom">
+        <!-- Left -->
+        <div class="me-5 d-none d-lg-block">
+            <span>Get connected with us on social networks:</span>
+        </div>
+    </section>
+    <!-- Section: Social media -->
+
+    <!-- Section: Links  -->
+
+    <!-- Section: Links  -->
+
+    <div class="text-center p-4" style="background-color: rgba(0, 0, 0, 0.05);">
+        Copyright Increff 2019
+        &nbsp;
+        [[${info.getMessage()}]]
+        <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+        <script src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"></script>
+        <script th:src="@{/static/app.js}"/>
+        </script>
+        <script th:src="@{/static/papaparse.min.js}"/>
+        </script>
+    </div>
+    <!-- Copyright -->
+
+
+    <!-- Footer -->
 <div aria-live="polite" aria-atomic="true" style="position: relative; " th:fragment="name_toast">
     <!-- Position it -->
     <div style="position: absolute; top: 0; right: 0;">

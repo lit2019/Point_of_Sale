@@ -9,7 +9,7 @@ import javax.validation.constraints.PositiveOrZero;
 @Getter
 @Setter
 public class InventoryUpsertForm {
-    @NotBlank(message = "barcode cannot be null")
+    @NotBlank(message = "barcode cannot be blank")
     private String barcode;
     @PositiveOrZero(message = "quantity must be a positive integer")
     private Integer quantity;

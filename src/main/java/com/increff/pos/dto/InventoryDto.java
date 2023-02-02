@@ -10,6 +10,7 @@ import com.increff.pos.entity.ProductPojo;
 import com.increff.pos.model.InventoryData;
 import com.increff.pos.model.InventoryReportData;
 import com.increff.pos.model.InventoryUpsertForm;
+import com.increff.pos.util.ListUtils;
 import com.increff.pos.util.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Service;
 import java.util.*;
 
 import static com.increff.pos.util.ListUtils.checkNonEmptyList;
+import static com.increff.pos.util.ValidatorUtil.validate;
 
 @Service
 public class InventoryDto extends AbstractDto<InventoryUpsertForm> {
@@ -43,6 +45,7 @@ public class InventoryDto extends AbstractDto<InventoryUpsertForm> {
         for (InventoryUpsertForm form : forms) {
             validate(form);
         }
+        normalize(forms);
 
         checkDuplicateBarcode(forms);
         checkBarcode(forms);
@@ -87,7 +90,7 @@ public class InventoryDto extends AbstractDto<InventoryUpsertForm> {
     }
 
     public void update(InventoryUpsertForm inventoryForm) throws ApiException {
-        normalize(inventoryForm);
+        normalize(Collections.singletonList(inventoryForm));
         validate(inventoryForm);
         inventoryApi.update(productApi.getByBarcode(inventoryForm.getBarcode()).getId(), convert(inventoryForm));
     }
@@ -99,7 +102,7 @@ public class InventoryDto extends AbstractDto<InventoryUpsertForm> {
                 existingBarcodes.add(form.getBarcode());
             }
         }
-        checkNonEmptyList(existingBarcodes, "inventory for given barcode already exists : " + existingBarcodes.toString());
+        checkNonEmptyList(existingBarcodes, "inventory for given barcode already exists\n Erroneous barcodes : " + existingBarcodes.toString());
     }
 
     private void checkBarcode(List<InventoryUpsertForm> forms) throws ApiException {
@@ -109,21 +112,16 @@ public class InventoryDto extends AbstractDto<InventoryUpsertForm> {
                 nonExistingBarcodes.add(form.getBarcode());
             }
         });
-        checkNonEmptyList(nonExistingBarcodes, "Product with Barcode dose not exist exists : " + nonExistingBarcodes.toString());
+        checkNonEmptyList(nonExistingBarcodes, "Product with Barcode dose not exist exists\n Erroneous barcodes : " + nonExistingBarcodes.toString());
     }
 
     private void checkDuplicateBarcode(List<InventoryUpsertForm> forms) throws ApiException {
-        HashSet<String> barcodeSet = new HashSet<>();
-        ArrayList<String> duplicates = new ArrayList<>();
+        ArrayList<String> barcodes = new ArrayList<>();
         forms.forEach((form) -> {
-            String key = form.getBarcode();
-            if (barcodeSet.contains(key)) {
-                duplicates.add(key);
-            } else {
-                barcodeSet.add(key);
-            }
+            barcodes.add(form.getBarcode());
         });
-        checkNonEmptyList(duplicates, "duplicate barcodes exist : " + duplicates.toString());
+        List<String> duplicates = ListUtils.getDuplicates(barcodes);
+        checkNonEmptyList(duplicates, "duplicate barcodes exist \n Erroneous barcodes : " + duplicates.toString());
     }
 
     private List<InventoryData> convert(List<InventoryPojo> inventoryPojos) throws ApiException {
@@ -145,8 +143,10 @@ public class InventoryDto extends AbstractDto<InventoryUpsertForm> {
         return inventoryData;
     }
 
-    private void normalize(InventoryUpsertForm inventoryForm) {
-        inventoryForm.setBarcode(StringUtil.normaliseText(inventoryForm.getBarcode()));
+    private void normalize(List<InventoryUpsertForm> forms) {
+        for (InventoryUpsertForm form : forms) {
+            form.setBarcode(StringUtil.normaliseText(form.getBarcode()));
+        }
     }
 
     private InventoryPojo convert(InventoryUpsertForm inventoryForm) throws ApiException {

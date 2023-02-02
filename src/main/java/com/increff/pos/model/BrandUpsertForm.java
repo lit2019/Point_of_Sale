@@ -9,8 +9,8 @@ import javax.validation.constraints.NotBlank;
 @Getter
 @Setter
 public class BrandUpsertForm {
-    @NotBlank(message = "brand name cannot be null")
+    @NotBlank(message = "brand name cannot be blank")
     private String name;
-    @NotBlank(message = "category cannot be null")
+    @NotBlank(message = "category cannot be blank")
     private String category;
 }

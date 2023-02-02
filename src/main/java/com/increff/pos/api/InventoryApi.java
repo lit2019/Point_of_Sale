@@ -26,21 +26,17 @@ public class InventoryApi extends AbstractApi<InventoryPojo> {
         }
     }
 
-    @Override
-    public InventoryPojo get(Integer productId) throws ApiException {
-        return getCheck(productId);
-    }
-
     public List<InventoryPojo> getAll() {
         return dao.selectAll();
     }
 
     public void update(Integer id, InventoryPojo inventoryPojo) throws ApiException {
-        InventoryPojo exInventoryPojo = getCheck(id);
+        InventoryPojo exInventoryPojo = get(id);
         exInventoryPojo.setQuantity(inventoryPojo.getQuantity());
     }
 
-    public InventoryPojo getCheck(Integer id) throws ApiException {
+    @Override
+    public InventoryPojo get(Integer id) throws ApiException {
         InventoryPojo pojo = dao.select(id);
         if (Objects.isNull(pojo)) {
             throw new ApiException("Inventory with given ID does not exist, id: " + id);

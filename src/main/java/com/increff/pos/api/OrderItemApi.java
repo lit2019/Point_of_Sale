@@ -3,7 +3,6 @@ package com.increff.pos.api;
 import com.increff.pos.dao.OrderItemDao;
 import com.increff.pos.entity.InventoryPojo;
 import com.increff.pos.entity.OrderItemPojo;
-import com.increff.pos.model.OrderItemForm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,7 +13,7 @@ import java.util.List;
 @Transactional(rollbackOn = ApiException.class)
 public class OrderItemApi {
     @Autowired
-    private OrderItemDao orderItemDao;
+    private OrderItemDao dao;
 
     @Autowired
     private InventoryApi inventoryApi;
@@ -24,13 +23,12 @@ public class OrderItemApi {
         inventoryPojo.setProductId(orderItemPojo.getProductId());
         inventoryPojo.setQuantity(inventoryApi.get(orderItemPojo.getProductId()).getQuantity() - orderItemPojo.getQuantity());
         inventoryApi.update(orderItemPojo.getProductId(), inventoryPojo);
-        orderItemDao.insert(orderItemPojo);
+        dao.insert(orderItemPojo);
     }
 
-    public List<OrderItemPojo> get(Integer orderId) {
-        return orderItemDao.getByOrderId(orderId);
+    public List<OrderItemPojo> get(List<Integer> orderIds) {
+        return dao.getByOrderIds(orderIds);
     }
 
-    public void update(Integer id, OrderItemForm orderItemForm) {
-    }
+
 }

@@ -13,13 +13,13 @@ public class ProductUpsertForm {
     @NonNull
     String barcode;
 
-    @NotBlank(message = "brand name cannot be null")
+    @NotBlank(message = "brand name cannot be blank")
     String brandName;
 
-    @NotBlank(message = "category cannot be null")
+    @NotBlank(message = "category cannot be blank")
     String category;
 
-    @NotBlank(message = "product name cannot be null")
+    @NotBlank(message = "product name cannot be blank")
     String productName;
 
     @PositiveOrZero(message = "quantity must be a non negative integer")

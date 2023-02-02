@@ -14,25 +14,25 @@ import java.util.List;
 @Repository
 public class BrandDao extends AbstractDao<BrandPojo> {
 
-    private static final String SELECT_BY_NAME_CATEGORY = "select p from BrandPojo p where (p.name=:name and p.category=:category)";
+    private static final String SELECT_BY_NAME_CATEGORY = "select p from BrandPojo p where (:name is null or p.name=:name) and (:category is null or p.category=:category)";
 
     @PersistenceContext
     private EntityManager em;
 
 
-    public BrandPojo select(String name, String category) {
+    public List<BrandPojo> select(String name, String category) {
         TypedQuery<BrandPojo> query = getQuery(SELECT_BY_NAME_CATEGORY);
         query.setParameter("name", name);
         query.setParameter("category", category);
 //        TODO:make method for getSingleResult
-        return getSingleResult(query);
+        return getResultList(query);
     }
 
     //    TODO: use getbymember
 
     public List<String> selectDistinctBrands() {
 //        TODO: change clazz to pojo
-        TypedQuery<String> query = getEntityManager().createQuery("select DISTINCT(c.name) from BrandPojo c", String.class);
+        TypedQuery<String> query = em().createQuery("select DISTINCT(c.name) from BrandPojo c", String.class);
         try {
             return query.getResultList();
         } catch (NoResultException e) {

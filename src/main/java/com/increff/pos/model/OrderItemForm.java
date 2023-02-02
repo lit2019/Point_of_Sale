@@ -13,4 +13,7 @@ public class OrderItemForm {
     private String barcode;
     @Positive(message = "quantity must be positive integer")
     private Integer quantity;
+    @Positive(message = "selling price must be positive integer")
+    private Double sellingPrice;
+
 }

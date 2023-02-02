@@ -63,7 +63,7 @@ public abstract class AbstractDao<T> {
         return entityManager.createQuery(jpql, clazz);
     }
 
-    protected EntityManager getEntityManager() {
+    protected EntityManager em() {
         return entityManager;
     }
 

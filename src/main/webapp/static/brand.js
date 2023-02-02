@@ -3,9 +3,9 @@ function getBrandUrl(){
 	var baseUrl = $("meta[name=baseUrl]").attr("content")
 	return baseUrl + "/api/brands";
 }
-function getBrandCategoryListUrl(){
+function getBrandSearchUrl(){
 	var baseUrl = $("meta[name=baseUrl]").attr("content")
-	return baseUrl + "/api/brands-list";
+	return baseUrl + "/api/brands/search";
 }
 
 
@@ -70,9 +70,10 @@ function updateBrand(event){
 
 function getBrandList(){
     resetBrandForm();
-	var url = getBrandCategoryListUrl();
-	data = toJson($("#brand-form"))
-
+	var url = getBrandSearchUrl();
+	data = {"name":null,"category":null};
+	data = JSON.stringify(data);
+    console.log(data);
 	$.ajax({
 	   url: url,
 	   type: 'POST',
@@ -239,6 +240,10 @@ function setSelectOptions(form, options, initialValue){
                         .text(value));
     });
     form.val(initialValue);
+}
+
+function downloadBrandTable(){
+tableToCSV(document, "brand-table");
 }
 
 

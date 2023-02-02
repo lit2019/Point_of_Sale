@@ -27,7 +27,7 @@ public class InventoryDao extends AbstractDao<InventoryPojo> {
     }
 
     public List<String> selectDistinctInventorys() {
-        TypedQuery<String> query = getEntityManager().createQuery("select DISTINCT(c.name) from " + clazz.getSimpleName() + " c", String.class);
+        TypedQuery<String> query = em().createQuery("select DISTINCT(c.name) from " + clazz.getSimpleName() + " c", String.class);
         try {
             return query.getResultList();
         } catch (NoResultException e) {

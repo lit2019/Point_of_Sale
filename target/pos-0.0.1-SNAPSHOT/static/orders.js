@@ -5,7 +5,7 @@ function getOrderUrl(){
 }
 function getInvoiceUrl(){
 	var baseUrl = $("meta[name=baseUrl]").attr("content")
-	return baseUrl + "/api/order-invoice";
+	return baseUrl + "/api/orders/invoice";
 }
 
 function openCreateOrderDialog(event){
@@ -23,6 +23,7 @@ function addItem(){
     var data = {};
 	data['barcode'] = $("#order-item-form input[name=barcode]").val();
 	data['quantity'] = $("#order-item-form input[name=quantity]").val();
+	data['sellingPrice'] = $("#order-item-form input[name=sellingPrice]").val();
 	orderItems.push(data);
 	console.log(orderItems);
 	refreshOrderForm();
@@ -59,6 +60,7 @@ function refreshOrderForm(){
         var row = '<tr>'
         + '<td>' + e.barcode + '</td>'
         + '<td>' + e.quantity + '</td>'
+        + '<td>' + e.sellingPrice + '</td>'
         + '<td>' + buttonHtml + '</td>'
         + '</tr>';
         $tbody.append(row);
@@ -66,7 +68,7 @@ function refreshOrderForm(){
 }
 
 dropDownOrder = $("#select-order");
-function makeOrderDropdown(initialOrderId){
+function makeOrderDropdown(initialOrder){
     emptyDropdown(dropDownOrder);
 
     url = getOrderUrl();
@@ -91,6 +93,10 @@ function makeOrderDropdown(initialOrderId){
                                 .text(value));
             });
 
+            if(initialOrder!=null){
+                dropDownOrder.val(initialOrder.id+"  ["+initialOrder.createdAt+"]");
+            }
+
             dropDownOrder.change(function () {
                   orderId = dropDownOrder.val().split(' ')[0];
                   getOrderDetails();
@@ -100,6 +106,7 @@ function makeOrderDropdown(initialOrderId){
        error: function(error){
 
        }
+       
     });
 }
 
@@ -127,9 +134,11 @@ function createOrder(){
        headers: {
         'Content-Type': 'application/json'
        },
-       success: function(response) {
+       success: function(data) {
             makeToast(true, "");
-            makeOrderDropdown();
+            makeOrderDropdown(data);
+            orderId = data.id;
+            getOrderDetails();
 	        $('#order-form-modal').modal('toggle');
             orderItems = []
        },
@@ -195,17 +204,15 @@ function displayOrderDetails(data){
         + '<td>' + e.productName + '</td>'
         + '<td>' + e.barcode + '</td>'
         + '<td>' + e.quantity + '</td>'
-        + '<td>' + e.mrp + '</td>'
-        + '<td>' + (e.mrp*e.quantity) + '</td>'
+        + '<td>' + (e.sellingPrice) + '</td>'
 		+ '</tr>';
         $tbody.append(row);
-        total+=(e.mrp*e.quantity);
+        total+=(e.sellingPrice);
 	}
-	var buttonHtml ='<button class="btn btn-primary" onclick="generateInvoice()" ><i class="fa fa-file-text-o"></i>&nbsp;&nbsp;Download Invoice</button>'
+	var buttonHtml ='<button class="btn btn-primary" onclick="generateInvoice()" ><i class="fa fa-file-text-o"></i>&nbsp;&nbsp;Generate Invoice</button>'
 
 	var row = '<tr>'
           + '<td>' + buttonHtml + '</td>'
-          + '<td></td>'
           + '<td></td>'
           + '<td></td>'
           + '<td><b>Total</b></td>'
@@ -262,5 +269,5 @@ function paginate(){
 }
 
 $(document).ready(init);
-$(document).ready(makeOrderDropdown);
+$(document).ready(makeOrderDropdown(null));
 $(document).ready(displayOrderDetails([]));

@@ -6,7 +6,7 @@
 
 <body>
 
-<nav th:replace="snippets.html :: name_navbar"></nav>
+<nav th:replace="snippets.html :: name_app_navbar"></nav>
 <!-- Toast -->
 
 <div class="container">
@@ -35,8 +35,7 @@
                     <th scope="col">Product Name</th>
                     <th scope="col">Barcode</th>
                     <th scope="col">Quantity</th>
-                    <th scope="col">Unit Price</th>
-                    <th scope="col">Total</th>
+                    <th scope="col">Selling Price</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -54,7 +53,7 @@
 
 
     <div class="modal" tabindex="-1" role="dialog" id="order-form-modal" data-backdrop="static" data-keyboard="false">
-        <div class="modal-dialog" role="document">
+        <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="modal-form-title">Create Order</h5>
@@ -74,6 +73,9 @@
                                         <input type="text" class="form-control" name = "quantity" placeholder="Quantity">
                                     </div>
                                     <div class="col">
+                                        <input type="text" class="form-control" name = "sellingPrice" placeholder="Selling Price">
+                                    </div>
+                                    <div class="col">
                                         <button type="button" class="btn btn-primary" id = "add-item">Add item</button>
                                     </div>
                                 </div>
@@ -91,6 +93,7 @@
                                     <tr>
                                         <th scope="col">Barcode</th>
                                         <th scope="col">Quantity</th>
+                                        <th scope="col">Selling Price</th>
                                         <th scope="col">Remove</th>
                                     </tr>
                                     </thead>

@@ -7,16 +7,18 @@ import com.increff.pos.entity.BrandPojo;
 import com.increff.pos.entity.ProductPojo;
 import com.increff.pos.model.ProductData;
 import com.increff.pos.model.ProductUpsertForm;
+import com.increff.pos.util.ListUtils;
 import com.increff.pos.util.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
 import static com.increff.pos.util.ListUtils.checkNonEmptyList;
+import static com.increff.pos.util.ValidatorUtil.validate;
 
 @Service
 public class ProductDto extends AbstractDto<ProductUpsertForm> {
@@ -39,16 +41,16 @@ public class ProductDto extends AbstractDto<ProductUpsertForm> {
 
     public void update(Integer id, ProductUpsertForm productForm) throws ApiException {
         validate(productForm);
-        normalize(productForm);
+        normalize(Collections.singletonList(productForm));
         productApi.update(id, convert(productForm));
     }
 
     public void add(List<ProductUpsertForm> forms) throws ApiException {
         for (Integer i = 0; i < forms.size(); i++) {
             ProductUpsertForm productForm = forms.get(i);
-            normalize(productForm);
             validate(productForm);
         }
+        normalize(forms);
 
         checkDuplicateBarcode(forms);
         checkBrandCategory(forms);
@@ -62,19 +64,16 @@ public class ProductDto extends AbstractDto<ProductUpsertForm> {
 
 
     private void checkDuplicateBarcode(List<ProductUpsertForm> forms) throws ApiException {
-        HashSet<String> barcodeSet = new HashSet<>();
-        ArrayList<String> duplicates = new ArrayList<>();
-        forms.stream().map(ProductUpsertForm::getBarcode).forEach(key -> {
-            if (barcodeSet.contains(key)) {
-                duplicates.add(key);
-            } else {
-                barcodeSet.add(key);
-            }
+        ArrayList<String> barcodes = new ArrayList<>();
+        forms.forEach((form) -> {
+            barcodes.add(form.getBarcode());
         });
-        checkNonEmptyList(duplicates, "duplicate barcodes exist : " + duplicates.toString());
+        List<String> duplicates = ListUtils.getDuplicates(barcodes);
+        checkNonEmptyList(duplicates, "duplicate barcodes exist \n Erroneous barcodes : " + duplicates.toString());
     }
 
 
+    //    cannot be moved to ProductApi since brand name and category cannot be accessed with productPojo
     private void checkBrandCategory(List<ProductUpsertForm> forms) throws ApiException {
         ArrayList<String> erroneousCombinations = new ArrayList<>();
         forms.forEach((form) -> {
@@ -106,15 +105,17 @@ public class ProductDto extends AbstractDto<ProductUpsertForm> {
         return productData;
     }
 
-    private void normalize(ProductUpsertForm productForm) {
-        productForm.setBarcode(StringUtil.normaliseText(productForm.getBarcode()));
-        productForm.setProductName(StringUtil.normaliseText(productForm.getProductName()));
-        productForm.setBrandName(StringUtil.normaliseText(productForm.getBrandName()));
-        productForm.setCategory(StringUtil.normaliseText(productForm.getCategory()));
+    private void normalize(List<ProductUpsertForm> forms) {
+        for (ProductUpsertForm form : forms) {
+            form.setBarcode(StringUtil.normaliseText(form.getBarcode()));
+            form.setProductName(StringUtil.normaliseText(form.getProductName()));
+            form.setBrandName(StringUtil.normaliseText(form.getBrandName()));
+            form.setCategory(StringUtil.normaliseText(form.getCategory()));
+        }
     }
 
     private ProductPojo convert(ProductUpsertForm productForm) throws ApiException {
-        BrandPojo brandPojo = brandApi.getByNameCategory(productForm.getBrandName(), productForm.getCategory());
+        BrandPojo brandPojo = brandApi.getByNameCategory(productForm.getBrandName(), productForm.getCategory()).get(0);
         Integer brandCategoryId = brandPojo.getId();
         ProductPojo pojo = new ProductPojo();
         pojo.setName(productForm.getProductName());

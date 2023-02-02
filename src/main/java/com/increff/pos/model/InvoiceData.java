@@ -13,10 +13,8 @@ public class InvoiceData {
     private Integer invoiceNumber;
     @NotNull
     private String invoiceDate;
-
     @NotNull
     private String invoiceTime;
-
     @NotNull
     private List<InvoiceItem> lineItems;
 }

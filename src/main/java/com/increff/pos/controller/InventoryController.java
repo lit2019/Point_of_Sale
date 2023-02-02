@@ -15,39 +15,39 @@ import java.util.List;
 
 @Api
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/inventory")
 public class InventoryController {
 
     @Autowired
     private InventoryDto dto;
 
     @ApiOperation(value = "Gets list of all Inventories")
-    @RequestMapping(path = "/inventory", method = RequestMethod.GET)
+    @RequestMapping(path = "", method = RequestMethod.GET)
     public List<InventoryData> getAll() throws ApiException {
         return dto.get();
     }
 
     @ApiOperation(value = "Adds a list of Inventories")
-    @RequestMapping(path = "/inventory", method = RequestMethod.POST)
+    @RequestMapping(path = "", method = RequestMethod.POST)
     public void add(@RequestBody List<InventoryUpsertForm> forms) throws ApiException {
         dto.add(forms);
     }
 
     @ApiOperation(value = "Gets an Inventory by ID")
-    @RequestMapping(path = "/inventory/{id}", method = RequestMethod.GET)
+    @RequestMapping(path = "/{id}", method = RequestMethod.GET)
     public InventoryData get(@PathVariable Integer id) throws ApiException {
         return dto.get(id);
     }
 
     @ApiOperation(value = "Updates an Inventory")
-    @RequestMapping(path = "/inventory", method = RequestMethod.PUT)
+    @RequestMapping(path = "", method = RequestMethod.PUT)
     public void update(@RequestBody InventoryUpsertForm form) throws ApiException {
         dto.update(form);
 
     }
 
     @ApiOperation(value = "gets Inventory report")
-    @RequestMapping(path = "/inventory-report", method = RequestMethod.GET)
+    @RequestMapping(path = "/report", method = RequestMethod.GET)
     public ArrayList<InventoryReportData> getInventoryReport() throws ApiException {
         return dto.getInventoryReport();
     }
