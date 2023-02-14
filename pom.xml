@@ -41,6 +41,13 @@
 
 
     <dependencies>
+        <dependency>
+            <groupId>com.increff</groupId>
+            <artifactId>invoice-client</artifactId>
+            <version>1.0</version>
+            <scope>system</scope>
+            <systemPath>/home/mark/IdeaProjects/invoice-client/target/invoice-client-1.0-SNAPSHOT.jar</systemPath>
+        </dependency>
 
         <!-- SPRING -->
         <dependency>
@@ -92,6 +99,11 @@
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.datatype</groupId>
+            <artifactId>jackson-datatype-jsr310</artifactId>
             <version>${jackson.version}</version>
         </dependency>
 
@@ -184,7 +196,7 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <version>1.18.24</version>
+            <version>1.18.26</version>
             <scope>provided</scope>
         </dependency>
 

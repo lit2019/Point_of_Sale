@@ -6,20 +6,22 @@ import lombok.Setter;
 
 import javax.persistence.*;
 
-import static com.increff.pos.entity.TableConstants.*;
+import static com.increff.pos.entity.TableConstants.POS_BRAND_SEQ;
+import static com.increff.pos.entity.TableConstants.POS_SEQ_TABLE_NAME;
 
 @Getter
 @Setter
 @Entity
 @Table(
         name = "pos_brands",
-        uniqueConstraints = {@UniqueConstraint(columnNames = {"name", "category"})}
+        uniqueConstraints = {@UniqueConstraint(name = "name_category", columnNames = {"name", "category"})}
 )
 public class BrandPojo extends BaseEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.TABLE, generator = TABLE_GENERATOR_NAME)
-    @TableGenerator(name = TABLE_GENERATOR_NAME, table = TABLE_NAME, allocationSize = 1, pkColumnName = PK_COLUMN_NAME, valueColumnName = PK_COLUMN_VALUE)
+    @TableGenerator(name = POS_BRAND_SEQ, pkColumnValue = POS_BRAND_SEQ, table = POS_SEQ_TABLE_NAME)
+    @GeneratedValue(strategy = GenerationType.TABLE, generator = POS_BRAND_SEQ)
     private Integer id;
+    //TODO remove allocation SIZE
     @Column(nullable = false)
     private String name;
     @Column(nullable = false)

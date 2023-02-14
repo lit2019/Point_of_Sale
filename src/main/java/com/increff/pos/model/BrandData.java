@@ -1,12 +1,11 @@
 package com.increff.pos.model;
 
-import com.sun.istack.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class BrandData extends BrandUpsertForm {
-    @NotNull
+public class BrandData extends BrandForm {
+    //TODO Remove javax validation constraints from data class
     private Integer id;
 }

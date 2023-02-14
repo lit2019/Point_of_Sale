@@ -7,12 +7,12 @@ function getBrandSearchUrl(){
 	var baseUrl = $("meta[name=baseUrl]").attr("content")
 	return baseUrl + "/api/brands/search";
 }
-
-
 //BUTTON ACTIONS
 function addBrand(event){
 	//Set the values to update
 	var $form = $("#brand-form");
+//	if(isValidForm($form)){
+//	}
 	var json = "["+toJson($form)+"]";
 	var url = getBrandUrl();
 
@@ -30,8 +30,7 @@ function addBrand(event){
 	   },
 	   error: function(error){
 	        console.log(error);
-	        alert(error.responseJSON.message);
-
+	        makeToast(false, error.responseJSON.message, null);
 	   }
 	});
 
@@ -127,7 +126,6 @@ function uploadRows(){
 
 	   },
 	   error: function(error){
-	        $('#upload-brand-modal').modal('toggle');
 	        var message =  error.responseJSON.message;
 	        errorData = message;
 	        var pos = message.indexOf(",");
@@ -149,11 +147,14 @@ function displayBrandList(data){
 	$tbody.empty();
 	for(var i in data){
 		var e = data[i];
-	    var buttonHtml ='<button class="btn" onclick="displayEditBrand(' + e.id + ')"><i class="fa fa-edit"></i> edit</button>'
+        var buttonHtml = '';
+        if(userRole === 'supervisor'){
+            var buttonHtml ='<td><button class="btn"  onclick="displayEditBrand(' + e.id + ')"><i class="fa fa-edit"></i> edit</button></td>'
+        }
 		var row = '<tr>'
 		+ '<td>' + e.name + '</td>'
 		+ '<td>'  + e.category + '</td>'
-		+ '<td>' + buttonHtml + '</td>'
+		 + buttonHtml +
 		+ '</tr>';
         $tbody.append(row);
 	}

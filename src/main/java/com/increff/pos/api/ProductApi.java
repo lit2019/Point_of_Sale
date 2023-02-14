@@ -7,39 +7,36 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 
+import static com.increff.pos.util.ListUtils.checkEmptyList;
 import static com.increff.pos.util.ListUtils.checkNonEmptyList;
 
 @Service
-@Transactional(rollbackOn = ApiException.class)
-public class ProductApi extends AbstractApi<ProductPojo> {
+@Transactional(rollbackOn = Exception.class)
+public class ProductApi extends AbstractApi {
 
     @Autowired
-    private ProductDao productDao;
-    @Autowired
-    private BrandApi brandApi;
-
-    public void add(ProductPojo productPojo) throws ApiException {
-        productDao.insert(productPojo);
-    }
+    private ProductDao dao;
 
     public List<ProductPojo> get() throws ApiException {
-        return productDao.selectAll();
+        return dao.selectAll();
     }
 
-
     public void update(Integer id, ProductPojo newProductPojo) throws ApiException {
-        ProductPojo oldProductPojo = productDao.select(id);
+        getCheck(id);
+        checkNull(newProductPojo.getName(), "Name cannot be null");
+        checkNull(newProductPojo.getMrp(), "mrp cannot be null");
+
+        ProductPojo oldProductPojo = dao.select(id);
         oldProductPojo.setName(newProductPojo.getName());
-        oldProductPojo.setBrandCategoryId(newProductPojo.getBrandCategoryId());
         oldProductPojo.setMrp(newProductPojo.getMrp());
-        oldProductPojo.setBarcode(newProductPojo.getBarcode());
     }
 
     public ProductPojo getByBarcode(String barcode) {
-        List<ProductPojo> productPojos = productDao.selectByMember("barcode", barcode);
+        List<ProductPojo> productPojos = dao.selectByMember("barcode", barcode);
         if (productPojos.size() > 0) {
             return productPojos.get(0);
         }
@@ -47,11 +44,41 @@ public class ProductApi extends AbstractApi<ProductPojo> {
     }
 
     public void add(List<ProductPojo> productPojos) throws ApiException {
-
-        checkExistingBarcode(productPojos);
+        checkEmptyList(productPojos, "productPojos cannot be empty");
+        UploadLimit.checkSize(productPojos.size());
         for (ProductPojo productPojo : productPojos) {
-            productDao.insert(productPojo);
+            validate(productPojo);
         }
+        checkExistingBarcode(productPojos);
+        for (ProductPojo productPojo : productPojos)
+            dao.insert(productPojo);
+    }
+
+    public ProductPojo get(Integer id) {
+        return dao.select(id);
+    }
+
+    public HashMap<String, ProductPojo> getBarcodeToProductPojoMap(ArrayList<String> barcodes) {
+        HashMap<String, ProductPojo> barcodeToProductMap = new HashMap<>();
+        List<ProductPojo> productPojos = dao.selectByBarcodes(barcodes);
+        productPojos.forEach(pojo -> {
+            barcodeToProductMap.put(pojo.getBarcode(), pojo);
+        });
+
+        return barcodeToProductMap;
+    }
+
+    private void validate(ProductPojo productPojo) throws ApiException {
+        checkNull(productPojo.getId(), "id cannot be null");
+        checkNull(productPojo.getName(), "Name cannot be null");
+        checkNull(productPojo.getBrandCategoryId(), "BrandCategoryId cannot be null");
+        checkNull(productPojo.getMrp(), "mrp cannot be null");
+        checkNull(productPojo.getBarcode(), "Barcode cannot be null");
+    }
+
+    private void getCheck(Integer id) throws ApiException {
+        ProductPojo productPojo = dao.select(id);
+        checkNull(productPojo, String.format("product with given id : %d does not exist", id));
     }
 
     private void checkExistingBarcode(List<ProductPojo> pojos) throws ApiException {
@@ -61,8 +88,7 @@ public class ProductApi extends AbstractApi<ProductPojo> {
                 existingBarcodes.add(pojo.getBarcode());
             }
         });
-        checkNonEmptyList(existingBarcodes, "product(s) with barcode(s) already exists : " + existingBarcodes.toString());
+        checkNonEmptyList(existingBarcodes, "product(s) with barcode(s) already exists : " + existingBarcodes);
     }
-
 
 }

@@ -56,7 +56,8 @@ function uploadProduct(event){
 	   		getProductList();     //...
 	   },
 	   error: function(error){
-	   	    alert(error.responseJSON.message);
+	   	   makeToast(false, error.responseJSON.message, null);
+
 
 	   }
 	});
@@ -87,7 +88,8 @@ function updateProduct(event){
             getProductList();     //...
 	   },
 	   error: function(error){
-	        alert(error.responseJSON.message);
+	        makeToast(false, error.responseJSON.message, null);
+
 	   }
 	});
 
@@ -149,13 +151,12 @@ function uploadRows(){
 
 	   },
 	   error: function(error){
-	        $('#upload-product-modal').modal('toggle');
 	        var message =  error.responseJSON.message;
 	        errorData = message;
 	        var pos = message.indexOf(",");
             message = message.slice(0, pos);
             message += "...."
-	   		makeToast(false, message);
+	   		makeToast(false, message, downloadErrors);
 	   }
 	});
 }
@@ -173,15 +174,19 @@ function displayProductList(data){
 	$tbody.empty();
 	for(var i in data){
 		var e = data[i];
-	    var buttonHtml ='<button class="btn" onclick="displayEditProduct(' + e.id + ')"><i class="fa fa-edit"></i> edit</button>'
+        console.log("userRole:"+userRole);
+        var buttonHtml = '';
+		if(userRole === 'supervisor'){
+    	    var buttonHtml ='<td><button class="btn"  onclick="displayEditProduct(' + e.id + ')"><i class="fa fa-edit"></i> edit</button></td>'
+		}
         console.log(e.id);
 		var row = '<tr>'
 		+ '<td>'  + e.productName + '</td>'
 		+ '<td>' + e.barcode + '</td>'
 		+ '<td>' + e.brandName + '</td>'
 		+ '<td>'  + e.category + '</td>'
-		+ '<td>'  + e.mrp + '</td>'
-		+ '<td>' + buttonHtml + '</td>'
+		+  '<td>' + e.mrp + '</td>'
+		 + buttonHtml +
 		+ '</tr>';
         $tbody.append(row);
 	}
@@ -198,7 +203,7 @@ function displayEditProduct(id){
 	   		displayProduct(data);
 	   },
 	   error: function(error){
-	        alert(error.responseJSON.message);
+	        makeToast(false, error.responseJSON.message, null);
 
 	   }
 	});

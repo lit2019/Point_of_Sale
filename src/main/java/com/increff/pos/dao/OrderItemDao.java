@@ -13,12 +13,11 @@ public class OrderItemDao extends AbstractDao<OrderItemPojo> {
     private static final String SELECT_BY_ORDER_ID = "select p from OrderItemPojo p where p.orderId IN :orderIds";
 
     public List<OrderItemPojo> getByOrderIds(List<Integer> orderIds) {
-        TypedQuery<OrderItemPojo> query = getQuery(SELECT_BY_ORDER_ID);
+        TypedQuery<OrderItemPojo> query = createQuery(SELECT_BY_ORDER_ID);
         if (CollectionUtils.isEmpty(orderIds)) {
             return new ArrayList<>();
         }
         query.setParameter("orderIds", orderIds);
         return getResultList(query);
     }
-
 }

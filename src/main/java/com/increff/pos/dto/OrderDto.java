@@ -1,124 +1,128 @@
 package com.increff.pos.dto;
 
+import com.increff.invoiceclient.generator.InvoiceGenerator;
+import com.increff.invoiceclient.model.InvoiceForm;
+import com.increff.invoiceclient.model.InvoiceItem;
 import com.increff.pos.api.*;
 import com.increff.pos.entity.*;
 import com.increff.pos.model.*;
+import com.increff.pos.util.ListUtils;
+import com.increff.pos.util.NormalizationUtil;
 import com.increff.pos.util.StringUtil;
+import com.increff.pos.util.ValidatorUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.time.Instant;
-import java.time.format.DateTimeFormatter;
+import java.io.*;
 import java.util.*;
 
-import static com.increff.pos.util.ListUtils.checkNonEmptyList;
-import static com.increff.pos.util.ValidatorUtil.validate;
-
 @Service
-public class OrderDto extends AbstractDto<OrderForm> {
+public class OrderDto extends AbstractDto {
 
     @Autowired
     private InventoryApi inventoryApi;
     @Autowired
     private OrderApi orderApi;
     @Autowired
-    private OrderItemApi orderItemApi;
-    @Autowired
     private ProductApi productApi;
-    @Autowired
-    private OrderItemDto orderItemDto;
     @Autowired
     private InvoiceApi invoiceApi;
     @Autowired
     private BrandApi brandApi;
 
-    public OrderData add(OrderForm orderForm) throws ApiException, IOException {
-        validateOrder(orderForm);
-        normalize(orderForm);
-        List<OrderItemForm> orderItemsList = orderForm.getOrderItemForms();
+    //    todo classname should be invoiceclient and function name should be getInvoiceClient
+    @Autowired
+    private InvoiceGenerator invoiceGenerator;
 
-        checkDuplicateBarcode(orderItemsList);
-        checkExistingInventory(orderItemsList);
+    public void add(OrderForm orderForm) throws ApiException, IOException {
+        ValidatorUtil.validate(orderForm);
+        NormalizationUtil.normalize(orderForm);
+
+        List<OrderItemForm> orderItemForms = orderForm.getOrderItemForms();
+        checkDuplicateBarcode(orderItemForms);
 
         OrderPojo orderPojo = convert(orderForm);
-        orderApi.add(orderPojo);
 
-        Integer orderId = orderPojo.getId();
-        for (OrderItemForm orderItemForm : orderItemsList) {
-            orderItemApi.add(convert(orderId, orderItemForm));
-        }
+        ArrayList<String> barcodes = new ArrayList<>();
+        orderItemForms.forEach(form -> {
+            barcodes.add(form.getBarcode());
+        });
 
-        return convert(orderPojo);
+        HashMap<String, ProductPojo> barcodeToProductMap = productApi.getBarcodeToProductPojoMap(barcodes);
+        HashMap<Integer, String> productIdToBarcode = new HashMap<>();
+        for (String barcode : barcodeToProductMap.keySet())
+            productIdToBarcode.put(barcodeToProductMap.get(barcode).getId(), barcode);
+
+
+        ArrayList<InventoryAllocationRequest> inventoryAllocationRequests = new ArrayList<>();
+        orderItemForms.forEach(orderItemForm -> {
+            InventoryAllocationRequest allocationRequest = new InventoryAllocationRequest();
+            allocationRequest.setProductId(barcodeToProductMap.get(orderItemForm.getBarcode()).getId());
+            allocationRequest.setQuantityToReduce(orderItemForm.getQuantity());
+            inventoryAllocationRequests.add(allocationRequest);
+        });
+        inventoryApi.allocateInventory(inventoryAllocationRequests, productIdToBarcode);
+
+        orderApi.add(orderPojo, convertToOrderItemPojos(orderItemForms));
     }
 
     public List<OrderItemData> getOrderItems(Integer orderId) throws ApiException {
         checkNullObject(orderApi.get(orderId), "order with given Id dose not exist");
-        ArrayList<OrderItemData> orderItemDatas = new ArrayList<>();
-        List<OrderItemPojo> orderItemPojos = orderItemApi.get(Collections.singletonList(orderId));
+        ArrayList<OrderItemData> orderItemDataList = new ArrayList<>();
+        List<OrderItemPojo> orderItemPojos = orderApi.getOrderItemsByOrderIds(Collections.singletonList(orderId));
         for (OrderItemPojo orderItemPojo : orderItemPojos) {
-            orderItemDatas.add(convert(orderItemPojo));
+            orderItemDataList.add(convert(orderItemPojo));
         }
-        return orderItemDatas;
-    }
-
-    public void addItem(Integer orderId, OrderItemForm orderItemForm) throws ApiException {
-        if (Objects.isNull(orderApi.get(orderId))) {
-            throw new ApiException(String.format("order with given id : %d dose not exist", orderId));
-        }
-        orderItemApi.add(convert(orderId, orderItemForm));
-    }
-
-    public List<OrderData> getOrderItems() {
-        List<OrderPojo> pojos = orderApi.get();
-        ArrayList<OrderData> datas = new ArrayList<>();
-        for (OrderPojo pojo : pojos) {
-            datas.add(convert(pojo));
-        }
-        return datas;
+        return orderItemDataList;
     }
 
     public void generateInvoice(Integer orderId) throws ApiException, IOException {
         OrderPojo orderPojo = orderApi.get(orderId);
         List<OrderItemData> orderItems = getOrderItems(orderId);
-        InvoiceData invoiceData = getInvoiceByOrderPojo(orderPojo);
-        invoiceData.setLineItems(convert(orderItems));
-        getPdfBase64(orderId, invoiceData);
+        InvoiceForm invoiceForm = getInvoiceByOrderPojo(orderPojo);
+        invoiceForm.setInvoiceItems(convert(orderItems));
+        getPdfBase64(orderId, invoiceForm);
     }
 
-    public InvoicePojo getInvoice(Integer orderId) throws ApiException, IOException {
+    public String getInvoice(Integer orderId) throws ApiException, IOException {
+        OrderPojo orderPojo = orderApi.getCheck(orderId);
         InvoicePojo invoicePojo = invoiceApi.get(orderId);
         if (Objects.isNull(invoicePojo)) {
             generateInvoice(orderId);
         }
-        return invoicePojo;
+        orderPojo.setInvoicedStatus(true);
+        return encoder(invoicePojo.getInvoiceUrl());
     }
 
-    public ArrayList<SalesData> getSalesReport(SalesFilterForm filterForm) throws ApiException {
-        List<InvoicePojo> invoicePojos = invoiceApi.get(filterForm);
+    public ArrayList<SalesData> getSalesReport(SalesFilterForm filterForm) {
+        NormalizationUtil.normalize(filterForm);
+        List<InvoicePojo> invoicePojos = invoiceApi.getByDate(filterForm.getStartDate(), filterForm.getEndDate());
         ArrayList<Integer> orderIds = new ArrayList<>();
         for (InvoicePojo invoicePojo : invoicePojos) {
             orderIds.add(invoicePojo.getOrderId());
         }
-        return getSalesDataByOrderItemPojo(filterForm, orderItemApi.get(orderIds));
+        return getSalesDataByOrderItemPojo(filterForm, orderApi.getOrderItemsByOrderIds(orderIds));
     }
 
-    private void getPdfBase64(Integer orderId, InvoiceData invoiceData) throws IOException {
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        String apiUrl = "http://localhost:8000/fop/api/invoice";
-        RestTemplate RestTemplate = new RestTemplate();
-        ResponseEntity<String> apiResponse = RestTemplate.postForEntity(apiUrl, invoiceData, String.class);
-        String base64 = apiResponse.getBody();
+    public List<OrderData> getOrdersByFilter(OrderFilterForm filterForm) throws ApiException {
+        ValidatorUtil.validate(filterForm);
+        List<OrderPojo> orderPojos = orderApi.getByDate(filterForm.getStartDate(), filterForm.getEndDate());
+        ArrayList<OrderData> orderDataList = new ArrayList<>();
+        orderPojos.forEach(orderPojo -> {
+            orderDataList.add(convert(orderPojo));
+        });
+        return orderDataList;
+    }
+
+    private void addOrderItems(Integer orderId, List<OrderItemForm> orderItemForms) throws ApiException {
+
+    }
+
+    private void getPdfBase64(Integer orderId, InvoiceForm invoiceForm) throws IOException, ApiException {
+        String base64 = invoiceGenerator.getPdfBase64(orderId, invoiceForm);
         InvoicePojo invoicePojo = new InvoicePojo();
         invoicePojo.setOrderId(orderId);
-        invoicePojo.setInvoiceLink(generateInvoicePdf(orderId, base64));
+        invoicePojo.setInvoiceUrl(generateInvoicePdf(orderId, base64));
         invoiceApi.add(invoicePojo);
     }
 
@@ -135,8 +139,8 @@ public class OrderDto extends AbstractDto<OrderForm> {
         return pdfFile.getAbsolutePath();
     }
 
-    private ArrayList<SalesData> getSalesDataByOrderItemPojo(SalesFilterForm filterForm, List<OrderItemPojo> orderItemPojos) throws ApiException {
-        HashMap<String, SalesData> brandCategoryToData = new HashMap<>();
+    private ArrayList<SalesData> getSalesDataByOrderItemPojo(SalesFilterForm filterForm, List<OrderItemPojo> orderItemPojos) {
+        HashMap<Integer, SalesData> brandCategoryToData = new HashMap<>();
 
         for (OrderItemPojo orderItemPojo : orderItemPojos) {
             ProductPojo productPojo = productApi.get(orderItemPojo.getProductId());
@@ -144,41 +148,86 @@ public class OrderDto extends AbstractDto<OrderForm> {
             if (!allowBrandCategory(filterForm, brandPojo)) {
                 continue;
             }
-            String brandName = brandPojo.getName();
-            String category = brandPojo.getCategory();
-            String key = brandName + "_" + category;
-            SalesData salesData = brandCategoryToData.getOrDefault(key, new SalesData(0, 0.0, brandName, category));
+            Integer key = productPojo.getBrandCategoryId();
+            SalesData salesData;
+            if (brandCategoryToData.containsKey(key)) {
+                salesData = brandCategoryToData.get(key);
+            } else {
+                salesData = new SalesData();
+                salesData.setCategory(brandPojo.getCategory());
+                salesData.setBrandName(brandPojo.getName());
+                salesData.setRevenue(0.0);
+                salesData.setQuantity(0);
+            }
             salesData.setRevenue(salesData.getRevenue() + orderItemPojo.getQuantity() * productPojo.getMrp());
             salesData.setQuantity(salesData.getQuantity() + orderItemPojo.getQuantity());
             brandCategoryToData.put(key, salesData);
         }
-        ArrayList<SalesData> salesDatas = new ArrayList<>();
+        ArrayList<SalesData> salesDataList = new ArrayList<>();
 
-        for (String brandCategory : brandCategoryToData.keySet()) {
-            salesDatas.add(brandCategoryToData.get(brandCategory));
-        }
-        return salesDatas;
+        for (Integer brandCategoryId : brandCategoryToData.keySet())
+            salesDataList.add(brandCategoryToData.get(brandCategoryId));
+
+        return salesDataList;
     }
 
     private boolean allowBrandCategory(SalesFilterForm filterForm, BrandPojo brandPojo) {
         if ((!StringUtil.isEmpty(filterForm.getBrandName())) && (!filterForm.getBrandName().equals(brandPojo.getName()))) {
             return false;
         }
-        if ((!StringUtil.isEmpty(filterForm.getCategory())) && (!filterForm.getCategory().equals(brandPojo.getCategory()))) {
-            return false;
-        }
-        return true;
+        return (StringUtil.isEmpty(filterForm.getCategory())) || (filterForm.getCategory().equals(brandPojo.getCategory()));
     }
 
-    private InvoiceData getInvoiceByOrderPojo(OrderPojo orderPojo) {
-        InvoiceData invoiceData = new InvoiceData();
-        DateTimeFormatter df = DateTimeFormatter.ofPattern("dd-MMM-yyyy", Locale.ENGLISH);
-        invoiceData.setInvoiceDate(orderPojo.getCreatedAt().format(df));
-        df = DateTimeFormatter.ofPattern("HH:mm:ss z", Locale.ENGLISH);
-        invoiceData.setInvoiceTime(orderPojo.getCreatedAt().format(df));
-        invoiceData.setInvoiceNumber(orderPojo.getId());
-        return invoiceData;
+    private InvoiceForm getInvoiceByOrderPojo(OrderPojo orderPojo) {
+        InvoiceForm invoiceForm = new InvoiceForm();
+        invoiceForm.setInvoiceTime(orderPojo.getCreatedAt().toString());
+        invoiceForm.setInvoiceNumber(orderPojo.getId());
+        return invoiceForm;
     }
+
+    private void checkDuplicateBarcode(List<OrderItemForm> orderItemForms) throws ApiException {
+        ArrayList<String> barcodes = new ArrayList<>();
+        orderItemForms.forEach((form) -> {
+            barcodes.add(form.getBarcode());
+        });
+        ListUtils.checkDuplicates(barcodes, "duplicate barcodes exist \n Erroneous barcodes : ");
+
+    }
+
+    private List<OrderItemPojo> convertToOrderItemPojos(List<OrderItemForm> orderItemForms) {
+        ArrayList<OrderItemPojo> orderItemPojos = new ArrayList<>();
+        orderItemForms.forEach(orderItemForm -> {
+            ProductPojo productPojo = productApi.getByBarcode(orderItemForm.getBarcode());
+            OrderItemPojo orderItemPojo = new OrderItemPojo();
+            orderItemPojo.setQuantity(orderItemForm.getQuantity());
+            orderItemPojo.setProductId(productPojo.getId());
+            orderItemPojo.setSellingPrice(orderItemForm.getSellingPrice());
+            orderItemPojos.add(orderItemPojo);
+        });
+        return orderItemPojos;
+    }
+
+    private OrderItemData convert(OrderItemPojo orderItemPojo) throws ApiException {
+        OrderItemData orderItemData = new OrderItemData();
+        ProductPojo productPojo = productApi.get(orderItemPojo.getProductId());
+        orderItemData.setBarcode(productPojo.getBarcode());
+        orderItemData.setQuantity(orderItemPojo.getQuantity());
+        orderItemData.setProductName(productPojo.getName());
+        orderItemData.setSellingPrice(orderItemPojo.getSellingPrice());
+        return orderItemData;
+    }
+
+    private OrderData convert(OrderPojo pojo) {
+        OrderData orderData = new OrderData();
+        orderData.setCreatedAt(pojo.getCreatedAt());
+        orderData.setId(pojo.getId());
+        return orderData;
+    }
+
+    private OrderPojo convert(OrderForm orderForm) {
+        return new OrderPojo();
+    }
+
 
     private List<InvoiceItem> convert(List<OrderItemData> orderItems) {
         ArrayList<InvoiceItem> invoiceItems = new ArrayList<>();
@@ -187,86 +236,26 @@ public class OrderDto extends AbstractDto<OrderForm> {
             invoiceItem.setProductName(orderItemData.getProductName());
             invoiceItem.setBarcode(orderItemData.getBarcode());
             invoiceItem.setQuantity(orderItemData.getQuantity());
-            invoiceItem.setUnitPrice(orderItemData.getSellingPrice() / orderItemData.getQuantity());
-            invoiceItem.setTotal(orderItemData.getSellingPrice());
+            invoiceItem.setUnitPrice(orderItemData.getSellingPrice());
+            invoiceItem.setTotal(orderItemData.getSellingPrice() * orderItemData.getQuantity());
             invoiceItems.add(invoiceItem);
         }
         return invoiceItems;
     }
 
-    private void checkExistingInventory(List<OrderItemForm> orderItemsList) throws ApiException {
-        ArrayList<String> barcodesWithoutInventory = new ArrayList<>();
-        for (OrderItemForm orderItemForm : orderItemsList) {
-            InventoryPojo inventoryPojo = inventoryApi.getByBarcode(orderItemForm.getBarcode());
-            if (Objects.isNull(inventoryPojo) || inventoryPojo.getQuantity() < orderItemForm.getQuantity()) {
-                barcodesWithoutInventory.add(orderItemForm.getBarcode());
-            }
+    private String encoder(String filePath) {
+        String base64File = "";
+        File file = new File(filePath);
+        try (FileInputStream imageInFile = new FileInputStream(file)) {
+            // Reading a file from file system
+            byte fileData[] = new byte[(int) file.length()];
+            imageInFile.read(fileData);
+            base64File = Base64.getEncoder().encodeToString(fileData);
+        } catch (FileNotFoundException e) {
+            System.out.println("File not found" + e);
+        } catch (IOException ioe) {
+            System.out.println("Exception while reading the file " + ioe);
         }
-        checkNonEmptyList(barcodesWithoutInventory, "product(s) with given barcode(s) are not available : " + barcodesWithoutInventory);
-    }
-
-    private void checkDuplicateBarcode(List<OrderItemForm> orderItemsList) throws ApiException {
-        HashSet<String> barcodeSet = new HashSet<>();
-        ArrayList<String> duplicates = new ArrayList<>();
-        for (OrderItemForm orderItemForm : orderItemsList) {
-            String key = orderItemForm.getBarcode();
-            if (barcodeSet.contains(key)) {
-                duplicates.add(key);
-            } else {
-                barcodeSet.add(key);
-            }
-        }
-        checkNonEmptyList(duplicates, "duplicate barcodes exist : " + duplicates.toString());
-
-    }
-
-    private OrderItemPojo convert(Integer orderId, OrderItemForm orderItemForm) {
-        ProductPojo productPojo = productApi.getByBarcode(orderItemForm.getBarcode());
-        OrderItemPojo orderItemPojo = new OrderItemPojo();
-        orderItemPojo.setOrderId(orderId);
-        orderItemPojo.setQuantity(orderItemForm.getQuantity());
-        orderItemPojo.setProductId(productPojo.getId());
-        orderItemPojo.setSellingPrice(orderItemForm.getSellingPrice());
-        return orderItemPojo;
-    }
-
-    private OrderPojo convert(OrderForm orderForm) {
-        OrderPojo orderPojo = new OrderPojo();
-        Instant instant = Instant.now();
-        return orderPojo;
-    }
-
-    private void normalize(OrderForm orderForm) {
-        List<OrderItemForm> orderItemsList = orderForm.getOrderItemForms();
-
-        orderItemsList.forEach((orderItemForm) -> {
-            orderItemForm.setBarcode(StringUtil.normaliseText(orderItemForm.getBarcode()));
-        });
-    }
-
-    private OrderItemData convert(OrderItemPojo orderItemPojo) throws ApiException {
-        OrderItemData orderItemData = new OrderItemData();
-        ProductPojo productPojo = productApi.get(orderItemPojo.getProductId());
-        orderItemData.setBarcode(productPojo.getBarcode());
-        orderItemData.setQuantity(orderItemPojo.getQuantity());
-        orderItemData.setId(orderItemPojo.getId());
-        orderItemData.setProductName(productPojo.getName());
-        orderItemData.setMrp(productPojo.getMrp());
-        orderItemData.setSellingPrice(orderItemPojo.getSellingPrice());
-        return orderItemData;
-    }
-
-    private OrderData convert(OrderPojo pojo) {
-        OrderData orderData = new OrderData();
-        DateTimeFormatter df = DateTimeFormatter.ofPattern("dd-MMM-yyyy, HH:mm:ss z", Locale.ENGLISH);
-        orderData.setCreatedAt(pojo.getCreatedAt().format(df));
-        orderData.setId(pojo.getId());
-        return orderData;
-    }
-
-    protected void validateOrder(OrderForm orderForm) throws ApiException {
-        for (OrderItemForm orderItemForm : orderForm.getOrderItemForms()) {
-            validate(orderItemForm);
-        }
+        return base64File;
     }
 }

@@ -14,28 +14,39 @@
 
     <h3 style=" padding:10px;">Orders</h3>
     <div class="row">
+        <form class="form-inline" id="order-search-form">
+            <div class="input-group mb-3" style = "margin-right: 48px">
+                <div class="input-group-prepend">
+                    <label class="input-group-text" for="input-start-date">Start Date: </label>
+                </div>
+                <input type = "date" id = "input-start-date" name = "startDate">
+            </div>
+            <div class="input-group mb-3" style = "margin-right: 48px">
+                <div class="input-group-prepend">
+                    <label class="input-group-text" for="input-end-date">End Date: </label>
+                </div>
+                <input type = "date" id = "input-end-date" name = "endDate">
+            </div>
+        </form>
         <div class="col">
-            <select class="form-control" name="orderID"  id="select-order"></select>
+            <button type="button" class="btn btn-sm btn-primary" id="search-order">Search</button>
         </div>
         <div class="col">
-            <button type="button" class="btn btn-primary" id="open-add-dialog">Create Order</button>
+            <button type="button" class="btn btn-sm btn-primary" th:if="${info.getRole() == 'supervisor'}" id="open-add-dialog">Create Order</button>
         </div>
     </div>
     <div class="row">
         &nbsp;
     </div>
     <div class="row">
-
-        <!-- Table -->
+        <!-- order  Table -->
         <div class="col-12">
             <table class="table table-striped" id="order-table">
                 <thead>
                 <tr>
-                    <th scope="col">S.No.</th>
-                    <th scope="col">Product Name</th>
-                    <th scope="col">Barcode</th>
-                    <th scope="col">Quantity</th>
-                    <th scope="col">Selling Price</th>
+                    <th scope="col">Order Id</th>
+                    <th scope="col">Date</th>
+                    <th scope="col">View Details</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -43,10 +54,64 @@
             </table>
 
         </div>
+
+        <!-- order item Table -->
+<!--        <div class="col-12">-->
+<!--            <table class="table table-striped" id="order-items-table">-->
+<!--                <thead>-->
+<!--                <tr>-->
+<!--                    <th scope="col">S.No.</th>-->
+<!--                    <th scope="col">Product Name</th>-->
+<!--                    <th scope="col">Barcode</th>-->
+<!--                    <th scope="col">Quantity</th>-->
+<!--                    <th scope="col">Selling Price</th>-->
+<!--                </tr>-->
+<!--                </thead>-->
+<!--                <tbody>-->
+<!--                </tbody>-->
+<!--            </table>-->
+
+<!--        </div>-->
     </div>
     <div class="row">
         <div class="col">
 
+        </div>
+    </div>
+    <div class="modal" tabindex="-1" role="dialog" id="order-details-modal" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog modal-xl" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" >Order Details</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="container">
+
+                        <!-- order item Table -->
+                                <div class="col-12">
+                                    <table class="table table-striped" id="order-items-table">
+                                        <thead>
+                                        <tr>
+                                            <th scope="col">S.No.</th>
+                                            <th scope="col">Product Name</th>
+                                            <th scope="col">Barcode</th>
+                                            <th scope="col">Quantity</th>
+                                            <th scope="col">Selling Price</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        </tbody>
+                                    </table>
+                                </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-sm btn-secondary" data-dismiss="modal">Dismiss</button>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -70,13 +135,13 @@
                                         <input type="text" class="form-control" name = "barcode" placeholder="Barcode">
                                     </div>
                                     <div class="col">
-                                        <input type="text" class="form-control" name = "quantity" placeholder="Quantity">
+                                        <input type="number" class="form-control" name = "quantity" placeholder="Quantity">
                                     </div>
                                     <div class="col">
-                                        <input type="text" class="form-control" name = "sellingPrice" placeholder="Selling Price">
+                                        <input type="number" class="form-control" name = "sellingPrice" placeholder="Selling Price">
                                     </div>
                                     <div class="col">
-                                        <button type="button" class="btn btn-primary" id = "add-item">Add item</button>
+                                        <button type="button" class="btn btn-sm btn-primary" id = "add-item">Add item</button>
                                     </div>
                                 </div>
                             </form>
@@ -88,7 +153,7 @@
 
                             <!-- Table -->
                             <div class="col-12">
-                                <table class="table table-striped" id="create-order-table">
+                                <table class="table table-striped" id="create-order-item-table">
                                     <thead>
                                     <tr>
                                         <th scope="col">Barcode</th>
@@ -107,7 +172,7 @@
 
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" id="form-create-order">Create</button>
+                    <button type="button" class="btn btn-sm btn-primary" id="form-create-order">Create</button>
                 </div>
             </div>
         </div>

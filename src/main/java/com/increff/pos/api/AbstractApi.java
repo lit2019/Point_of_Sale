@@ -1,26 +1,21 @@
 package com.increff.pos.api;
 
-import com.increff.pos.dao.AbstractDao;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.lang.reflect.ParameterizedType;
+import java.util.Objects;
 
 
 @Service
-@Transactional(rollbackOn = ApiException.class)
-public abstract class AbstractApi<T> {
-    Class<T> clazz;
-    @Autowired
-    private AbstractDao<T> dao;
+@Transactional(rollbackOn = Exception.class)
+public abstract class AbstractApi {
 
-    public AbstractApi() {
-        this.clazz = (Class) ((ParameterizedType) this.getClass().getGenericSuperclass()).getActualTypeArguments()[0];
-    }
+    //TODO remove this
 
-    public T get(Integer id) throws ApiException {
-        return dao.select(id);
+    protected void checkNull(Object object, String message) throws ApiException {
+        if (Objects.isNull(object)) {
+            throw new ApiException(message);
+        }
     }
 
 }

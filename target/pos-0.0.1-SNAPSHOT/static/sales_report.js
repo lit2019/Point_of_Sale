@@ -1,7 +1,7 @@
 
 function getSalesReportUrl(){
 	var baseUrl = $("meta[name=baseUrl]").attr("content")
-	return baseUrl + "/api/orders/sales-report";
+	return baseUrl + "/api/orders/sales/report";
 }
 function getBrandListUrl(){
 	var baseUrl = $("meta[name=baseUrl]").attr("content")
@@ -32,10 +32,6 @@ function displaySalesReportList(data){
 	}
 	paginate();
 }
-
-
-
-
 
 //INITIALIZATION CODE
 function init(){
@@ -83,8 +79,8 @@ function paginate(){
 }
 
 function openFilter(){
-    makeDropdowns($("#form-brand-select"),null,$("#form-category-select"),null);
     $('#filter-modal').modal('toggle');
+
 }
 function emptyDropdown(dropDown){
      dropDown.empty();
@@ -181,9 +177,8 @@ function filter(){
 	if(getSelectedIndex("form-category-select")!=0){
 	    data["category"] = $("#form-category-select").val();
 	}
-	data["startDate"] = $("#filter-form input[name=startDate]").val();
-	data["endDate"] = $("#filter-form input[name=endDate]").val();
-
+	data["startDate"] = new Date($("#input-start-date").val());
+	data["endDate"] = new Date($("#input-end-date").val());
 
     json = JSON.stringify(data);
     console.log(json);
@@ -210,6 +205,7 @@ function filter(){
 function init(){
 	$('#open-filter').click(openFilter);
 	$('#filter').click(filter);
+    makeDropdowns($("#form-brand-select"),null,$("#form-category-select"),null);
 
 }
 

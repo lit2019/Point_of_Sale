@@ -5,17 +5,18 @@ import lombok.Setter;
 
 import javax.persistence.*;
 
-import static com.increff.pos.entity.TableConstants.*;
+import static com.increff.pos.entity.TableConstants.POS_PRODUCT_SEQ;
+import static com.increff.pos.entity.TableConstants.POS_SEQ_TABLE_NAME;
 
 @Getter
 @Setter
 @Entity
-@Table(name = "pos_products", uniqueConstraints = {@UniqueConstraint(columnNames = {"barcode"})})
+@Table(name = "pos_products", uniqueConstraints = {@UniqueConstraint(name = "barcode", columnNames = {"barcode"})})
 
 public class ProductPojo extends BaseEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.TABLE, generator = TABLE_GENERATOR_NAME)
-    @TableGenerator(name = TABLE_GENERATOR_NAME, table = TABLE_NAME, allocationSize = 1, pkColumnName = PK_COLUMN_NAME, valueColumnName = PK_COLUMN_VALUE)
+    @TableGenerator(name = POS_PRODUCT_SEQ, pkColumnValue = POS_PRODUCT_SEQ, table = POS_SEQ_TABLE_NAME)
+    @GeneratedValue(strategy = GenerationType.TABLE, generator = POS_PRODUCT_SEQ)
     private Integer id;
     @Column(nullable = false)
     private String name;

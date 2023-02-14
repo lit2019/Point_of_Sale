@@ -3,7 +3,8 @@ package com.increff.pos.controller;
 import com.increff.pos.api.ApiException;
 import com.increff.pos.dto.ProductDto;
 import com.increff.pos.model.ProductData;
-import com.increff.pos.model.ProductUpsertForm;
+import com.increff.pos.model.ProductForm;
+import com.increff.pos.model.ProductUpdateForm;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +28,7 @@ public class ProductController {
 
     @ApiOperation(value = "Adds a list of Products")
     @RequestMapping(path = "/add-products", method = RequestMethod.POST)
-    public void add(@RequestBody List<ProductUpsertForm> forms) throws ApiException {
+    public void add(@RequestBody List<ProductForm> forms) throws ApiException {
         dto.add(forms);
     }
 
@@ -38,8 +39,8 @@ public class ProductController {
     }
 
     @ApiOperation(value = "Updates a Product")
-    @RequestMapping(path = "/products/{id}", method = RequestMethod.PUT)
-    public void update(@PathVariable Integer id, @RequestBody ProductUpsertForm form) throws ApiException {
+    @RequestMapping(path = "/products/{id}", method = RequestMethod.PATCH)
+    public void update(@PathVariable Integer id, @RequestBody ProductUpdateForm form) throws ApiException {
         dto.update(id, form);
     }
 }

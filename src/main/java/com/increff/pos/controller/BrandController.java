@@ -3,8 +3,8 @@ package com.increff.pos.controller;
 import com.increff.pos.api.ApiException;
 import com.increff.pos.dto.BrandDto;
 import com.increff.pos.model.BrandData;
+import com.increff.pos.model.BrandForm;
 import com.increff.pos.model.BrandSearchForm;
-import com.increff.pos.model.BrandUpsertForm;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +23,7 @@ public class BrandController {
     //    TODO: make limit for batch addition
     @ApiOperation(value = "Adds a list of Brands")
     @RequestMapping(path = "", method = RequestMethod.POST)
-    public void add(@RequestBody List<BrandUpsertForm> forms) throws ApiException {
+    public void add(@RequestBody List<BrandForm> forms) throws ApiException {
         dto.add(forms);
     }
 
@@ -50,7 +50,7 @@ public class BrandController {
     //    TODO:pass id as pathvariable
     @ApiOperation(value = "Updates a Brand")
     @RequestMapping(path = "/{id}", method = RequestMethod.PUT)
-    public void update(@PathVariable Integer id, @RequestBody BrandUpsertForm brandUpsertForm) throws ApiException {
-        dto.update(id, brandUpsertForm);
+    public void update(@PathVariable Integer id, @RequestBody BrandForm brandForm) throws ApiException {
+        dto.update(id, brandForm);
     }
 }

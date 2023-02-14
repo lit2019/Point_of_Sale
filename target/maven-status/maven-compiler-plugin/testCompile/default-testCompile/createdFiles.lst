@@ -1,0 +1,6 @@
+com/increff/pos/QaConfig.class
+com/increff/pos/api/BrandApiTest.class
+com/increff/pos/dao/ProductDaoTest.class
+com/increff/pos/dao/BrandDaoTest.class
+com/increff/pos/utils/TestObjectUtils.class
+com/increff/pos/AbstractUnitTest.class

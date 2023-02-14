@@ -1,5 +1,6 @@
 package com.increff.pos.dao;
 
+import lombok.Getter;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
@@ -7,11 +8,11 @@ import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import java.lang.reflect.ParameterizedType;
-import java.util.ArrayList;
 import java.util.List;
 
 
 @Repository
+@Getter
 public abstract class AbstractDao<T> {
     Class<T> clazz;
     @PersistenceContext
@@ -26,29 +27,25 @@ public abstract class AbstractDao<T> {
     }
 
     public List<T> selectAll() {
-        TypedQuery<T> query = getQuery("select p from " + clazz.getSimpleName() + " p");
+        TypedQuery<T> query = createQuery("select p from " + clazz.getSimpleName() + " p");
         return query.getResultList();
     }
 
     public T select(Integer id) {
-        TypedQuery<T> query = getQuery("select p from " + clazz.getSimpleName() + " p where id=:id");
+        TypedQuery<T> query = createQuery("select p from " + clazz.getSimpleName() + " p where id=:id");
         query.setParameter("id", id);
         return getSingleResult(query);
     }
 
 
     public List<T> selectByMember(String member, String value) {
-        TypedQuery<T> query = getQuery("select p from " + clazz.getSimpleName() + " p where " + member + "=:value");
+        TypedQuery<T> query = createQuery("select p from " + clazz.getSimpleName() + " p where " + member + "=:value");
         query.setParameter("value", value);
         return getResultList(query);
     }
 
     protected List<T> getResultList(TypedQuery<T> query) {
-        try {
-            return query.getResultList();
-        } catch (NoResultException e) {
-            return new ArrayList<T>();
-        }
+        return query.getResultList();
     }
 
     protected T getSingleResult(TypedQuery<T> query) {
@@ -59,12 +56,8 @@ public abstract class AbstractDao<T> {
         }
     }
 
-    protected TypedQuery<T> getQuery(String jpql) {
+    protected TypedQuery<T> createQuery(String jpql) {
         return entityManager.createQuery(jpql, clazz);
-    }
-
-    protected EntityManager em() {
-        return entityManager;
     }
 
 }

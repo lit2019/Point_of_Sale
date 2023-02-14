@@ -2,32 +2,26 @@ package com.increff.pos.dto;
 
 import com.increff.pos.api.ApiException;
 import com.increff.pos.api.BrandApi;
-import com.increff.pos.dao.BrandDao;
 import com.increff.pos.entity.BrandPojo;
 import com.increff.pos.model.BrandData;
+import com.increff.pos.model.BrandForm;
 import com.increff.pos.model.BrandSearchForm;
-import com.increff.pos.model.BrandUpsertForm;
 import com.increff.pos.util.ListUtils;
-import com.increff.pos.util.StringUtil;
+import com.increff.pos.util.NormalizationUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 
-import static com.increff.pos.util.ListUtils.checkNonEmptyList;
 import static com.increff.pos.util.ValidatorUtil.validate;
 
 @Service
-public class BrandDto extends AbstractDto<BrandUpsertForm> {
+//TODO remove sending BrandUpsertForm
+public class BrandDto extends AbstractDto {
 
     @Autowired
     private BrandApi api;
-    @Autowired
-    private BrandDao dao;
-
 
     //TODO:move to api
 
@@ -36,31 +30,15 @@ public class BrandDto extends AbstractDto<BrandUpsertForm> {
     }
 
     public List<BrandData> get(BrandSearchForm form) {
-        normalize(form);
-        List<BrandPojo> pojos = api.getByNameCategory(form.getName(), form.getCategory());
-        ArrayList<BrandData> datas = new ArrayList<>();
+        NormalizationUtil.normalize(form);
+
+        List<BrandPojo> pojos = api.getByFilter(form.getName(), form.getCategory());
+        ArrayList<BrandData> dataList = new ArrayList<>();
         pojos.forEach(pojo -> {
-            datas.add(convert(pojo));
+            dataList.add(convert(pojo));
         });
-        return datas;
-    }
 
-    public List<BrandData> getAll() {
-        List<BrandPojo> pojos = api.getAll();
-        List<BrandData> datas = new ArrayList<BrandData>();
-        for (BrandPojo p : pojos) {
-            datas.add(convert(p));
-        }
-        return datas;
-    }
-
-    public List<String> get(String name) {
-        List<BrandPojo> brandPojos = api.getByName(name);
-        List<String> brandDatas = new ArrayList<String>();
-        for (BrandPojo p : brandPojos) {
-            brandDatas.add(p.getCategory());
-        }
-        return brandDatas;
+        return dataList;
     }
 
     public List<String> getDistinctBrands() {
@@ -68,28 +46,36 @@ public class BrandDto extends AbstractDto<BrandUpsertForm> {
 
     }
 
-    public void update(Integer id, BrandUpsertForm form) throws ApiException {
+    public void update(Integer id, BrandForm form) throws ApiException {
         validate(form);
-        normalize(Collections.singletonList(form));
+        NormalizationUtil.normalize(form);
+
+        //TODO move to API
         getCheck(id);
 //        TODO: use checknull from AbstractDTo
-        checkNonNullObject(api.getByNameCategory(form.getName(), form.getCategory()), String.format("given name:%s and category:%s already exists", form.getName(), form.getCategory()));
+
+        //TODO move to API
         api.update(id, convert(form));
     }
 
+
     public BrandPojo getCheck(Integer id) throws ApiException {
+        //TODO call getCheck of API
         BrandPojo brandPojo = api.get(id);
 //        TODO: use checknull from AbstractDTo
         checkNullObject(brandPojo, "Brand with given ID does not exist, id: " + id);
         return brandPojo;
     }
 
-    public void add(List<BrandUpsertForm> forms) throws ApiException {
+    public void add(List<BrandForm> forms) throws ApiException {
+        ListUtils.checkEmptyList(forms, "Brand Forms cannot be empty");
         List<BrandPojo> pojos = new ArrayList<>();
-        for (BrandUpsertForm form : forms) {
+        for (BrandForm form : forms)
             validate(form); //TODO: use checkValid javax validation {validate->normalize ->service}
-        }
-        normalize(forms); //TODO:use normalize in api level
+
+        for (BrandForm form : forms)
+            NormalizationUtil.normalize(form); //TODO:use normalize in api level
+
         checkDuplicate(forms);
 
         forms.forEach((form) -> {
@@ -98,47 +84,33 @@ public class BrandDto extends AbstractDto<BrandUpsertForm> {
         api.add(pojos);
     }
 
-    private void normalize(BrandSearchForm searchForm) {
-        if (Objects.nonNull(searchForm.getCategory())) {
-            searchForm.setCategory(StringUtil.normaliseText(searchForm.getCategory()));
-        }
-        if (Objects.nonNull(searchForm.getName())) {
-            searchForm.setName(StringUtil.normaliseText(searchForm.getName()));
-        }
-    }
-
-    private BrandPojo convert(BrandUpsertForm brandForm) {
-        BrandPojo brandPojo = new BrandPojo();
-        brandPojo.setName(brandForm.getName());
-        brandPojo.setCategory(brandForm.getCategory());
-        return brandPojo;
-    }
-
-
     //    TODO: create methods for throwing exceptions
-    private static BrandData convert(BrandPojo p) {
-        BrandData d = new BrandData();
-        d.setName(p.getName());
-        d.setCategory(p.getCategory());
-        d.setId(p.getId());
-        return d;
-    }
-
-    private void checkDuplicate(List<BrandUpsertForm> forms) throws ApiException {
+    //TODO rename variable more appropriately
+    private void checkDuplicate(List<BrandForm> forms) throws ApiException {
         ArrayList<String> brandCategoryCombinations = new ArrayList<>();
 
         forms.forEach((form) -> {
             String key = form.getName() + "_" + form.getCategory();
             brandCategoryCombinations.add(key);
         });
-        ArrayList<String> duplicateCombinations = ListUtils.getDuplicates(brandCategoryCombinations);
-        checkNonEmptyList(duplicateCombinations, "duplicate combinations for brand name and category \n Erroneous combinations : " + duplicateCombinations.toString());
+        ListUtils.checkDuplicates(brandCategoryCombinations, "Duplicate Combinations for brand name and category \n Erroneous combinations : ");
     }
 
-    protected void normalize(List<BrandUpsertForm> forms) {
-        for (BrandUpsertForm form : forms) {
-            form.setName(StringUtil.normaliseText(form.getName()));
-            form.setCategory(StringUtil.normaliseText(form.getCategory()));
-        }
+    private BrandData convert(BrandPojo pojo) {
+        BrandData data = new BrandData();
+        data.setName(pojo.getName());
+        data.setCategory(pojo.getCategory());
+        data.setId(pojo.getId());
+        return data;
     }
+
+
+    //TODO normalisationUtil class
+    private BrandPojo convert(BrandForm form) {
+        BrandPojo pojo = new BrandPojo();
+        pojo.setCategory(form.getCategory());
+        pojo.setName(form.getName());
+        return pojo;
+    }
+
 }

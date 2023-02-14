@@ -115,7 +115,6 @@ function uploadRows(){
 
 	   }, 
 	   error: function(error){
-	        $('#upload-inventory-modal').modal('toggle');
 	        var message =  error.responseJSON.message;
 	        errorData = message;
 	        var pos = message.indexOf(",");
@@ -138,12 +137,15 @@ function displayInventoryList(data){
 	for(var i in data){
 		var e = data[i];
 	    console.log(e)
-	    var buttonHtml ='<button class="btn" onclick="displayEditInventory(' + e.productId + ')"><i class="fa fa-edit"></i> edit</button>'
+        var buttonHtml = '';
+        if(userRole === 'supervisor'){
+            var buttonHtml ='<td><button class="btn"  onclick="displayEditInventory(' + e.productId + ')"><i class="fa fa-edit"></i> edit</button></td>'
+        }
 		var row = '<tr>'
 		+ '<td>' + e.productName + '</td>'
 		+ '<td>' + e.barcode + '</td>'
 		+ '<td>'  + e.quantity + '</td>'
-		+ '<td>' + buttonHtml + '</td>'
+        + buttonHtml +
 		+ '</tr>';
         $tbody.append(row);
 	}

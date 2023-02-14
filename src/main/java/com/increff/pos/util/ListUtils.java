@@ -15,8 +15,13 @@ public class ListUtils {
         }
     }
 
+    public static void checkEmptyList(List list, String message) throws ApiException {
+        if (CollectionUtils.isEmpty(list)) { //TODO:use colleectionutils
+            throw new ApiException(message);
+        }
+    }
 
-    public static ArrayList<String> getDuplicates(ArrayList<String> list) {
+    public static void checkDuplicates(ArrayList<String> list, String message) throws ApiException {
         HashSet<String> hashSet = new HashSet<>();
         ArrayList<String> duplicates = new ArrayList<>();
         list.forEach(s -> {
@@ -27,6 +32,7 @@ public class ListUtils {
             }
         });
 
-        return duplicates;
+        checkNonEmptyList(duplicates, message + duplicates);
+
     }
 }

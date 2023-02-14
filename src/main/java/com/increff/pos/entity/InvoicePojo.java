@@ -15,8 +15,11 @@ import javax.persistence.Table;
 @Table(name = "pos_invoices")
 public class InvoicePojo extends BaseEntity {
     @Id
+    @Column(name = "order_id")
     private Integer orderId;
 
-    @Column(name = "invoice_link", nullable = false)
-    private String invoiceLink;
+
+    //TODO rename to invoice_url
+    @Column(name = "invoice_url", nullable = false)
+    private String invoiceUrl;
 }

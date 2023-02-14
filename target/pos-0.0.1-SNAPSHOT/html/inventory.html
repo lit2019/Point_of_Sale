@@ -14,8 +14,8 @@
     <h3 style=" padding:10px;">Inventory</h3>
     <div class="row">
         <div class="col-12">
-            <button type="button" class="btn btn-primary" id="upload-data">Upload</button>
-            <button type="button" class="btn btn-primary" onclick="downloadInventory()">Download</button>
+            <button type="button" class="btn btn-sm btn-primary" th:if="${info.getRole() == 'supervisor'}" id="upload-data">Upload</button>
+            <button type="button" class="btn btn-sm btn-primary" onclick="downloadInventory()">Download</button>
 
         </div>
     </div>
@@ -35,7 +35,7 @@
                     <th scope="col">Product Name</th>
                     <th scope="col">Barcode</th>
                     <th scope="col">Inventory</th>
-                    <th scope="col">Actions</th>
+                    <th th:if="${info.getRole() == 'supervisor'}" scope="col">Actions</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -74,8 +74,8 @@
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-primary" id="update-inventory">Update</button>
+                    <button type="button" class="btn btn-sm btn-secondary" data-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-sm btn-primary" id="update-inventory">Update</button>
                 </div>
             </div>
         </div>
@@ -102,8 +102,8 @@
                 </div>
 
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-primary" id="process-data">Upload</button>
+                    <button type="button" class="btn btn-sm btn-secondary" data-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-sm btn-primary" id="process-data">Upload</button>
                 </div>
             </div>
         </div>

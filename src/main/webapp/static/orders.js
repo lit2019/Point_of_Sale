@@ -3,6 +3,13 @@ function getOrderUrl(){
 	var baseUrl = $("meta[name=baseUrl]").attr("content")
 	return baseUrl + "/api/orders";
 }
+
+function getOrderSearchUrl(){
+	var baseUrl = $("meta[name=baseUrl]").attr("content")
+	return baseUrl + "/api/orders/search";
+}
+
+
 function getInvoiceUrl(){
 	var baseUrl = $("meta[name=baseUrl]").attr("content")
 	return baseUrl + "/api/orders/invoice";
@@ -16,7 +23,6 @@ console.log("openCreateOrderDialog called")
 }
 
 var orderItems = [];
-var orderId = '';
 
 function addItem(){
     console.log("inside add item")
@@ -30,28 +36,29 @@ function addItem(){
 }
 
 //HELPER METHOD
+//HELPER METHOD
 function toJson($form){
     var serialized = $form.serializeArray();
     console.log(serialized);
     var s = '';
+    var data = {};
     for(s in serialized){
         data[serialized[s]['name']] = serialized[s]['value']
     }
     var json = JSON.stringify(data);
-
     console.log(json);
     return json;
 }
 
 function refreshOrderForm(){
     if(orderItems.length === 0){
-        $('#create-order-table').hide()
+        $('#create-order-item-table').hide()
         return;
     }else{
-        $('#create-order-table').show()
+        $('#create-order-item-table').show()
     }
     console.log('Printing product data');
-    var $tbody = $('#create-order-table').find('tbody');
+    var $tbody = $('#create-order-item-table').find('tbody');
     $tbody.empty();
     for(var i in orderItems){
         var e = orderItems[i];
@@ -67,43 +74,44 @@ function refreshOrderForm(){
     }
 }
 
-dropDownOrder = $("#select-order");
-function makeOrderDropdown(initialOrder){
-    emptyDropdown(dropDownOrder);
+function displayOrders(){
 
-    url = getOrderUrl();
+    url = getOrderSearchUrl();
+    var data = {};
+    data["startDate"] = new Date($("#input-start-date").val());
+    data["endDate"] = new Date($("#input-end-date").val());
+
+	var json = JSON.stringify(data);
 
     $.ajax({
        url: url,
-       type: 'GET',
+       type: 'POST',
+       data: json,
        headers: {
         'Content-Type': 'application/json'
        },
        success: function(data) {
-            var selectValues = {}
-            console.log(data);
+            var $tbody = $('#order-table').find('tbody');
+            $tbody.empty();
             for(var i in data){
-                val = data[i];
-                val = val.id+"  ["+val.createdAt+"]";
-                selectValues[val] = val;
+                var e = data[i];
+                var buttonHtml = '';
+                if(userRole === 'supervisor'){
+                    var buttonHtml ='<td><button type="button" class="btn btn-primary" onclick="getOrderDetails(' + e.id + ')">view</button></td>'
+                }
+                var row = '<tr>'
+                + '<td>' + e.id + '</td>'
+                + '<td>'  + e.createdAt + '</td>'
+                 + buttonHtml +
+                + '</tr>';
+                $tbody.append(row);
             }
-            $.each(selectValues, function(key, value) {
-                 dropDownOrder.append($("<option></option>")
-                                .attr("value", key)
-                                .text(value));
-            });
-
-            if(initialOrder!=null){
-                dropDownOrder.val(initialOrder.id+"  ["+initialOrder.createdAt+"]");
-            }
-
-            dropDownOrder.change(function () {
-                  orderId = dropDownOrder.val().split(' ')[0];
-                  getOrderDetails();
-            });
+            paginate();
 
        },
        error: function(error){
+	        message = error.responseJSON.message;
+	   		makeToast(false, message, null);
 
        }
        
@@ -135,10 +143,9 @@ function createOrder(){
         'Content-Type': 'application/json'
        },
        success: function(data) {
-            makeToast(true, "");
-            makeOrderDropdown(data);
-            orderId = data.id;
-            getOrderDetails();
+	        $('#order-form-modal').modal('toggle');
+            makeToast(true, "", null);
+            getOrderDetails(data.id);
 	        $('#order-form-modal').modal('toggle');
             orderItems = []
        },
@@ -149,7 +156,7 @@ function createOrder(){
             var pos = message.indexOf(",");
             message = message.slice(0, pos);
             message += "...."
-            makeToast(false, message);
+            makeToast(false, message, null);
        }
     });
 }
@@ -163,7 +170,7 @@ function removeProduct(i){
     refreshOrderForm();
 }
 
-function getOrderDetails(){
+function getOrderDetails(orderId){
     var url = getOrderUrl()+"/"+orderId;
 
     //Make ajax call
@@ -175,24 +182,19 @@ function getOrderDetails(){
        },
        success: function(data) {
              console.log(data);   
-             displayOrderDetails(data);
+             displayOrderDetails(orderId,data);
 
        },
        error: function(error){
              console.log(error)
-             displayOrderDetails([]);
+             displayOrderDetails(null,[]);
        }
     });
 }
-function displayOrderDetails(data){
-    if(data.length===0){
-        $("#order-table").hide()
-        return;
-    }else{
-        $("#order-table").show()
-    }
+function displayOrderDetails(orderId,data){
+     $("#order-details-modal").modal('toggle');
 	console.log('Printing order details');
-	var $tbody = $('#order-table').find('tbody');
+	var $tbody = $('#order-items-table').find('tbody');
 	$tbody.empty();
 	var total = 0;
 	for(var i in data){
@@ -207,9 +209,9 @@ function displayOrderDetails(data){
         + '<td>' + (e.sellingPrice) + '</td>'
 		+ '</tr>';
         $tbody.append(row);
-        total+=(e.sellingPrice);
+        total+=(e.sellingPrice*e.quantity);
 	}
-	var buttonHtml ='<button class="btn btn-primary" onclick="generateInvoice()" ><i class="fa fa-file-text-o"></i>&nbsp;&nbsp;Generate Invoice</button>'
+	var buttonHtml ='<button class="btn btn-primary" onclick="generateInvoice('+orderId+')" ><i class="fa fa-file-text-o"></i>&nbsp;&nbsp;Generate Invoice</button>'
 
 	var row = '<tr>'
           + '<td>' + buttonHtml + '</td>'
@@ -217,18 +219,12 @@ function displayOrderDetails(data){
           + '<td></td>'
           + '<td><b>Total</b></td>'
           + '<td><b>'+total+'</b></td>'
-        + '</tr>';
-        $tbody.append(row);
-
-    paginate();
-}
-
-function displayEditOrder(orderId){
+            + '</tr>';
+            $tbody.append(row);
 
 }
 
-function generateInvoice(){
-    emptyDropdown(dropDownOrder);
+function generateInvoice(orderId){
     url = getInvoiceUrl()+"/"+orderId;
     console.log(url);
 
@@ -240,13 +236,23 @@ function generateInvoice(){
        },
        success: function(data) {
             console.log(data)
-            download("file:///"+data.invoiceLink, "invoice.pdf");
+//            download("file:///"+data.invoiceLink, "invoice.pdf");
+            downloadInvoice(data,orderId);
                    },
        error: function(error){
             console.log(error)
        }
     });
 }
+function downloadInvoice(data, id) {
+    const linkSource = `data:application/pdf;base64,${data}`;
+    const downloadLink = document.createElement("a");
+    const fileName = "invoice-" + id + ".pdf";
+    downloadLink.href = linkSource;
+    downloadLink.download = fileName;
+    downloadLink.click();
+}
+
 function download(dataurl, filename) {
   const link = document.createElement("a");
   link.href = dataurl;
@@ -261,13 +267,12 @@ function init(){
 	$('#generate-invoice').click(generateInvoice);
     $('#add-item').click(addItem);
     $('#download-errors').click(downloadErrors);
+    $('#search-order').click(displayOrders);
 }
 
 function paginate(){
-      $('#product-table').DataTable();
+      $('#order-table').DataTable();
       $('.dataTables_length').addClass('bs-select');
 }
 
 $(document).ready(init);
-$(document).ready(makeOrderDropdown(null));
-$(document).ready(displayOrderDetails([]));

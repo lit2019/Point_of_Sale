@@ -1,4 +1,6 @@
 package com.increff.pos.model;
 
-public class BrandSearchForm extends BrandUpsertForm {
+//TODO remove this
+//TODO didn't remove BrandSearchForm haas a different normalize function
+public class BrandSearchForm extends BrandForm {
 }

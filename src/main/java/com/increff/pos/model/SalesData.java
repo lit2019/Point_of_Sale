@@ -11,10 +11,4 @@ public class SalesData {
     private String brandName;
     private String category;
 
-    public SalesData(Integer quantity, Double revenue, String brandName, String category) {
-        this.quantity = quantity;
-        this.revenue = revenue;
-        this.brandName = brandName;
-        this.category = category;
-    }
 }

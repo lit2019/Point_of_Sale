@@ -1,15 +1,18 @@
 package com.increff.pos.model;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.increff.pos.util.CustomZonedDateTimeSerializer;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.validation.constraints.NotNull;
+import java.time.ZonedDateTime;
 
 @Getter
 @Setter
 public class OrderData extends OrderForm {
-    @NotNull
     private Integer id;
-    @NotNull
-    private String createdAt;
+
+    //TODO ZonedDateTime
+    @JsonSerialize(using = CustomZonedDateTimeSerializer.class)
+    private ZonedDateTime createdAt;
 }

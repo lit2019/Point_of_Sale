@@ -30,22 +30,29 @@ function readFileData(file, callback){
 	Papa.parse(file, config);
 }
 
-function makeToast(isSuccessful, message){
+function isValidForm(form){
+
+    return true;
+}
+
+function makeToast(isSuccessful, message, downloadFunction){
     var toastHeading = document.getElementById('toast-heading');
     var toastMessage = document.getElementById('toast-message');
+
+    $("#download-errors").show();
+    if(downloadFunction===null){
+        $("#download-errors").hide();
+    }
 
     if(isSuccessful){
         toastHeading.innerHTML = "Success";
         toastHeading.style.color = 'green';
-        $("#download-errors").hide();
-
+        toastMessage.innerHTML = null;
     }else{
         toastHeading.innerHTML = "Error";
         toastHeading.style.color = 'red';
-        $("#download-errors").show();
-
+        toastMessage.innerHTML = message;
     }
-    toastMessage.innerHTML = message;
 
     var options = {
         animation : true,

@@ -8,51 +8,53 @@ import com.increff.pos.entity.BrandPojo;
 import com.increff.pos.entity.InventoryPojo;
 import com.increff.pos.entity.ProductPojo;
 import com.increff.pos.model.InventoryData;
+import com.increff.pos.model.InventoryForm;
 import com.increff.pos.model.InventoryReportData;
-import com.increff.pos.model.InventoryUpsertForm;
 import com.increff.pos.util.ListUtils;
-import com.increff.pos.util.StringUtil;
+import com.increff.pos.util.NormalizationUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Objects;
 
 import static com.increff.pos.util.ListUtils.checkNonEmptyList;
 import static com.increff.pos.util.ValidatorUtil.validate;
 
 @Service
-public class InventoryDto extends AbstractDto<InventoryUpsertForm> {
-
+public class InventoryDto extends AbstractDto {
     @Autowired
     private InventoryApi inventoryApi;
-
     @Autowired
     private ProductApi productApi;
     @Autowired
     private BrandApi brandApi;
 
-    //    TODO: add pagination (end priority)
-    public List<InventoryData> get() throws ApiException {
+    //      TODO: add pagination (end priority)
+    public List<InventoryData> getAll() throws ApiException {
         return convert(inventoryApi.getAll());
     }
 
-    public InventoryData get(Integer id) throws ApiException {
-        return convert(inventoryApi.get(id));
+    public InventoryData getAll(Integer id) throws ApiException {
+        return convert(inventoryApi.getCheck(id));
     }
-//TODO move public methods to top
+//          TODO move public methods to top
 
-    public void add(List<InventoryUpsertForm> forms) throws ApiException {
-        for (InventoryUpsertForm form : forms) {
+    public void add(List<InventoryForm> forms) throws ApiException {
+        ListUtils.checkEmptyList(forms, "Inventory Forms cannot be empty");
+        for (InventoryForm form : forms) {
             validate(form);
+            NormalizationUtil.normalize(form);
         }
-        normalize(forms);
 
         checkDuplicateBarcode(forms);
         checkBarcode(forms);
         checkExistingInventory(forms);
 
         ArrayList<InventoryPojo> inventoryPojos = new ArrayList<>();
-        for (InventoryUpsertForm form : forms) {
+        for (InventoryForm form : forms) {
             inventoryPojos.add(convert(form));
         }
 
@@ -60,77 +62,73 @@ public class InventoryDto extends AbstractDto<InventoryUpsertForm> {
     }
 
     public ArrayList<InventoryReportData> getInventoryReport() throws ApiException {
-        List<InventoryData> inventoryDatas = get();
-        HashMap<String, Integer> brandCategoryQuantity = new HashMap<>();
+        List<InventoryData> inventoryDataList = getAll();
+        HashMap<Integer, Integer> brandCategoryQuantity = new HashMap<>();
 
 
-        for (InventoryData inventoryData : inventoryDatas) {
+        for (InventoryData inventoryData : inventoryDataList) {
             ProductPojo productPojo = productApi.get(inventoryData.getProductId());
             BrandPojo brandPojo = brandApi.get(productPojo.getBrandCategoryId());
+            Integer key = brandPojo.getId();
+            brandCategoryQuantity.put(key, brandCategoryQuantity.getOrDefault(key, 0) + inventoryData.getQuantity());
+        }
+        ArrayList<InventoryReportData> inventoryReportDataList = new ArrayList<>();
+
+        for (Integer brandCategoryId : brandCategoryQuantity.keySet()) {
+            BrandPojo brandPojo = brandApi.get(brandCategoryId);
             String brandName = brandPojo.getName();
             String category = brandPojo.getCategory();
-            String key = brandName + "_" + category;
-            brandCategoryQuantity.put(key, brandCategoryQuantity.getOrDefault(key, 0) + inventoryData.getQuantity());
-
-        }
-        ArrayList<InventoryReportData> inventoryReportDatas = new ArrayList<>();
-
-        for (String brandCategory : brandCategoryQuantity.keySet()) {
-            String brandName = brandCategory.split("_")[0];
-            String category = brandCategory.split("_")[1];
             InventoryReportData reportData = new InventoryReportData();
             reportData.setBrandName(brandName);
             reportData.setCategory(category);
-            reportData.setQuantity(brandCategoryQuantity.get(brandCategory));
-            inventoryReportDatas.add(reportData);
+            reportData.setQuantity(brandCategoryQuantity.get(brandCategoryId));
+            inventoryReportDataList.add(reportData);
         }
 
-
-        return inventoryReportDatas;
+        return inventoryReportDataList;
     }
 
-    public void update(InventoryUpsertForm inventoryForm) throws ApiException {
-        normalize(Collections.singletonList(inventoryForm));
+    public void update(InventoryForm inventoryForm) throws ApiException {
         validate(inventoryForm);
+        NormalizationUtil.normalize(inventoryForm);
         inventoryApi.update(productApi.getByBarcode(inventoryForm.getBarcode()).getId(), convert(inventoryForm));
     }
 
-    private void checkExistingInventory(List<InventoryUpsertForm> forms) throws ApiException {
+    private void checkExistingInventory(List<InventoryForm> forms) throws ApiException {
         ArrayList<String> existingBarcodes = new ArrayList<>();
-        for (InventoryUpsertForm form : forms) {
-            if (Objects.nonNull(inventoryApi.getByBarcode(form.getBarcode()))) {
+
+        ArrayList<String> barcodes = new ArrayList<>();
+        forms.forEach(form -> {
+            barcodes.add(form.getBarcode());
+        });
+
+        HashMap<String, ProductPojo> barcodeToProductMap = productApi.getBarcodeToProductPojoMap(barcodes);
+
+
+        for (InventoryForm form : forms) {
+            if (Objects.nonNull(inventoryApi.get(barcodeToProductMap.get(form.getBarcode()).getId()))) {
                 existingBarcodes.add(form.getBarcode());
             }
         }
-        checkNonEmptyList(existingBarcodes, "inventory for given barcode already exists\n Erroneous barcodes : " + existingBarcodes.toString());
+        checkNonEmptyList(existingBarcodes, "inventory for given barcode already exists\n Erroneous barcodes : " + existingBarcodes);
     }
 
-    private void checkBarcode(List<InventoryUpsertForm> forms) throws ApiException {
+    private void checkBarcode(List<InventoryForm> forms) throws ApiException {
         ArrayList<String> nonExistingBarcodes = new ArrayList<>();
         forms.forEach((form) -> {
             if (Objects.isNull(productApi.getByBarcode(form.getBarcode()))) {
                 nonExistingBarcodes.add(form.getBarcode());
             }
         });
-        checkNonEmptyList(nonExistingBarcodes, "Product with Barcode dose not exist exists\n Erroneous barcodes : " + nonExistingBarcodes.toString());
+        checkNonEmptyList(nonExistingBarcodes, "Product with Barcode dose not exist exists\n Erroneous barcodes : " + nonExistingBarcodes);
     }
 
-    private void checkDuplicateBarcode(List<InventoryUpsertForm> forms) throws ApiException {
+    private void checkDuplicateBarcode(List<InventoryForm> forms) throws ApiException {
         ArrayList<String> barcodes = new ArrayList<>();
         forms.forEach((form) -> {
             barcodes.add(form.getBarcode());
         });
-        List<String> duplicates = ListUtils.getDuplicates(barcodes);
-        checkNonEmptyList(duplicates, "duplicate barcodes exist \n Erroneous barcodes : " + duplicates.toString());
-    }
-
-    private List<InventoryData> convert(List<InventoryPojo> inventoryPojos) throws ApiException {
-        List<InventoryData> inventoryDatas = new ArrayList<>();
-
-        for (InventoryPojo inventoryPojo : inventoryPojos) {
-            inventoryDatas.add(convert(inventoryPojo));
-        }
-        return inventoryDatas;
+        ListUtils.checkDuplicates(barcodes, "duplicate barcodes exist \n Erroneous barcodes : ");
     }
 
     private InventoryData convert(InventoryPojo inventoryPojo) throws ApiException {
@@ -143,13 +141,16 @@ public class InventoryDto extends AbstractDto<InventoryUpsertForm> {
         return inventoryData;
     }
 
-    private void normalize(List<InventoryUpsertForm> forms) {
-        for (InventoryUpsertForm form : forms) {
-            form.setBarcode(StringUtil.normaliseText(form.getBarcode()));
+    private List<InventoryData> convert(List<InventoryPojo> inventoryPojos) throws ApiException {
+        List<InventoryData> inventoryDataList = new ArrayList<>();
+
+        for (InventoryPojo inventoryPojo : inventoryPojos) {
+            inventoryDataList.add(convert(inventoryPojo));
         }
+        return inventoryDataList;
     }
 
-    private InventoryPojo convert(InventoryUpsertForm inventoryForm) throws ApiException {
+    private InventoryPojo convert(InventoryForm inventoryForm) throws ApiException {
         ProductPojo productPojo = productApi.getByBarcode(inventoryForm.getBarcode());
         if (Objects.isNull(productPojo)) {
             throw new ApiException(String.format("given barcode:%s doesn't exist", inventoryForm.getBarcode()));
