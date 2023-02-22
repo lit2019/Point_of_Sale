@@ -15,4 +15,7 @@ public class OrderData extends OrderForm {
     //TODO ZonedDateTime
     @JsonSerialize(using = CustomZonedDateTimeSerializer.class)
     private ZonedDateTime createdAt;
+
+    private OrderStatus orderStatus;
+
 }

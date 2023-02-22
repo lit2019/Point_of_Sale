@@ -54,4 +54,12 @@ public class NormalizationUtil {
         }
     }
 
+    public static void normalize(ProductSearchForm searchForm) {
+        if (Objects.nonNull(searchForm.getBrandName())) {
+            searchForm.setBrandName(StringUtil.normaliseText(searchForm.getBrandName()));
+        }
+        if (Objects.nonNull(searchForm.getCategory())) {
+            searchForm.setCategory(StringUtil.normaliseText(searchForm.getCategory()));
+        }
+    }
 }

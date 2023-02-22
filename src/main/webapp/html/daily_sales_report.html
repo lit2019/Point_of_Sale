@@ -11,12 +11,9 @@
 <div th:replace="snippets.html :: name_toast"></div>
 
 <div class="container">
-    <h3 style=" padding:10px;">Daily Sales report</h3>
+    <h3 style="margin-top:15px;margin-bottom:15px">Daily Sales report</h3>
     <div class="row">
-
-
-
-        <form class="form-inline" id="daily-report-form">
+        <form class="form-inline" id="daily-report-form" style="margin-left:15px">
             <div class="input-group mb-3" style = "margin-right: 48px">
                 <div class="input-group-prepend">
                     <label class="input-group-text" for="input-start-date">Start Date: </label>
@@ -34,7 +31,7 @@
             <button type="button" class="btn btn-sm btn-primary" id = "filter">Filter</button>
         </div>
         <div class="col">
-            <button type="button" class="btn btn-sm btn-primary" onclick="downloadSalesReport()">Download</button>
+            <button type="button" class="btn btn-sm btn-primary" onclick="downloadDailySalesReport()">Download</button>
         </div>
     </div>
 
@@ -50,9 +47,9 @@
             <table class="table table-striped" id="inventory-report-table">
                 <thead>
                 <tr>
-                    <th scope="col">Brand</th>
-                    <th scope="col">Category</th>
-                    <th scope="col">Quantity</th>
+                    <th scope="col">Date</th>
+                    <th scope="col">Invoiced Orders Count</th>
+                    <th scope="col">invoiced Items Count</th>
                     <th scope="col">Revenue</th>
                 </tr>
                 </thead>

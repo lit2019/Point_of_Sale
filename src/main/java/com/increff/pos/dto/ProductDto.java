@@ -7,6 +7,7 @@ import com.increff.pos.entity.BrandPojo;
 import com.increff.pos.entity.ProductPojo;
 import com.increff.pos.model.ProductData;
 import com.increff.pos.model.ProductForm;
+import com.increff.pos.model.ProductSearchForm;
 import com.increff.pos.model.ProductUpdateForm;
 import com.increff.pos.util.ListUtils;
 import com.increff.pos.util.NormalizationUtil;
@@ -14,9 +15,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
-import static com.increff.pos.util.ValidatorUtil.validate;
+import static com.increff.pos.util.ValidationUtil.validate;
 
 @Service
 public class ProductDto extends AbstractDto {
@@ -25,22 +28,11 @@ public class ProductDto extends AbstractDto {
     private ProductApi productApi;
     @Autowired
     private BrandApi brandApi;
-
-
+    private static final Integer MAX_UPLOAD_SIZE = 5000;
     //    TODO: add pagination (end priority)
-    public List<ProductData> get() throws ApiException {
-        return convert(productApi.get());
-    }
 
     public ProductData get(Integer id) throws ApiException {
         return convert(productApi.get(id));
-    }
-
-    //TODO move public methods to top
-    public void update(Integer id, ProductUpdateForm updateForm) throws ApiException {
-        validate(updateForm);
-        NormalizationUtil.normalize(updateForm);
-        productApi.update(id, convert(updateForm));
     }
 
     public void add(List<ProductForm> forms) throws ApiException {
@@ -55,10 +47,31 @@ public class ProductDto extends AbstractDto {
         checkBrandCategory(forms);
 
         List<ProductPojo> productPojos = new ArrayList<>();
-        for (ProductForm form : forms) {
+        for (ProductForm form : forms)
             productPojos.add(convert(form));
-        }
+
+        ListUtils.checkUploadLimit(productPojos, MAX_UPLOAD_SIZE);
         productApi.add(productPojos);
+    }
+    //TODO move public methods to top
+
+    public void update(Integer id, ProductUpdateForm updateForm) throws ApiException {
+        validate(updateForm);
+        NormalizationUtil.normalize(updateForm);
+        productApi.update(id, convert(updateForm));
+    }
+
+    public List<ProductData> filter(ProductSearchForm searchForm) throws ApiException {
+        if (Objects.nonNull(searchForm.getBarcode())) {
+            return convert(productApi.getByBarcodes(Collections.singletonList(searchForm.getBarcode())));
+        }
+
+        NormalizationUtil.normalize(searchForm);
+        List<BrandPojo> brandPojos = brandApi.getByFilter(searchForm.getBrandName(), searchForm.getCategory());
+
+        ArrayList<Integer> brandIds = new ArrayList<>();
+        brandPojos.forEach(brandPojo -> brandIds.add(brandPojo.getId()));
+        return convert(productApi.getByBrandIds(brandIds));
     }
 
 
@@ -115,7 +128,7 @@ public class ProductDto extends AbstractDto {
 
 
     private ProductPojo convert(ProductForm productForm) throws ApiException {
-        BrandPojo brandPojo = brandApi.getCheckBrandCategory(productForm.getBrandName(), productForm.getCategory());
+        BrandPojo brandPojo = brandApi.getByNameCategory(productForm.getBrandName(), productForm.getCategory());
         Integer brandCategoryId = brandPojo.getId();
         ProductPojo pojo = new ProductPojo();
         pojo.setName(productForm.getProductName());

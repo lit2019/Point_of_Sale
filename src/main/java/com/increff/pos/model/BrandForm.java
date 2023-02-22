@@ -10,8 +10,8 @@ import javax.validation.constraints.NotBlank;
 @Setter
 //TODO rename to BrandForm
 public class BrandForm {
-    @NotBlank(message = "brand name cannot be blank")
+    @NotBlank(message = "Brand name cannot be blank")
     private String name;
-    @NotBlank(message = "category cannot be blank")
+    @NotBlank(message = "Category cannot be blank")
     private String category;
 }

@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.increff.invoiceclient.generator.InvoiceGenerator;
+import com.increff.invoiceclient.generator.InvoiceClient;
 import com.increff.pos.util.CustomZonedDateTimeDeserializer;
 import com.increff.pos.util.CustomZonedDateTimeSerializer;
 import org.springframework.context.ApplicationContext;
@@ -109,8 +109,8 @@ public class ControllerConfig extends WebMvcConfigurerAdapter {
     }
 
     @Bean
-    public InvoiceGenerator getInvoiceGenerator() {
-        return new InvoiceGenerator();
+    public InvoiceClient getInvoiceClient() {
+        return new InvoiceClient();
     }
 
 }

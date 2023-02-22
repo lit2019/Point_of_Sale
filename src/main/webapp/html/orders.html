@@ -11,10 +11,40 @@
 
 <div class="container">
     <div th:replace="snippets.html :: name_toast"></div>
-
-    <h3 style=" padding:10px;">Orders</h3>
     <div class="row">
-        <form class="form-inline" id="order-search-form">
+        &nbsp;
+    </div>
+    <h3 >Orders</h3>
+    <div class="row">
+        &nbsp;
+    </div>
+
+    <div class="row">
+        <form class="form-inline" id="order-id-search-form" style="padding-left:15px;">
+            <div class="input-group mb-3" style = "margin-right: 48px">
+            <div class="input-group-prepend">
+                <label class="input-group-text" for="input-order-id">Order Id: </label>
+            </div>
+                <input type="text" class="form-control" name="orderStatus"  id="input-order-id" placeholder="order id">
+            </div>
+        </form>
+
+        <div class="col">
+            <button type="button" class="btn btn-sm btn-primary" id="search-order-id" onclick="displayOrders(true)">Search</button>
+        </div>
+    </div>
+
+<!--   create center div-->
+    <div class="row">
+        <div style="margin:0 auto;">OR</div>
+    </div>
+
+    <div class="row">
+        &nbsp;
+    </div>
+
+    <div class="row">
+        <form class="form-inline" id="order-search-form" style="padding-left:15px;">
             <div class="input-group mb-3" style = "margin-right: 48px">
                 <div class="input-group-prepend">
                     <label class="input-group-text" for="input-start-date">Start Date: </label>
@@ -27,12 +57,23 @@
                 </div>
                 <input type = "date" id = "input-end-date" name = "endDate">
             </div>
+            <div class="input-group mb-3" style = "margin-right: 48px">
+                <div class="input-group-prepend">
+                    <label class="input-group-text" for="input-order-status">Order Status: </label>
+                </div>
+                <select class="form-control" name="orderStatus"  id="input-order-status" placeholder="status">
+                    <option value=null>all</option>
+                    <option value="CREATED">created</option>
+                    <option value="INVOICED">invoiced</option>
+                </select>
+
+            </div>
         </form>
         <div class="col">
-            <button type="button" class="btn btn-sm btn-primary" id="search-order">Search</button>
+            <button type="button" class="btn btn-sm btn-primary" id="search-order" onclick="displayOrders(false)">Search</button>
         </div>
         <div class="col">
-            <button type="button" class="btn btn-sm btn-primary" th:if="${info.getRole() == 'supervisor'}" id="open-add-dialog">Create Order</button>
+            <button type="button" class="btn btn-sm btn-primary" id="open-create-dialog">Create Order</button>
         </div>
     </div>
     <div class="row">
@@ -46,7 +87,9 @@
                 <tr>
                     <th scope="col">Order Id</th>
                     <th scope="col">Date</th>
-                    <th scope="col">View Details</th>
+                    <th scope="col">Order Status</th>
+                    <th scope="col">Invoice</th>
+
                 </tr>
                 </thead>
                 <tbody>

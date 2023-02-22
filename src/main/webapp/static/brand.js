@@ -11,11 +11,10 @@ function getBrandSearchUrl(){
 function addBrand(event){
 	//Set the values to update
 	var $form = $("#brand-form");
-//	if(isValidForm($form)){
-//	}
 	var json = "["+toJson($form)+"]";
 	var url = getBrandUrl();
-
+    if(!validateForm($form))
+        return;
 	$.ajax({
 	   url: url,
 	   type: 'POST',
@@ -44,6 +43,8 @@ function updateBrand(event){
 
 	//Set the values to update
 	var $form = $("#brand-edit-form");
+	if(!validateForm($form))
+            return;
 	var json = toJson($form);
 
 	$.ajax({
@@ -59,7 +60,8 @@ function updateBrand(event){
 	   		getBrandList();     //...
 	   },
 	   error: function(error){
-	   	        alert(error.responseJSON.message);
+	   	        message = (error.responseJSON.message);
+	   	        makeToast(false, message, null);
 
 	   }
 	});
@@ -86,7 +88,9 @@ function getBrandList(){
 	   		displayBrandList(data);     //...
 	   },
 	   error: function(error){
-	   	    alert(error.responseJSON.message);
+	   	    message = error.responseJSON.message;
+	   		makeToast(false, message, downloadErrors);
+
 	   }
 	});
 }
@@ -149,7 +153,7 @@ function displayBrandList(data){
 		var e = data[i];
         var buttonHtml = '';
         if(userRole === 'supervisor'){
-            var buttonHtml ='<td><button class="btn"  onclick="displayEditBrand(' + e.id + ')"><i class="fa fa-edit"></i> edit</button></td>'
+            var buttonHtml ='<td><button class="btn" onclick="displayEditBrand(' + e.id + ')"><i class="fa fa-edit"></i> edit</button></td>'
         }
 		var row = '<tr>'
 		+ '<td>' + e.name + '</td>'
@@ -158,7 +162,6 @@ function displayBrandList(data){
 		+ '</tr>';
         $tbody.append(row);
 	}
-	paginate();
 }
 
 function displayEditBrand(id){
@@ -244,7 +247,7 @@ function setSelectOptions(form, options, initialValue){
 }
 
 function downloadBrandTable(){
-tableToCSV(document, "brand-table");
+tableToCSV(document, "brand-table", 2);
 }
 
 
@@ -259,11 +262,6 @@ function init(){
     $("#open-add-dialog").click(displayAddDialog)
     $('#download-errors').click(downloadErrors);
 }
-function paginate(){
-      $('#brand-table').DataTable();
-      $('.dataTables_length').addClass('bs-select');
-}
-
 
 $(document).ready(init);
 $(document).ready(getBrandList);

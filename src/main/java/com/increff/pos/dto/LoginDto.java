@@ -6,7 +6,7 @@ import com.increff.pos.model.LoginForm;
 import com.increff.pos.spring.AuthRole;
 import com.increff.pos.util.SecurityUtil;
 import com.increff.pos.util.UserPrincipal;
-import com.increff.pos.util.ValidatorUtil;
+import com.increff.pos.util.ValidationUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -33,7 +33,7 @@ public class LoginDto {
     private static String role;
 
     public ModelAndView login(HttpServletRequest req, LoginForm loginForm) throws ApiException {
-        ValidatorUtil.validate(loginForm);
+        ValidationUtil.validate(loginForm);
         if (isSupervisor(loginForm)) {
             role = AuthRole.SUPERVISOR;
         } else {

@@ -14,16 +14,34 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.increff.pos.util.ValidatorUtil.validate;
+import static com.increff.pos.util.ValidationUtil.validate;
 
 @Service
 //TODO remove sending BrandUpsertForm
 public class BrandDto extends AbstractDto {
-
     @Autowired
     private BrandApi api;
+    private static final Integer MAX_UPLOAD_SIZE = 5000;
 
     //TODO:move to api
+    public void add(List<BrandForm> forms) throws ApiException {
+        ListUtils.checkEmptyList(forms, "Brand Forms cannot be empty");
+        ListUtils.checkUploadLimit(forms, MAX_UPLOAD_SIZE);
+
+        List<BrandPojo> pojos = new ArrayList<>();
+        for (BrandForm form : forms)
+            validate(form); //TODO: use checkValid javax validation {validate->normalize ->service}
+
+        for (BrandForm form : forms)
+            NormalizationUtil.normalize(form); //TODO:use normalize in api level
+
+        checkDuplicate(forms);
+
+        forms.forEach((form) -> {
+            pojos.add(convert(form));
+        });
+        api.add(pojos);
+    }
 
     public BrandData get(Integer id) throws ApiException {
         return convert(api.get(id));
@@ -34,9 +52,7 @@ public class BrandDto extends AbstractDto {
 
         List<BrandPojo> pojos = api.getByFilter(form.getName(), form.getCategory());
         ArrayList<BrandData> dataList = new ArrayList<>();
-        pojos.forEach(pojo -> {
-            dataList.add(convert(pojo));
-        });
+        pojos.forEach(pojo -> dataList.add(convert(pojo)));
 
         return dataList;
     }
@@ -51,37 +67,10 @@ public class BrandDto extends AbstractDto {
         NormalizationUtil.normalize(form);
 
         //TODO move to API
-        getCheck(id);
 //        TODO: use checknull from AbstractDTo
 
         //TODO move to API
         api.update(id, convert(form));
-    }
-
-
-    public BrandPojo getCheck(Integer id) throws ApiException {
-        //TODO call getCheck of API
-        BrandPojo brandPojo = api.get(id);
-//        TODO: use checknull from AbstractDTo
-        checkNullObject(brandPojo, "Brand with given ID does not exist, id: " + id);
-        return brandPojo;
-    }
-
-    public void add(List<BrandForm> forms) throws ApiException {
-        ListUtils.checkEmptyList(forms, "Brand Forms cannot be empty");
-        List<BrandPojo> pojos = new ArrayList<>();
-        for (BrandForm form : forms)
-            validate(form); //TODO: use checkValid javax validation {validate->normalize ->service}
-
-        for (BrandForm form : forms)
-            NormalizationUtil.normalize(form); //TODO:use normalize in api level
-
-        checkDuplicate(forms);
-
-        forms.forEach((form) -> {
-            pojos.add(convert(form));
-        });
-        api.add(pojos);
     }
 
     //    TODO: create methods for throwing exceptions

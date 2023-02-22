@@ -20,6 +20,7 @@ public class BrandApi extends AbstractApi {
 
     @Autowired
     private BrandDao dao;
+    private static final Integer MAX_UPLOAD_SIZE = 5000;
 
     // TODO:use checknull in abstractdto
 
@@ -40,7 +41,7 @@ public class BrandApi extends AbstractApi {
                 throw new ApiException(String.format("given name:%s and category:%s already exists", pojoWithSameFields.getName(), pojoWithSameFields.getCategory()));
             }
         }
-        BrandPojo existingPojo = get(id);
+        BrandPojo existingPojo = getCheck(id);
         existingPojo.setCategory(brandPojo.getCategory());
         existingPojo.setName(brandPojo.getName());
         return existingPojo;
@@ -54,10 +55,9 @@ public class BrandApi extends AbstractApi {
 
     public void add(List<BrandPojo> brandPojos) throws ApiException {
         checkEmptyList(brandPojos, "brandPojos cannot be empty");
-        UploadLimit.checkSize(brandPojos.size());
-        for (BrandPojo brandPojo : brandPojos) {
+        for (BrandPojo brandPojo : brandPojos)
             validate(brandPojo);
-        }
+
         checkExistingBrandCategory(brandPojos);
         for (BrandPojo brandPojo : brandPojos)
             dao.insert(brandPojo);
@@ -89,26 +89,19 @@ public class BrandApi extends AbstractApi {
         checkNonEmptyList(erroneousCombinations, "combinations for brand name and category does not exist : " + erroneousCombinations);
     }
 
-    public BrandPojo getCheckBrandCategory(String brandName, String category) throws ApiException {
-        BrandPojo pojo = getByNameCategory(brandName, category);
-        checkNull(pojo, String.format("given name:%s and category:%s already exists", pojo.getName(), pojo.getCategory()));
-        return pojo;
-    }
-
     public BrandPojo getCheck(Integer id) throws ApiException {
         BrandPojo pojo = get(id);
-        checkNull(pojo, String.format("given name:%s and category:%s already exists", pojo.getName(), pojo.getCategory()));
+        checkNull(pojo, String.format("Brand with given id : %d does not exist", id));
         return pojo;
     }
 
-    private void checkExistingBrandCategory(List<BrandPojo> pojos) throws ApiException {
+    public void checkExistingBrandCategory(List<BrandPojo> pojos) throws ApiException {
         ArrayList<String> existingCombinations = new ArrayList<>();
 //        TODO:use foreach instead
-        for (BrandPojo pojo : pojos) {
-            if (Objects.nonNull(getByNameCategory(pojo.getName(), pojo.getCategory()))) {
+        for (BrandPojo pojo : pojos)
+            if (Objects.nonNull(getByNameCategory(pojo.getName(), pojo.getCategory())))
                 existingCombinations.add(pojo.getName() + "_" + pojo.getCategory());
-            }
-        }
+
         checkNonEmptyList(existingCombinations, "Existing combinations for brand name and category : " + existingCombinations);
     }
 

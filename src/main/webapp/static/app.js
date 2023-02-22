@@ -16,7 +16,9 @@ function handleAjaxError(response){
 	var response = JSON.parse(response.responseText);
 	alert(response.message);
 }
-
+function validateForm(form){
+    return form[0].reportValidity();
+}
 
 function readFileData(file, callback){
 	var config = {
@@ -87,19 +89,22 @@ function writeFileData(arr){
     tempLink.click(); 
 }
 
-function tableToCSV(document, tableId) {
+function tableToCSV(document, tableId, columns) {
 
 // Variable to store the final csv data
 var csv_data = [];
 
 // Get each row data
 var rows = document.getElementById(tableId).rows;
+if(rows.length==1){
+    return;
+}
 console.log(rows);
 for (var i = 0; i < rows.length; i++) {
 
       cells = $(rows[i]).find('td,th');
       csv_row = [];
-      for (j = 0; j < cells.length-1; j++) {
+      for (j = 0; j < columns; j++) {
          txt = cells[j].innerText;
          csv_row.push(txt.replace(",", "-"));
       }

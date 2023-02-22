@@ -1,7 +1,7 @@
 package com.increff.pos.dao;
 
-import com.increff.pos.AbstractUnitTest;
 import com.increff.pos.entity.ProductPojo;
+import com.increff.pos.spring.AbstractUnitTest;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 

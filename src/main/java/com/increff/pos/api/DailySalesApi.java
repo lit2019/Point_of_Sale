@@ -4,6 +4,7 @@ package com.increff.pos.api;
 import com.increff.pos.dao.DailySalesDao;
 import com.increff.pos.entity.DailySalesPojo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -18,6 +19,9 @@ public class DailySalesApi extends AbstractApi {
     @Autowired
     private DailySalesDao dao;
 
+    @Value("${app.maxDateRange}")
+    private Integer maxDateRange;
+
     public void upsert(DailySalesPojo dailySalesPojo) throws ApiException {
         validate(dailySalesPojo);
         DailySalesPojo existingPojo = dao.selectByDate(dailySalesPojo.getDate());
@@ -30,9 +34,9 @@ public class DailySalesApi extends AbstractApi {
         }
     }
 
-    public List<DailySalesPojo> get(ZonedDateTime startDate, ZonedDateTime endDate) throws ApiException {
-        if (ChronoUnit.DAYS.between(startDate, endDate) > 100) {
-            throw new ApiException("start date and end date cannot be more than 100 days apart");
+    public List<DailySalesPojo> getByDateRange(ZonedDateTime startDate, ZonedDateTime endDate) throws ApiException {
+        if (ChronoUnit.DAYS.between(startDate, endDate) > maxDateRange) {
+            throw new ApiException(String.format("start date and end date cannot be more than %s days apart", maxDateRange));
         }
         return dao.selectByDateRange(startDate, endDate);
     }

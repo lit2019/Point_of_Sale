@@ -4,25 +4,24 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.PositiveOrZero;
+import javax.validation.constraints.Positive;
 
 @Getter
 @Setter
 public class ProductForm {
-    @NotNull
+    @NotBlank(message = "Barcode cannot be blank")
     String barcode;
 
-    @NotBlank(message = "Brand Name cannot be blank")
+    @NotBlank(message = "Brand name cannot be blank")
     String brandName;
 
     @NotBlank(message = "Category cannot be blank")
     String category;
 
-    @NotBlank(message = "Product Name cannot be blank")
+    @NotBlank(message = "Product name cannot be blank")
     String productName;
 
-    @PositiveOrZero(message = "Quantity must be a non negative integer")
+    @Positive(message = "Quantity must be Positive")
     Double mrp;
 
 }

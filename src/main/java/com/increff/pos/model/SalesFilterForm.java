@@ -5,13 +5,16 @@ import com.increff.pos.util.CustomZonedDateTimeDeserializer;
 import lombok.Getter;
 import lombok.Setter;
 
+import javax.validation.constraints.NotNull;
 import java.time.ZonedDateTime;
 
 @Getter
 @Setter
 public class SalesFilterForm {
+    @NotNull
     @JsonDeserialize(using = CustomZonedDateTimeDeserializer.class)
     private ZonedDateTime startDate;
+    @NotNull
     @JsonDeserialize(using = CustomZonedDateTimeDeserializer.class)
     private ZonedDateTime endDate;
     private String brandName;

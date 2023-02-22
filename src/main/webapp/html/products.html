@@ -12,12 +12,56 @@
 
 
 <div class="container">
+    <div class="row">
+        &nbsp;
+    </div>
 
+    <h3 >Products</h3>
+
+    <div class="row" style="padding-left:15px;">
+        <form class="form-inline" id="barcode-search-form">
+            <div class="input-group mb-3" style = "margin-right: 48px">
+                <div class="input-group-prepend">
+                    <label class="input-group-text" for="input-barcode">Barcode: </label>
+                </div>
+                <input type="text" class="form-control" name="orderStatus"  id="input-barcode" placeholder="barcode">
+            </div>
+        </form>
+
+        <div class="col">
+            <button type="button" class="btn btn-sm btn-primary" id="search-barcode" onclick="filter(true)">Search</button>
+        </div>
+    </div>
+    <div class="row">
+        <div style="margin:0 auto;">OR</div>
+    </div>
+
+    <div class="row" style="padding:15px;">
+
+    <form class="form-inline" id="daily-report-form">
+
+        <div class="input-group mb-3" style = "margin-right: 48px">
+            <div class="input-group-prepend">
+                <label class ="input-group-text" for="brandName" ><b>Brand Name</b></label>
+            </div>
+            <input class="form-control" name="brandName" id="filter-brand-select"  placeholder="brand"></input>
+        </div>
+        <div class="input-group mb-3" style = "margin-right: 48px">
+            <div class="input-group-prepend">
+                <label class ="input-group-text" for="category" ><b>Category</b></label>
+            </div>
+            <input class="form-control" name="category"  id="filter-category-select" placeholder="category"></input>
+        </div>
+    </form>
+
+    <div class="col">
+        <button type="button" class="btn btn-sm btn-primary" id = "filter" onclick="filter(false)">Search</button>
+    </div>
+    </div>
 
     <!-- Top row with form-->
     <div class="row">
         <div class="col-12">
-            <h3 style="padding:10px;">Products</h3>
             <button type="button" class="btn btn-sm btn-primary" th:if="${info.getRole() == 'supervisor'}" id="add-product">Add</button>
             <button type="button" class="btn btn-sm btn-primary" th:if="${info.getRole() == 'supervisor'}" id="upload-data">Upload</button>
             <button type="button" class="btn btn-sm btn-primary" onclick="downloadProductTable()">Download</button>

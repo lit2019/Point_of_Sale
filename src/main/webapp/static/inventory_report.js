@@ -1,24 +1,48 @@
 
 function getInventoryReportUrl(){
 	var baseUrl = $("meta[name=baseUrl]").attr("content")
-	return baseUrl + "/api/inventory/report";
+	return baseUrl + "/api/report/inventory";
+}
+function getBrandListUrl(){
+	var baseUrl = $("meta[name=baseUrl]").attr("content")
+	return baseUrl + "/api/brands/distinct";
+}
+function getBrandCategoryListUrl(){
+	var baseUrl = $("meta[name=baseUrl]").attr("content")
+	return baseUrl + "/api/brands/search";
 }
 
+function checkNull(s){
+      return (s.trim()==="" ? null : s);
+}
 
-
-function getInventoryList(){
+function filter(){
 	var url = getInventoryReportUrl();
+	data = {};
+    data["category"] = checkNull($("#form-category-select").val());
+    data["brandName"] = checkNull($("#form-brand-select").val());
+	data["startDate"] = new Date($("#input-start-date").val());
+	data["endDate"] = new Date($("#input-end-date").val());
+
+    json = JSON.stringify(data);
+    console.log(json);
+//    console.log(json);
 	$.ajax({
 	   url: url,
-	   type: 'GET',
+	   type: 'POST',
+	   data: json,
+	   headers: {
+       	'Content-Type': 'application/json'
+       },
 	   success: function(data) {
-	   		console.log("Inventory data fetched");
+	   		console.log("Sales data fetched");
 	   		console.log(data);
 	   		displayInventoryReportList(data);     //...
-	   },
-	   error: function(){
-	   	        alert(error.responseJSON.message);
 
+	   },
+	   error: function(error){
+
+	   	        alert(error.responseJSON.message);
 	   }
 	});
 }
@@ -39,11 +63,10 @@ function displayInventoryReportList(data){
 		+ '</tr>';
         $tbody.append(row);
 	}
-	paginate();
 }
-
-
-
+function getSelectedIndex(id){
+    return document.getElementById(id).selectedIndex
+}
 
 
 //INITIALIZATION CODE
@@ -51,46 +74,17 @@ function init(){
 
 }
 function downloadInventoryReport(){
-tableToCSV("inventory-report-table")
-}
-function tableToCSV(tableId) {
-
-// Variable to store the final csv data
-var csv_data = [];
-
-// Get each row data
-var rows = document.getElementById(tableId);
-for (var i = 0; i < rows.length; i++) {
-
-    // Get each column data
-    var cols = rows[i].querySelectorAll('td,th');
-
-    // Stores each csv row data
-    var csvrow = [];
-    for (var j = 0; j < cols.length; j++) {
-
-        // Get the text data of each cell
-        // of a row and push it to csvrow
-        csvrow.push(cols[j].innerHTML);
-    }
-
-    // Combine each column value with comma
-    csv_data.push(csvrow.join(","));
+    tableToCSV(document, "inventory-report-table", 3);
 }
 
-// Combine each row data with new line character
-csv_data = csv_data.join('\n');
 
-// Call this function to download csv file
-downloadCSVFile(csv_data);
-}
 
-function paginate(){
-      $('#inventory-report-table').DataTable();
-      $('.dataTables_length').addClass('bs-select');
+function init(){
+	$('#filter').click(filter);
+	filter();
 }
 
 $(document).ready(init);
-$(document).ready(getInventoryList);
+
 
 

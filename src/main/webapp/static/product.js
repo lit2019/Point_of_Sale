@@ -3,10 +3,14 @@ function getProductUrl(){
 	var baseUrl = $("meta[name=baseUrl]").attr("content")
 	return baseUrl + "/api/products";
 }
+function getProductFilterUrl(){
+	var baseUrl = $("meta[name=baseUrl]").attr("content")
+	return baseUrl + "/api/products/filter";
+}
 
 function getAddProductsUrl(){
 	var baseUrl = $("meta[name=baseUrl]").attr("content")
-	return baseUrl + "/api/add-products";
+	return baseUrl + "/api/products/add";
 }
 
 function getBrandListUrl(){
@@ -29,10 +33,46 @@ function addProductDialog(event){
 function getSelectedIndex(id){
     return document.getElementById(id).selectedIndex
 }
+function filter(searchByBarcode){
+	var url = getProductFilterUrl();
+	data = {};
+	if(searchByBarcode){
+	    data["barcode"] = $("#input-barcode").val();
+	}
+	else{
+        if($("#filter-brand-select").val().trim()!=""){
+            data["brandName"] = $("#filter-brand-select").val();
+        }
+        if($("#filter-category-select").val().trim()!=""){
+            data["category"] = $("#filter-category-select").val();
+        }
+	}
+
+    json = JSON.stringify(data);
+    console.log(json);
+//    console.log(json);
+	$.ajax({
+	   url: url,
+	   type: 'POST',
+	   data: json,
+	   headers: {
+       	'Content-Type': 'application/json'
+       },
+	   success: function(data) {
+	   		console.log(data);
+	   		displayProductList(data);     //...
+	   },
+	   error: function(error){
+            alert(error.responseJSON.message);
+	   }
+	});
+}
 
 function uploadProduct(event){
 	//Set the values to upload
 	var $form = $("#product-form");
+    if(!validateForm($form))
+        return;
 	data = toMap($form)
 
 	if(getSelectedIndex("form-brand-select")!=0){
@@ -73,6 +113,9 @@ function updateProduct(event){
 
 	//Set the values to update
 	var $form = $("#product-edit-form");
+
+    if(!validateForm($form))
+        return;
 	var json = toJson($form);
 
 	$.ajax({
@@ -190,7 +233,6 @@ function displayProductList(data){
 		+ '</tr>';
         $tbody.append(row);
 	}
-	paginate();
 }
 function displayEditProduct(id){
 	var url = getProductUrl() + "/" + id;
@@ -285,6 +327,8 @@ $("#form-brand-select").change(function () {
                  makeCategoryDropDown($("#form-brand-select").val(),$("#form-category-select"),null);
             });
 
+
+
 function makeCategoryDropDown(brandName,dropDownCategory,initialCategory){
         emptyDropdown(dropDownCategory);
 
@@ -370,38 +414,7 @@ function toMap($form){
 
 
 function downloadProductTable(){
-tableToCSV("product-table");
-}
-function tableToCSV(tableId) {
-
-// Variable to store the final csv data
-var csv_data = [];
-
-// Get each row data
-var rows = document.getElementById(tableId);
-for (var i = 0; i < rows.length; i++) {
-
-    // Get each column data
-    var cols = rows[i].querySelectorAll('td,th');
-
-    // Stores each csv row data
-    var csvrow = [];
-    for (var j = 0; j < cols.length; j++) {
-
-        // Get the text data of each cell
-        // of a row and push it to csvrow
-        csvrow.push(cols[j].innerHTML);
-    }
-
-    // Combine each column value with comma
-    csv_data.push(csvrow.join(","));
-}
-
-// Combine each row data with new line character
-csv_data = csv_data.join('\n');
-
-// Call this function to download csv file
-downloadCSVFile(csv_data);
+tableToCSV(document, "product-table", 5);
 }
 
 
@@ -416,13 +429,8 @@ function init(){
 	$('#form-add-product').click(uploadProduct);
 	$('#update-product').click(updateProduct);
     $('#productFile').on('change', updateFileName)
-
-}
-function paginate(){
-      $('#product-table').DataTable();
-      $('.dataTables_length').addClass('bs-select');
 }
 
 $(document).ready(init);
-$(document).ready(getProductList);
+$(document).ready(filter(false));
 

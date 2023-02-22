@@ -4,14 +4,17 @@ import com.increff.pos.dao.OrderDao;
 import com.increff.pos.dao.OrderItemDao;
 import com.increff.pos.entity.OrderItemPojo;
 import com.increff.pos.entity.OrderPojo;
+import com.increff.pos.model.OrderFilterForm;
+import com.increff.pos.model.OrderStatus;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import javax.transaction.Transactional;
-import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 @Service
 @Transactional(rollbackOn = Exception.class)
@@ -20,10 +23,12 @@ public class OrderApi extends AbstractApi {
     private OrderDao orderDao;
     @Autowired
     private OrderItemDao orderItemDao;
+    @Value("${app.maxDateRange}")
+    private Integer maxDateRange;
 
     public void add(OrderPojo orderPojo, List<OrderItemPojo> orderItemPojos) throws ApiException {
-        UploadLimit.checkSize(orderItemPojos.size());
-        orderPojo.setInvoicedStatus(false);
+//        TODO make seperate methods in each api for checking upload limit
+        orderPojo.setOrderStatus(OrderStatus.CREATED);
         orderDao.insert(orderPojo);
 
         for (OrderItemPojo orderItemPojo : orderItemPojos) {
@@ -38,22 +43,23 @@ public class OrderApi extends AbstractApi {
     }
 
     public List<OrderItemPojo> getOrderItemsByOrderIds(List<Integer> orderIds) {
+//        TODO return empty list if input is empty
+        if (CollectionUtils.isEmpty(orderIds)) {
+            return new ArrayList<>();
+        }
         return orderItemDao.getByOrderIds(orderIds);
     }
 
-    public OrderPojo getCheck(Integer orderId) throws ApiException {
-        OrderPojo pojo = get(orderId);
-        if (Objects.isNull(pojo)) {
-            throw new ApiException(String.format("order with given id:%s dose not exist", orderId));
-        }
-        return pojo;
+    public List<OrderPojo> getByFilter(OrderFilterForm filterForm) throws ApiException {
+//        TODO move endDate.plusdays() logic to ui
+        if (ChronoUnit.DAYS.between(filterForm.getStartDate(), filterForm.getEndDate()) > maxDateRange)
+            throw new ApiException(String.format("start date and end date cannot be more than %d days apart", maxDateRange));
+
+        return orderDao.selectByFilter(filterForm.getStartDate(), filterForm.getEndDate(), filterForm.getOrderStatus());
     }
 
-    public List<OrderPojo> getByDate(ZonedDateTime startDate, ZonedDateTime endDate) throws ApiException {
-        if (ChronoUnit.DAYS.between(startDate, endDate) > 100) {
-            throw new ApiException("start date and end date cannot be more than 100 days apart");
-        }
-        return orderDao.selectByDate(startDate, endDate);
+    public void setStatus(Integer id, OrderStatus invoiced) {
+        get(id).setOrderStatus(invoiced);
     }
 
     private void validate(OrderItemPojo orderItemPojo) throws ApiException {

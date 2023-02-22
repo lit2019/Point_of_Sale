@@ -11,10 +11,15 @@ import java.time.ZonedDateTime;
 @Getter
 @Setter
 public class OrderFilterForm {
-    @NotNull
+    @NotNull(message = "End Date cannot be null")
     @JsonDeserialize(using = CustomZonedDateTimeDeserializer.class)
     private ZonedDateTime endDate;
-    @NotNull
+    @NotNull(message = "Start Date cannot be null")
     @JsonDeserialize(using = CustomZonedDateTimeDeserializer.class)
     private ZonedDateTime startDate;
+
+    private OrderStatus orderStatus;
+
+    private Integer orderId;
+
 }

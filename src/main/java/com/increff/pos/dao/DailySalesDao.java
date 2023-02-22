@@ -10,7 +10,7 @@ import java.util.List;
 @Repository
 public class DailySalesDao extends AbstractDao<DailySalesPojo> {
     private static final String SELECT_BY_DATE = "select p from DailySalesPojo p where date=:date";
-    private static final String SELECT_BY_DATE_RANGE = "select p from DailySalesPojo p where (p.date between :startDate AND :endDate)";
+    private static final String SELECT_BY_DATE_RANGE = "select p from DailySalesPojo p where (p.createdAt between :startDate AND :endDate)";
 
     public List<DailySalesPojo> selectByDateRange(ZonedDateTime startDate, ZonedDateTime endDate) {
         TypedQuery<DailySalesPojo> query = createQuery(SELECT_BY_DATE_RANGE);

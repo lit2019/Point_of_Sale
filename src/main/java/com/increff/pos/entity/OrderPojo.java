@@ -1,5 +1,6 @@
 package com.increff.pos.entity;
 
+import com.increff.pos.model.OrderStatus;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -19,7 +20,7 @@ public class OrderPojo extends BaseEntity {
     @TableGenerator(name = POS_ORDER_SEQ, pkColumnValue = POS_ORDER_SEQ, table = POS_SEQ_TABLE_NAME)
     @GeneratedValue(strategy = GenerationType.TABLE, generator = POS_ORDER_SEQ)
     private Integer id;
-
-    @Column(name = "invoiced_status")
-    private Boolean InvoicedStatus;
+    @Column(name = "order_status")
+    @Enumerated(EnumType.STRING)
+    private OrderStatus orderStatus;
 }

@@ -21,3 +21,8 @@ body {
 content: " *";
 color: red;
 }
+.btn-sm{
+  margin-top: 3px;
+  margin-bottom: 3px;
+}
+

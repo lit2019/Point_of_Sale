@@ -4,12 +4,10 @@ import com.increff.pos.dao.ProductDao;
 import com.increff.pos.entity.ProductPojo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import javax.transaction.Transactional;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 import static com.increff.pos.util.ListUtils.checkEmptyList;
 import static com.increff.pos.util.ListUtils.checkNonEmptyList;
@@ -21,31 +19,9 @@ public class ProductApi extends AbstractApi {
     @Autowired
     private ProductDao dao;
 
-    public List<ProductPojo> get() throws ApiException {
-        return dao.selectAll();
-    }
-
-    public void update(Integer id, ProductPojo newProductPojo) throws ApiException {
-        getCheck(id);
-        checkNull(newProductPojo.getName(), "Name cannot be null");
-        checkNull(newProductPojo.getMrp(), "mrp cannot be null");
-
-        ProductPojo oldProductPojo = dao.select(id);
-        oldProductPojo.setName(newProductPojo.getName());
-        oldProductPojo.setMrp(newProductPojo.getMrp());
-    }
-
-    public ProductPojo getByBarcode(String barcode) {
-        List<ProductPojo> productPojos = dao.selectByMember("barcode", barcode);
-        if (productPojos.size() > 0) {
-            return productPojos.get(0);
-        }
-        return null;
-    }
-
     public void add(List<ProductPojo> productPojos) throws ApiException {
-        checkEmptyList(productPojos, "productPojos cannot be empty");
-        UploadLimit.checkSize(productPojos.size());
+        checkEmptyList(productPojos, "ProductPojos cannot be empty");
+//        TODO move to api
         for (ProductPojo productPojo : productPojos) {
             validate(productPojo);
         }
@@ -54,41 +30,70 @@ public class ProductApi extends AbstractApi {
             dao.insert(productPojo);
     }
 
+    public void update(Integer id, ProductPojo newProductPojo) throws ApiException {
+        checkNull(newProductPojo.getName(), "Name cannot be null");
+        checkNull(newProductPojo.getMrp(), "Mrp cannot be null");
+
+        ProductPojo oldProductPojo = getCheck(id);
+
+        oldProductPojo.setName(newProductPojo.getName());
+        oldProductPojo.setMrp(newProductPojo.getMrp());
+    }
+
+    public ProductPojo getUniqueByBarcode(String barcode) throws ApiException {
+        checkNull(barcode, "Barcode cannot be null");
+        return dao.selectBarcode(barcode);
+    }
+
     public ProductPojo get(Integer id) {
         return dao.select(id);
     }
 
-    public HashMap<String, ProductPojo> getBarcodeToProductPojoMap(ArrayList<String> barcodes) {
+    //    TODO cahange to public statis input should be list of pojos from getByBarcode
+    public static Map<String, ProductPojo> getBarcodeToProductPojoMap(List<ProductPojo> pojos) {
         HashMap<String, ProductPojo> barcodeToProductMap = new HashMap<>();
-        List<ProductPojo> productPojos = dao.selectByBarcodes(barcodes);
-        productPojos.forEach(pojo -> {
+        pojos.forEach(pojo -> {
             barcodeToProductMap.put(pojo.getBarcode(), pojo);
         });
 
         return barcodeToProductMap;
     }
 
-    private void validate(ProductPojo productPojo) throws ApiException {
-        checkNull(productPojo.getId(), "id cannot be null");
-        checkNull(productPojo.getName(), "Name cannot be null");
-        checkNull(productPojo.getBrandCategoryId(), "BrandCategoryId cannot be null");
-        checkNull(productPojo.getMrp(), "mrp cannot be null");
-        checkNull(productPojo.getBarcode(), "Barcode cannot be null");
+    public List<ProductPojo> getByBarcodes(List<String> barcodes) {
+        if (CollectionUtils.isEmpty(barcodes)) {
+            return new ArrayList<>();
+        }
+        return dao.selectByBarcodes(barcodes);
     }
 
-    private void getCheck(Integer id) throws ApiException {
+    public List<ProductPojo> getByBrandIds(List<Integer> brandIds) {
+        if (CollectionUtils.isEmpty(brandIds)) {
+            return new ArrayList<>();
+        }
+        return dao.selectByBrandIds(brandIds);
+    }
+
+    public ProductPojo getCheck(Integer id) throws ApiException {
         ProductPojo productPojo = dao.select(id);
-        checkNull(productPojo, String.format("product with given id : %d does not exist", id));
+        checkNull(productPojo, String.format("Product with given id : %d does not exist", id));
+        return productPojo;
     }
 
-    private void checkExistingBarcode(List<ProductPojo> pojos) throws ApiException {
+    public void checkExistingBarcode(List<ProductPojo> pojos) throws ApiException {
         ArrayList<String> existingBarcodes = new ArrayList<>();
-        pojos.forEach((pojo) -> {
-            if (Objects.nonNull(getByBarcode(pojo.getBarcode()))) {
+        for (ProductPojo pojo : pojos) {
+            if (Objects.nonNull(getUniqueByBarcode(pojo.getBarcode()))) {
                 existingBarcodes.add(pojo.getBarcode());
             }
-        });
-        checkNonEmptyList(existingBarcodes, "product(s) with barcode(s) already exists : " + existingBarcodes);
+        }
+        checkNonEmptyList(existingBarcodes, "Product(s) with barcode(s) already exists : " + existingBarcodes);
+    }
+
+    private void validate(ProductPojo productPojo) throws ApiException {
+        checkNull(productPojo.getName(), "Name cannot be null");
+        checkNull(productPojo.getBrandCategoryId(), "BrandCategoryId cannot be null");
+        checkNull(productPojo.getMrp(), "Mrp cannot be null");
+        checkNull(productPojo.getBarcode(), "Barcode cannot be null");
     }
 
 }

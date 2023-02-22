@@ -11,43 +11,39 @@
 <div th:replace="snippets.html :: name_toast"></div>
 
 <div class="container">
-  <h3 style=" padding:10px;">Sales report</h3>
+  <h3 style=" padding-bottom:10px;">Sales report</h3>
   <div class="row">
 
 
 
-    <form class="form-inline" id="daily-report-form">
-      <div class="input-group mb-3" style = "margin-right: 48px">
+    <form class="form-inline" id="daily-report-form" style="margin-left: 15px">
+      <div class="input-group mb-3" style = "margin-right: 40px">
+        <div class="input-group-prepend">
+          <label class ="input-group-text" for="brandName" ><b>Brand Name</b></label>
+        </div>
+        <input class="form-control" name="brandName" id="form-brand-select"  placeholder="brand">
+      </div>
+      <div class="input-group mb-3" style = "margin-right: 400px">
+        <div class="input-group-prepend">
+          <label class ="input-group-text" for="category" ><b>Category</b></label>
+        </div>
+        <input class="form-control" name="category"  id="form-category-select" placeholder="category">
+      </div>
+      <div class="input-group mb-3" style = "margin-right: 40px">
         <div class="input-group-prepend">
           <label class="input-group-text" for="input-start-date">Start Date: </label>
         </div>
         <input type = "date" id = "input-start-date" name = "startDate">
       </div>
-      <div class="input-group mb-3" style = "margin-right: 48px">
+      <div class="input-group mb-3" style = "margin-right: 40px">
         <div class="input-group-prepend">
           <label class="input-group-text" for="input-end-date">End Date: </label>
         </div>
         <input type = "date" id = "input-end-date" name = "endDate">
       </div>
-      <div class="input-group mb-3" style = "margin-right: 48px">
-        <div class="input-group-prepend">
-            <label class ="input-group-text" for="brandName" ><b>Brand Name</b></label>
-        </div>
-        <select class="form-control" name="brandName" id="form-brand-select"  placeholder="select brand"></select>
-      </div>
-      <div class="input-group mb-3" style = "margin-right: 48px">
-        <div class="input-group-prepend">
-          <label class ="input-group-text" for="category" ><b>Category</b></label>
-        </div>
-        <select class="form-control" name="category"  id="form-category-select" placeholder="select category"></select>
-      </div>
+      <button type="button" class="btn btn-sm btn-primary" id = "filter" style="margin-bottom:20px; margin-right:100px">Filter</button>
+      <button type="button" class="btn btn-sm btn-primary" onclick="downloadSalesReport()" style="margin-bottom:20px; margin-right:20px">Download</button>
     </form>
-    <div class="col">
-      <button type="button" class="btn btn-sm btn-primary" onclick="downloadSalesReport()">Download</button>
-    </div>
-    <div class="col">
-      <button type="button" class="btn btn-sm btn-primary" id = "filter">Filter</button>
-    </div>
   </div>
 
 

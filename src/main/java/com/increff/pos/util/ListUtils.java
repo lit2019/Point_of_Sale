@@ -21,7 +21,7 @@ public class ListUtils {
         }
     }
 
-    public static void checkDuplicates(ArrayList<String> list, String message) throws ApiException {
+    public static void checkDuplicates(List<String> list, String message) throws ApiException {
         HashSet<String> hashSet = new HashSet<>();
         ArrayList<String> duplicates = new ArrayList<>();
         list.forEach(s -> {
@@ -33,6 +33,11 @@ public class ListUtils {
         });
 
         checkNonEmptyList(duplicates, message + duplicates);
+    }
 
+    public static void checkUploadLimit(List list, Integer maxUploadSize) throws ApiException {
+        if (list.size() > maxUploadSize) {
+            throw new ApiException("upload size cannot be more than " + maxUploadSize);
+        }
     }
 }

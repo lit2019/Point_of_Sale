@@ -11,12 +11,23 @@
 <div th:replace="snippets.html :: name_toast"></div>
 
 <div class="container">
-    <h3 style=" padding:10px;">Inventory</h3>
+    <h3 style="margin-top:15px;margin-bottom:15px">Inventory</h3>
     <div class="row">
+        <div class="col-12">
+            <form class="form-inline" id="barcode-search-form">
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <label class="input-group-text" for="input-barcode">Barcode: </label>
+                    </div>
+                    <input type="text" class="form-control" name="orderStatus"  id="input-barcode" placeholder="barcode">
+                    <button type="button" class="btn btn-sm btn-primary" id="search-barcode" style="margin-left:20px" onclick="getInventoryList(true)">Search</button>
+                </div>
+            </form>
+
+        </div>
         <div class="col-12">
             <button type="button" class="btn btn-sm btn-primary" th:if="${info.getRole() == 'supervisor'}" id="upload-data">Upload</button>
             <button type="button" class="btn btn-sm btn-primary" onclick="downloadInventory()">Download</button>
-
         </div>
     </div>
 
@@ -34,7 +45,7 @@
                 <tr>
                     <th scope="col">Product Name</th>
                     <th scope="col">Barcode</th>
-                    <th scope="col">Inventory</th>
+                    <th scope="col">Quantity</th>
                     <th th:if="${info.getRole() == 'supervisor'}" scope="col">Actions</th>
                 </tr>
                 </thead>

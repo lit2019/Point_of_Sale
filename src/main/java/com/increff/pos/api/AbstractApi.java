@@ -17,5 +17,4 @@ public abstract class AbstractApi {
             throw new ApiException(message);
         }
     }
-
 }

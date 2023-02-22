@@ -22,7 +22,7 @@ function addInventory(event){
 	   success: function(response) {
 	        $("#inventory-form-modal").hide();
 	   		console.log("Inventory created");
-	   		getInventoryList();
+	   		getInventoryList(false);
 	   }, 
 	   error: function(error){
 	        console.log(error);
@@ -52,7 +52,7 @@ function updateInventory(event){
        }, 	   
 	   success: function(response) {
 	   		console.log("Inventory update");	
-	   		getInventoryList();     //...
+	   		getInventoryList(false);     //...
 	   }, 
 	   error: function(){
 	   	        alert(error.responseJSON.message);
@@ -63,8 +63,14 @@ function updateInventory(event){
 	return false;
 }
 
-function getInventoryList(){
-	var url = getInventoryUrl();
+function getInventoryList(searchByBarcode){
+    barcode = "";
+    if(searchByBarcode){
+
+        barcode = $("#input-barcode").val();
+    }
+    console.log("barcode"+barcode)
+	var url = getInventoryUrl()+"/search/"+barcode;
 	$.ajax({
 	   url: url, 
 	   type: 'GET', 
@@ -74,7 +80,6 @@ function getInventoryList(){
 	   		displayInventoryList(data);     //...
 	   }, 
 	   error: function(){
-	   	        alert(error.responseJSON.message);
 
 	   }
 	});
@@ -111,7 +116,7 @@ function uploadRows(){
 	   success: function(response) {
 	        $('#upload-inventory-modal').modal('toggle');
 	   		makeToast(true, "", null);
-            getInventoryList();
+            getInventoryList(false);
 
 	   }, 
 	   error: function(error){
@@ -149,7 +154,6 @@ function displayInventoryList(data){
 		+ '</tr>';
         $tbody.append(row);
 	}
-	paginate();
 }
 
 function displayEditInventory(id){
@@ -178,7 +182,7 @@ function resetUploadDialog(){
 	fileData = [];
 	errorData = "";
 	//Update counts	
-	getInventoryList();
+	getInventoryList(false);
 }
 
 function updateFileName(){
@@ -234,55 +238,18 @@ function setSelectOptions(form, options, initialValue){
 function init(){
 	$('#add-inventory').click(addInventory);
 	$('#update-inventory').click(updateInventory);
-	$('#refresh-data').click(getInventoryList);
 	$('#upload-data').click(displayUploadData);
     $('#process-data').click(processData);
     $('#inventoryFile').on('change', updateFileName)
     $("#open-add-dialog").click(displayAddDialog)
     $('#download-errors').click(downloadErrors);
-
 }
 function downloadInventory(){
-tableToCSV("inventory-table")
-}
-function tableToCSV(tableId) {
-
-// Variable to store the final csv data
-var csv_data = [];
-
-// Get each row data
-var rows = document.getElementById(tableId);
-for (var i = 0; i < rows.length; i++) {
-
-    // Get each column data
-    var cols = rows[i].querySelectorAll('td,th');
-
-    // Stores each csv row data
-    var csvrow = [];
-    for (var j = 0; j < cols.length; j++) {
-
-        // Get the text data of each cell
-        // of a row and push it to csvrow
-        csvrow.push(cols[j].innerHTML);
-    }
-
-    // Combine each column value with comma
-    csv_data.push(csvrow.join(","));
+tableToCSV(document, "inventory-table", 3);
 }
 
-// Combine each row data with new line character
-csv_data = csv_data.join('\n');
-
-// Call this function to download csv file
-downloadCSVFile(csv_data);
-}
-
-function paginate(){
-      $('#inventory-table').DataTable();
-      $('.dataTables_length').addClass('bs-select');
-}
 
 $(document).ready(init);
-$(document).ready(getInventoryList);
+$(document).ready(getInventoryList(false));
 
 

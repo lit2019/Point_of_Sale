@@ -38,12 +38,6 @@ public abstract class AbstractDao<T> {
     }
 
 
-    public List<T> selectByMember(String member, String value) {
-        TypedQuery<T> query = createQuery("select p from " + clazz.getSimpleName() + " p where " + member + "=:value");
-        query.setParameter("value", value);
-        return getResultList(query);
-    }
-
     protected List<T> getResultList(TypedQuery<T> query) {
         return query.getResultList();
     }

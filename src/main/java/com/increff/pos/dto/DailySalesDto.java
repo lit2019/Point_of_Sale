@@ -5,22 +5,22 @@ import com.increff.pos.api.DailySalesApi;
 import com.increff.pos.entity.DailySalesPojo;
 import com.increff.pos.model.DailySalesData;
 import com.increff.pos.model.DailySalesFilterForm;
-import com.increff.pos.util.ValidatorUtil;
+import com.increff.pos.util.ValidationUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@Component
+@Service
 public class DailySalesDto {
 
     @Autowired
     private DailySalesApi dailySalesApi;
 
     public List<DailySalesData> getByFilter(DailySalesFilterForm filterForm) throws ApiException {
-        ValidatorUtil.validate(filterForm);
-        return convert(dailySalesApi.get(filterForm.getStartDate(), filterForm.getEndDate()));
+        ValidationUtil.validate(filterForm);
+        return convert(dailySalesApi.getByDateRange(filterForm.getStartDate(), filterForm.getEndDate()));
     }
 
     private List<DailySalesData> convert(List<DailySalesPojo> dailySalesPojos) {
@@ -31,6 +31,7 @@ public class DailySalesDto {
             salesData.setTotalRevenue(pojo.getTotalRevenue());
             salesData.setInvoicedItemsCount(pojo.getInvoicedItemsCount());
             salesData.setInvoicedOrdersCount(pojo.getInvoicedOrdersCount());
+            dailySalesDataList.add(salesData);
         });
         return dailySalesDataList;
     }
