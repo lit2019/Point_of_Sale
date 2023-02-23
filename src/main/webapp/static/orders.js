@@ -33,14 +33,24 @@ function addItem(){
     var data = {};
 
 	var $form = $("#order-item-form");
-
 	data['barcode'] = $("#order-item-form input[name=barcode]").val();
 	data['quantity'] = $("#order-item-form input[name=quantity]").val();
 	data['sellingPrice'] = $("#order-item-form input[name=sellingPrice]").val();
+
+    for(var i in data){
+        if(data[i].trim()===""){
+            makeToast(false,i+" cannot be blank",null)
+            return;
+        }
+    }
+
 	orderItems.push(data);
 	console.log(orderItems);
 	refreshOrderForm();
 
+	$("#order-item-form input[name=barcode]").val("");
+	$("#order-item-form input[name=quantity]").val("");
+	$("#order-item-form input[name=sellingPrice]").val("");
 }
 
 //HELPER METHOD
@@ -185,7 +195,7 @@ function createOrder(){
             var pos = message.indexOf(",");
             message = message.slice(0, pos);
             message += "...."
-            makeToast(false, message, null);
+            makeToast(false, message, downloadErrors);
        }
     });
 }

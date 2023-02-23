@@ -66,8 +66,11 @@ function updateInventory(event){
 function getInventoryList(searchByBarcode){
     barcode = "";
     if(searchByBarcode){
-
-        barcode = $("#input-barcode").val();
+        if($("#input-barcode").val().trim()===""){
+            makeToast(false, "barcode cannot be blank",null);
+            return;
+        }
+        barcode = $("#input-barcode").val().trim();
     }
     console.log("barcode"+barcode)
 	var url = getInventoryUrl()+"/search/"+barcode;

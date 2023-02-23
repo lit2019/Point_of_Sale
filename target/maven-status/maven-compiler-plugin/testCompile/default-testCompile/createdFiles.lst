@@ -1,9 +1,7 @@
 com/increff/pos/jobs/DailySalesTaskTest.class
 com/increff/pos/dto/BrandDtoTest.class
 com/increff/pos/spring/QaConfig.class
-com/increff/pos/dao/ProductDaoTest.class
 com/increff/pos/dto/ProductDtoTest.class
-com/increff/pos/dao/BrandDaoTest.class
 com/increff/pos/api/InventoryApiTest.class
 com/increff/pos/api/OrderApiTest.class
 com/increff/pos/api/ProductApiTest.class

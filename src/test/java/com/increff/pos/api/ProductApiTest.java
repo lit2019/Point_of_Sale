@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Objects;
 
 import static com.increff.pos.util.TestObjectUtils.getNewProductPojo;
 import static junit.framework.TestCase.*;
@@ -65,7 +64,7 @@ public class ProductApiTest extends AbstractUnitTest {
         pojos.add(getNewProductPojo(1, "product", "barcode", 12.0));
 
         productApi.add(pojos);
-        assertEquals(true, Objects.nonNull(productDao.selectByBarcodes(Collections.singletonList("barcode"))));
+        Assert.assertNotNull(productDao.selectByBarcodes(Collections.singletonList("barcode")));
     }
 
     @Test
@@ -120,7 +119,7 @@ public class ProductApiTest extends AbstractUnitTest {
         productDao.insert(pojo1);
         ProductPojo pojo2 = productApi.get(pojo1.getId());
         Assert.assertNotNull(pojo2);
-        assertEquals(pojo1.getId(), pojo2.getId());
+        assertEqualsPojo(pojo1, pojo2);
     }
 
     @Test
@@ -163,8 +162,9 @@ public class ProductApiTest extends AbstractUnitTest {
     public void testGetCheck() throws ApiException {
         ProductPojo pojo = getNewProductPojo(1, "product", "barcode", 12.0);
         productDao.insert(pojo);
-
-        assertEquals(pojo.getId(), productApi.getCheck(pojo.getId()).getId());
+        ProductPojo pojo2 = productApi.getCheck(pojo.getId());
+        Assert.assertNotNull(pojo2);
+        assertEqualsPojo(pojo, pojo2);
     }
 
     @Test
@@ -186,5 +186,13 @@ public class ProductApiTest extends AbstractUnitTest {
         } catch (ApiException e) {
             assertEquals(String.format("Product(s) with barcode(s) already exists : [%s]", barcode), e.getMessage());
         }
+    }
+
+    private void assertEqualsPojo(ProductPojo pojo1, ProductPojo pojo2) {
+        assertEquals(pojo1.getId(), pojo2.getId());
+        assertEquals(pojo1.getBrandCategoryId(), pojo2.getBrandCategoryId());
+        assertEquals(pojo1.getName(), pojo2.getName());
+        assertEquals(pojo1.getBarcode(), pojo2.getBarcode());
+        assertEquals(pojo1.getMrp(), pojo2.getMrp());
     }
 }

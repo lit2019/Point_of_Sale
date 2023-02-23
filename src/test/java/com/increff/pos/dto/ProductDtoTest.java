@@ -35,7 +35,7 @@ public class ProductDtoTest extends AbstractUnitTest {
     public void testGet() throws ApiException {
         BrandPojo brandPojo = getNewBrandPojo("brand", "category");
         brandDao.insert(brandPojo);
-        
+
         ProductPojo productPojo = getNewProductPojo(brandPojo.getId(), "product", "barcode", 12.0);
         productDao.insert(productPojo);
         ProductData productData = productDto.get(productPojo.getId());

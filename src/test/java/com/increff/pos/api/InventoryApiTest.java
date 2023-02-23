@@ -52,7 +52,12 @@ public class InventoryApiTest extends AbstractUnitTest {
     public void testUpsert() throws ApiException {
         List<InventoryPojo> inventoryPojos = getNewInventoryPojoList(productPojos);
         inventoryApi.upsert(inventoryPojos);
-        assertEquals(inventoryPojos.size(), inventoryDao.selectAll().size());
+
+        List<Integer> productIds = new ArrayList<>();
+        for (ProductPojo productPojo : productPojos)
+            productIds.add(productPojo.getId());
+
+        assertEquals(inventoryPojos.size(), inventoryDao.selectByProductIds(productIds).size());
     }
 
     @Test
@@ -75,7 +80,8 @@ public class InventoryApiTest extends AbstractUnitTest {
         } catch (ApiException e) {
             assertEquals("Inventory with given ID does not exist, id: 0", e.getMessage());
         }
-        assertEquals(inventoryPojo.getQuantity(), inventoryApi.getCheck(inventoryPojo.getProductId()).getQuantity());
+        InventoryPojo inventoryPojo2 = inventoryApi.getCheck(inventoryPojo.getProductId());
+        assertEqualsInventoryPojo(inventoryPojo, inventoryPojo2);
     }
 
     @Test
@@ -131,5 +137,10 @@ public class InventoryApiTest extends AbstractUnitTest {
         List<InventoryPojo> inventoryPojos = getNewInventoryPojoList(productPojos);
         inventoryPojos.forEach(inventoryDao::insert);
         assertEquals(inventoryPojos.size(), inventoryApi.getAll().size());
+    }
+
+    private void assertEqualsInventoryPojo(InventoryPojo inventoryPojo, InventoryPojo inventoryPojo2) {
+        assertEquals(inventoryPojo.getProductId(), inventoryPojo2.getProductId());
+        assertEquals(inventoryPojo.getQuantity(), inventoryPojo2.getQuantity());
     }
 }

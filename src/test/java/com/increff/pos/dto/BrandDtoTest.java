@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.increff.pos.util.TestObjectUtils.*;
 import static junit.framework.TestCase.fail;
@@ -104,16 +105,16 @@ public class BrandDtoTest extends AbstractUnitTest {
 
         List<BrandData> datas;
         datas = dto.get(getNewBrandSearchForm(" Name1", "  category1  "));
-        TestCase.assertEquals(1, datas.size());
+        TestCase.assertEquals(pojos.stream().filter(pojo -> pojo.getName().equals("name1") && pojo.getCategory().equals("category1")).collect(Collectors.toList()).size(), datas.size());
 
         datas = dto.get(getNewBrandSearchForm("name1", null));
-        TestCase.assertEquals(2, datas.size());
+        TestCase.assertEquals(pojos.stream().filter(pojo -> pojo.getName().equals("name1")).collect(Collectors.toList()).size(), datas.size());
 
         datas = dto.get(getNewBrandSearchForm(null, "categorY2"));
-        TestCase.assertEquals(2, datas.size());
+        TestCase.assertEquals(pojos.stream().filter(pojo -> pojo.getCategory().equals("category2")).collect(Collectors.toList()).size(), datas.size());
 
         datas = dto.get(getNewBrandSearchForm(null, null));
-        TestCase.assertEquals(3, datas.size());
+        TestCase.assertEquals(pojos.size(), datas.size());
     }
 
     @Test
@@ -149,7 +150,7 @@ public class BrandDtoTest extends AbstractUnitTest {
     }
 
     @Test
-    public void testUpdate2() throws ApiException {
+    public void testUpdate() throws ApiException {
         BrandPojo pojo = getNewBrandPojo("name", "category");
         dao.insert(pojo);
         dto.update(pojo.getId(), getNewBrandForm(" nAme2  ", "cAtegorY2"));

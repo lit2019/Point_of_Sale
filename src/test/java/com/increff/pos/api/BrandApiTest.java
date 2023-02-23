@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 
 import static com.increff.pos.util.TestObjectUtils.getNewBrandPojo;
 import static junit.framework.TestCase.*;
@@ -35,7 +34,7 @@ public class BrandApiTest extends AbstractUnitTest {
     }
 
     @Test
-    public void testAddInvalidPojo() {
+    public void testAddInvalidName() {
         BrandPojo pojo = getNewBrandPojo(null, "category");
         try {
             api.add(Collections.singletonList(pojo));
@@ -43,8 +42,11 @@ public class BrandApiTest extends AbstractUnitTest {
         } catch (ApiException e) {
             assertEquals("name cannot be null", e.getMessage());
         }
-//Todo seperate tests in seperate c,methods
-        pojo = getNewBrandPojo("name", null);
+    }
+
+    @Test
+    public void testAddInvalidCategory() {
+        BrandPojo pojo = getNewBrandPojo("name", null);
         try {
             api.add(Collections.singletonList(pojo));
             fail("expected ApiException");
@@ -63,9 +65,9 @@ public class BrandApiTest extends AbstractUnitTest {
         pojos.add(getNewBrandPojo("name3", "category3"));
         api.add(pojos);
 
-        assertEquals(true, Objects.nonNull(dao.select("name1", "category1")));
-        assertEquals(true, Objects.nonNull(dao.select("name2", "category2")));
-        assertEquals(true, Objects.nonNull(dao.select("name3", "category3")));
+        assertNotNull(dao.select("name1", "category1"));
+        assertNotNull(dao.select("name2", "category2"));
+        assertNotNull(dao.select("name3", "category3"));
     }
 
     @Test
@@ -87,11 +89,13 @@ public class BrandApiTest extends AbstractUnitTest {
 
     @Test
     public void testUpdateExistingPojo() {
-        BrandPojo pojo = getNewBrandPojo("name", "category");
-        dao.insert(pojo);
+        BrandPojo pojo1 = getNewBrandPojo("name", "category");
+        dao.insert(pojo1);
+        BrandPojo pojo2 = getNewBrandPojo("name2", "category2");
+        dao.insert(pojo2);
 //todo insert two pojos here
         try {
-            api.update(pojo.getId() + 1, getNewBrandPojo("name", "category"));
+            api.update(pojo2.getId(), getNewBrandPojo("name", "category"));
             fail("expected ApiException");
         } catch (ApiException e) {
             assertEquals("given name:name and category:category already exists", e.getMessage());
@@ -172,16 +176,6 @@ public class BrandApiTest extends AbstractUnitTest {
         }
     }
 
-    //    todo no need
-    @Test
-    public void testCheckExistingBrandCategory2() throws ApiException {
-        ArrayList<BrandPojo> pojos = new ArrayList<>();
-        pojos.add(getNewBrandPojo("name1", "category1"));
-        pojos.add(getNewBrandPojo("name2", "category2"));
-
-        api.checkExistingBrandCategory(pojos);
-    }
-
     @Test
     public void testGetDistinctBrands() throws ApiException {
         List<BrandPojo> pojos = new ArrayList<>();
@@ -202,7 +196,7 @@ public class BrandApiTest extends AbstractUnitTest {
         BrandPojo pojo = getNewBrandPojo("name", "category");
         dao.insert(pojo);
         BrandPojo pojo1 = api.getByNameCategory("name", "category");
-        assertEquals(pojo.getId(), pojo1.getId());
+        assertEqualsPojo(pojo, pojo1);
     }
 
     @Test
@@ -210,7 +204,7 @@ public class BrandApiTest extends AbstractUnitTest {
         BrandPojo pojo1 = getNewBrandPojo("name", "category");
         dao.insert(pojo1);
         BrandPojo pojo2 = api.getCheck(pojo1.getId());
-        assertEquals(pojo1.getId(), pojo2.getId());
+        assertEqualsPojo(pojo1, pojo2);
     }
 
     @Test
@@ -222,5 +216,11 @@ public class BrandApiTest extends AbstractUnitTest {
         } catch (ApiException e) {
             assertEquals(String.format("Brand with given id : %d does not exist", invalidId), e.getMessage());
         }
+    }
+
+    private void assertEqualsPojo(BrandPojo pojo1, BrandPojo pojo2) {
+        assertEquals(pojo1.getId(), pojo2.getId());
+        assertEquals(pojo1.getName(), pojo2.getName());
+        assertEquals(pojo1.getCategory(), pojo2.getCategory());
     }
 }

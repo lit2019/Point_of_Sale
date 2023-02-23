@@ -7,6 +7,7 @@ import com.increff.pos.dao.ProductDao;
 import com.increff.pos.entity.BrandPojo;
 import com.increff.pos.entity.InventoryPojo;
 import com.increff.pos.entity.ProductPojo;
+import com.increff.pos.model.InventoryData;
 import com.increff.pos.model.InventoryForm;
 import com.increff.pos.model.InventorySearchForm;
 import com.increff.pos.spring.AbstractUnitTest;
@@ -19,6 +20,7 @@ import java.util.List;
 import static com.increff.pos.util.TestObjectUtils.*;
 import static junit.framework.TestCase.fail;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 public class InventoryDtoTest extends AbstractUnitTest {
 
@@ -85,7 +87,9 @@ public class InventoryDtoTest extends AbstractUnitTest {
         forms.add(getNewInventoryForm("barcode1", 10));
         forms.add(getNewInventoryForm("barcode2", 10));
         inventoryDto.add(forms);
-        assertEquals(2, inventoryDao.selectAll().size());
+        List<Integer> productIds = new ArrayList<>();
+        productPojos.forEach(productPojo -> productIds.add(productPojo.getId()));
+        assertEquals(2, inventoryDao.selectByProductIds(productIds).size());
     }
 
     @Test
@@ -110,8 +114,10 @@ public class InventoryDtoTest extends AbstractUnitTest {
         InventoryPojo inventoryPojo = getNewInventoryPojo(productPojo.getId(), 10);
         inventoryDao.insert(inventoryPojo);
 
-        assertEquals(inventoryPojo.getProductId(), inventoryDto.get(inventoryPojo.getProductId()).getProductId());
-        assertEquals(inventoryPojo.getQuantity(), inventoryDto.get(inventoryPojo.getProductId()).getQuantity());
+        InventoryData inventoryData = inventoryDto.get(inventoryPojo.getProductId());
+        assertNotNull(inventoryData);
+        assertEquals(inventoryPojo.getProductId(), inventoryData.getProductId());
+        assertEquals(inventoryPojo.getQuantity(), inventoryData.getQuantity());
     }
 
     @Test

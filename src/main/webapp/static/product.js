@@ -37,7 +37,11 @@ function filter(searchByBarcode){
 	var url = getProductFilterUrl();
 	data = {};
 	if(searchByBarcode){
-	    data["barcode"] = $("#input-barcode").val();
+	    if($("#input-barcode").val().trim()===""){
+	        makeToast(false,"barcode cannot be blank",null);
+	        return;
+	    }
+	    data["barcode"] = $("#input-barcode").val().trim();
 	}
 	else{
         if($("#filter-brand-select").val().trim()!=""){
