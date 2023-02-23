@@ -6,11 +6,11 @@ import com.increff.pos.dao.InvoiceDao;
 import com.increff.pos.dao.OrderDao;
 import com.increff.pos.dao.OrderItemDao;
 import com.increff.pos.entity.DailySalesPojo;
-import com.increff.pos.entity.InvoicePojo;
 import com.increff.pos.entity.OrderItemPojo;
 import com.increff.pos.entity.OrderPojo;
+import com.increff.pos.model.OrderStatus;
 import com.increff.pos.spring.AbstractUnitTest;
-import com.increff.pos.utils.TestObjectUtils;
+import com.increff.pos.util.TestObjectUtils;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -46,11 +46,10 @@ public class DailySalesTaskTest extends AbstractUnitTest {
         Integer version1 = pojo1.getVersion();
 
         OrderPojo orderPojo = new OrderPojo();
+        orderPojo.setOrderStatus(OrderStatus.INVOICED);
         orderDao.insert(orderPojo);
         List<OrderItemPojo> orderItemPojos = TestObjectUtils.getNewOrderItemPojoList(orderPojo.getId());
         orderItemPojos.forEach(orderItemDao::insert);
-        InvoicePojo invoicePojo = TestObjectUtils.getNewInvoicePojo(orderPojo.getId());
-        invoiceDao.insert(invoicePojo);
 
         task.run();
         DailySalesPojo pojo2 = dailySalesDao.selectByDate(today);

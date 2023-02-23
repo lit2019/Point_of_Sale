@@ -1,13 +1,11 @@
 package com.increff.pos.dto;
 
 import com.increff.pos.api.ApiException;
-import com.increff.pos.model.InfoData;
 import com.increff.pos.model.LoginForm;
 import com.increff.pos.spring.AuthRole;
 import com.increff.pos.util.SecurityUtil;
 import com.increff.pos.util.UserPrincipal;
 import com.increff.pos.util.ValidationUtil;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -23,9 +21,6 @@ import java.util.List;
 
 @Service
 public class LoginDto {
-
-    @Autowired
-    private InfoData info;
 
     @Value("#{'${app.supervisorEmails}'.split(',')}")
     private List<String> supervisorEmails;

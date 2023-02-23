@@ -5,19 +5,21 @@ import com.increff.pos.dao.BrandDao;
 import com.increff.pos.dao.ProductDao;
 import com.increff.pos.entity.BrandPojo;
 import com.increff.pos.entity.ProductPojo;
+import com.increff.pos.model.ProductData;
 import com.increff.pos.model.ProductForm;
 import com.increff.pos.model.ProductUpdateForm;
 import com.increff.pos.spring.AbstractUnitTest;
-import com.increff.pos.utils.TestObjectUtils;
+import com.increff.pos.util.TestObjectUtils;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
 import java.util.Collections;
 
-import static com.increff.pos.utils.TestObjectUtils.*;
+import static com.increff.pos.util.TestObjectUtils.*;
 import static junit.framework.TestCase.fail;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 public class ProductDtoTest extends AbstractUnitTest {
 
@@ -28,6 +30,23 @@ public class ProductDtoTest extends AbstractUnitTest {
     private ProductDao productDao;
     @Autowired
     private BrandDao brandDao;
+
+    @Test
+    public void testGet() throws ApiException {
+        BrandPojo brandPojo = getNewBrandPojo("brand", "category");
+        brandDao.insert(brandPojo);
+        
+        ProductPojo productPojo = getNewProductPojo(brandPojo.getId(), "product", "barcode", 12.0);
+        productDao.insert(productPojo);
+        ProductData productData = productDto.get(productPojo.getId());
+        assertNotNull(productData);
+        assertEquals(productPojo.getId(), productData.getId());
+        assertEquals(productPojo.getName(), productData.getProductName());
+        assertEquals(productPojo.getBarcode(), productData.getBarcode());
+        assertEquals(productPojo.getMrp(), productData.getMrp());
+        assertEquals(brandPojo.getName(), productData.getBrandName());
+        assertEquals(brandPojo.getCategory(), productData.getCategory());
+    }
 
     @Test
     public void testAddEmptyForms() {

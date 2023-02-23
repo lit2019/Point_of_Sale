@@ -6,7 +6,7 @@ import com.increff.pos.entity.InventoryPojo;
 import com.increff.pos.entity.ProductPojo;
 import com.increff.pos.model.InventoryAllocationRequest;
 import com.increff.pos.spring.AbstractUnitTest;
-import com.increff.pos.utils.TestObjectUtils;
+import com.increff.pos.util.TestObjectUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +16,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
-import static com.increff.pos.utils.TestObjectUtils.*;
+import static com.increff.pos.util.TestObjectUtils.*;
 import static junit.framework.TestCase.fail;
 import static org.junit.Assert.assertEquals;
 

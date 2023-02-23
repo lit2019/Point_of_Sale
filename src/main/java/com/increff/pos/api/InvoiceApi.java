@@ -7,9 +7,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.time.ZonedDateTime;
-import java.time.temporal.ChronoUnit;
-import java.util.List;
 
 @Service
 @Transactional(rollbackOn = Exception.class)
@@ -23,13 +20,6 @@ public class InvoiceApi extends AbstractApi {
     public void add(InvoicePojo invoicePojo) throws ApiException {
         validate(invoicePojo);
         dao.insert(invoicePojo);
-    }
-
-    public List<InvoicePojo> getByDate(ZonedDateTime startDate, ZonedDateTime endDate) throws ApiException {
-        if (ChronoUnit.DAYS.between(startDate, endDate) > maxDateRange) {
-            throw new ApiException(String.format("start date and end date cannot be more than %d days apart", maxDateRange));
-        }
-        return dao.selectByDate(startDate, endDate);
     }
 
     public InvoicePojo get(Integer orderId) {

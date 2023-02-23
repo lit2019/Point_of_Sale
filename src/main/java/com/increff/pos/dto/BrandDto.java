@@ -18,7 +18,7 @@ import static com.increff.pos.util.ValidationUtil.validate;
 
 @Service
 //TODO remove sending BrandUpsertForm
-public class BrandDto extends AbstractDto {
+public class BrandDto {
     @Autowired
     private BrandApi api;
     private static final Integer MAX_UPLOAD_SIZE = 5000;

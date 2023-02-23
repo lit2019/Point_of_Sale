@@ -22,7 +22,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import static com.increff.pos.utils.TestObjectUtils.*;
+import static com.increff.pos.util.TestObjectUtils.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
@@ -100,7 +100,7 @@ public class OrderApiTest extends AbstractUnitTest {
         filterForm.setStartDate(ZonedDateTime.now().toLocalDate().atStartOfDay(ZoneId.of("UTC")));
         filterForm.setEndDate(filterForm.getStartDate().plusDays(200));
         try {
-            orderApi.getByFilter(filterForm);
+            orderApi.getByFilter(filterForm.getStartDate(), filterForm.getEndDate(), filterForm.getOrderStatus());
             fail("expected ApiException");
         } catch (ApiException e) {
             assertEquals("start date and end date cannot be more than 100 days apart", e.getMessage());
@@ -109,8 +109,7 @@ public class OrderApiTest extends AbstractUnitTest {
         filterForm.setEndDate(filterForm.getStartDate().plusDays(1));
         orderDao.insert(new OrderPojo());
         orderDao.insert(new OrderPojo());
-        assertEquals(2, orderApi.getByFilter(filterForm).size());
-
+        assertEquals(2, orderApi.getByFilter(filterForm.getStartDate(), filterForm.getEndDate(), filterForm.getOrderStatus()).size());
     }
 
     @Test

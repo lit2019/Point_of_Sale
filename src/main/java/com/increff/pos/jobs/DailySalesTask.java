@@ -5,8 +5,9 @@ import com.increff.pos.api.DailySalesApi;
 import com.increff.pos.api.InvoiceApi;
 import com.increff.pos.api.OrderApi;
 import com.increff.pos.entity.DailySalesPojo;
-import com.increff.pos.entity.InvoicePojo;
 import com.increff.pos.entity.OrderItemPojo;
+import com.increff.pos.entity.OrderPojo;
+import com.increff.pos.model.OrderStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -31,17 +32,15 @@ public class DailySalesTask {
 //        todo ZoneId must be utc
         ZonedDateTime today = ZonedDateTime.now().toLocalDate().atStartOfDay(ZoneId.of("UTC"));
         ZonedDateTime tomorrow = today.plusDays(1);
-        List<InvoicePojo> invoicePojos = invoiceApi.getByDate(today, tomorrow);
+        List<OrderPojo> orderPojos = orderApi.getByFilter(today, tomorrow, OrderStatus.INVOICED);
 
         ArrayList<Integer> orderIds = new ArrayList<>();
-        invoicePojos.forEach(pojo -> {
-            orderIds.add(pojo.getOrderId());
-        });
+        orderPojos.forEach(pojo -> orderIds.add(pojo.getId()));
 
         List<OrderItemPojo> orderItems = orderApi.getOrderItemsByOrderIds(orderIds);
 
         DailySalesPojo dailySalesPojo = new DailySalesPojo();
-        dailySalesPojo.setInvoicedOrdersCount(invoicePojos.size());
+        dailySalesPojo.setInvoicedOrdersCount(orderPojos.size());
 
         Integer invoicedItemsCount = 0;
         Double totalRevenue = 0.0;

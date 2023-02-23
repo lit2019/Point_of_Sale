@@ -71,7 +71,6 @@ com/increff/pos/api/InventoryApi.class
 com/increff/pos/controller/OrderController.class
 com/increff/pos/model/OrderItemData.class
 com/increff/pos/spring/DbConfig.class
-com/increff/pos/dto/AbstractDto.class
 com/increff/pos/model/DailySalesData.class
 com/increff/pos/api/ProductApi.class
 com/increff/pos/controller/InitApiController.class

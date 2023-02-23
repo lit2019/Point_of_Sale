@@ -4,7 +4,6 @@ import com.increff.pos.dao.OrderDao;
 import com.increff.pos.dao.OrderItemDao;
 import com.increff.pos.entity.OrderItemPojo;
 import com.increff.pos.entity.OrderPojo;
-import com.increff.pos.model.OrderFilterForm;
 import com.increff.pos.model.OrderStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -12,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import javax.transaction.Transactional;
+import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
@@ -42,6 +42,12 @@ public class OrderApi extends AbstractApi {
         return orderDao.select(id);
     }
 
+    public OrderPojo getCheck(Integer id) {
+        OrderPojo pojo = orderDao.select(id);
+        String.format("order with Id : %d dose not exist", id);
+        return pojo;
+    }
+
     public List<OrderItemPojo> getOrderItemsByOrderIds(List<Integer> orderIds) {
 //        TODO return empty list if input is empty
         if (CollectionUtils.isEmpty(orderIds)) {
@@ -50,12 +56,14 @@ public class OrderApi extends AbstractApi {
         return orderItemDao.getByOrderIds(orderIds);
     }
 
-    public List<OrderPojo> getByFilter(OrderFilterForm filterForm) throws ApiException {
+    public List<OrderPojo> getByFilter(ZonedDateTime startDate, ZonedDateTime endDate, OrderStatus orderStatus) throws ApiException {
 //        TODO move endDate.plusdays() logic to ui
-        if (ChronoUnit.DAYS.between(filterForm.getStartDate(), filterForm.getEndDate()) > maxDateRange)
+        endDate = endDate.plusDays(1);
+        if (!startDate.isBefore(endDate)) throw new ApiException("Start Date must be Before End Date");
+        if (ChronoUnit.DAYS.between(startDate, endDate) > maxDateRange)
             throw new ApiException(String.format("start date and end date cannot be more than %d days apart", maxDateRange));
 
-        return orderDao.selectByFilter(filterForm.getStartDate(), filterForm.getEndDate(), filterForm.getOrderStatus());
+        return orderDao.selectByFilter(startDate, endDate, orderStatus);
     }
 
     public void setStatus(Integer id, OrderStatus invoiced) {

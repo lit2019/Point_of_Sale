@@ -35,9 +35,11 @@ public class DailySalesApi extends AbstractApi {
     }
 
     public List<DailySalesPojo> getByDateRange(ZonedDateTime startDate, ZonedDateTime endDate) throws ApiException {
-        if (ChronoUnit.DAYS.between(startDate, endDate) > maxDateRange) {
+        endDate = endDate.plusDays(1);
+        if (!startDate.isBefore(endDate)) throw new ApiException("Start Date must be Before End Date");
+        if (ChronoUnit.DAYS.between(startDate, endDate) > maxDateRange)
             throw new ApiException(String.format("start date and end date cannot be more than %s days apart", maxDateRange));
-        }
+
         return dao.selectByDateRange(startDate, endDate);
     }
 

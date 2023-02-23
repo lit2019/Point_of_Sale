@@ -16,7 +16,6 @@
 /home/mark/IdeaProjects/pos/src/main/java/com/increff/pos/spring/SecurityConfig.java
 /home/mark/IdeaProjects/pos/src/main/java/com/increff/pos/entity/ProductPojo.java
 /home/mark/IdeaProjects/pos/src/main/java/com/increff/pos/spring/SpringSecurityInitializer.java
-/home/mark/IdeaProjects/pos/src/main/java/com/increff/pos/dto/AbstractDto.java
 /home/mark/IdeaProjects/pos/src/main/java/com/increff/pos/model/DailySalesFilterForm.java
 /home/mark/IdeaProjects/pos/src/main/java/com/increff/pos/spring/WebInitializer.java
 /home/mark/IdeaProjects/pos/src/main/java/com/increff/pos/dao/InvoiceDao.java

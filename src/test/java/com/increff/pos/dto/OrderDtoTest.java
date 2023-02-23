@@ -10,8 +10,7 @@ import com.increff.pos.entity.OrderPojo;
 import com.increff.pos.entity.ProductPojo;
 import com.increff.pos.model.*;
 import com.increff.pos.spring.AbstractUnitTest;
-import com.increff.pos.utils.TestObjectUtils;
-import org.junit.Before;
+import com.increff.pos.util.TestObjectUtils;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,8 +23,8 @@ import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.increff.pos.utils.TestObjectUtils.getNewOrderItemForm;
-import static com.increff.pos.utils.TestObjectUtils.getNewOrderItemPojo;
+import static com.increff.pos.util.TestObjectUtils.getNewOrderItemForm;
+import static com.increff.pos.util.TestObjectUtils.getNewOrderItemPojo;
 import static junit.framework.TestCase.fail;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
@@ -57,12 +56,6 @@ public class OrderDtoTest extends AbstractUnitTest {
     @Autowired
     private BrandDao brandDao;
 
-    @Before
-    public void setup() {
-        invoiceClient = mock(InvoiceClient.class);
-        when(invoiceClient.getPdfBase64(any(InvoiceForm.class), anyString())).thenReturn(TestObjectUtils.getBasePdf64String());
-        ReflectionTestUtils.setField(orderDto, "invoiceClient", invoiceClient);
-    }
 
     @Test
     public void testAddEmptyList() {
@@ -77,10 +70,11 @@ public class OrderDtoTest extends AbstractUnitTest {
 
     @Test
     public void testAddDuplicateBarcode() {
+        String duplicateBarcode = "barcode2";
         ArrayList<OrderItemForm> orderItemForms = new ArrayList<>();
         orderItemForms.add(getNewOrderItemForm("barcode1", 1, 10.0));
-        orderItemForms.add(getNewOrderItemForm("barcode2", 1, 10.0));
-        orderItemForms.add(getNewOrderItemForm("barcode2", 1, 10.0));
+        orderItemForms.add(getNewOrderItemForm(duplicateBarcode, 1, 10.0));
+        orderItemForms.add(getNewOrderItemForm(duplicateBarcode, 1, 10.0));
 
         OrderForm orderForm = new OrderForm();
         orderForm.setOrderItemForms(orderItemForms);
@@ -88,10 +82,11 @@ public class OrderDtoTest extends AbstractUnitTest {
             orderDto.add(orderForm);
             fail("expected ApiException");
         } catch (ApiException e) {
-            assertEquals("duplicate barcodes exist \n Erroneous barcodes : [barcode2]", e.getMessage());
+            assertEquals(String.format("duplicate barcodes exist \n Erroneous barcodes : [%s]", duplicateBarcode), e.getMessage());
         }
     }
 
+    //todo rename methods
     @Test
     public void testAdd() throws ApiException {
         List<ProductPojo> productPojos = TestObjectUtils.getNewProductPojoList();
@@ -115,6 +110,10 @@ public class OrderDtoTest extends AbstractUnitTest {
 
     @Test
     public void testGenerateInvoice() throws IOException, ApiException {
+        invoiceClient = mock(InvoiceClient.class);
+        when(invoiceClient.getPdfBase64(any(InvoiceForm.class), anyString())).thenReturn(TestObjectUtils.getBasePdf64String());
+        ReflectionTestUtils.setField(orderDto, "invoiceClient", invoiceClient);
+
         OrderPojo orderPojo = new OrderPojo();
         orderDao.insert(orderPojo);
 
@@ -153,7 +152,7 @@ public class OrderDtoTest extends AbstractUnitTest {
     public void testGetSalesReport() throws ApiException {
         List<BrandPojo> brandPojos = TestObjectUtils.getNewBrandPojoList();
         brandPojos.forEach(brandDao::insert);
-
+//todo send brandIds a parameter
         List<ProductPojo> productPojos = TestObjectUtils.getNewProductPojoList();
         productPojos.get(0).setBrandCategoryId(brandPojos.get(0).getId());
         productPojos.get(1).setBrandCategoryId(brandPojos.get(1).getId());
@@ -161,13 +160,13 @@ public class OrderDtoTest extends AbstractUnitTest {
         productPojos.forEach(productDao::insert);
 
         OrderPojo orderPojo = new OrderPojo();
+        orderPojo.setOrderStatus(OrderStatus.INVOICED);
         orderDao.insert(orderPojo);
 
         productPojos.forEach(productPojo -> {
             productDao.insert(productPojo);
             orderItemDao.insert(getNewOrderItemPojo(orderPojo.getId(), productPojo.getId(), 1, 1.0));
         });
-        invoiceDao.insert(TestObjectUtils.getNewInvoicePojo(orderPojo.getId()));
 
         SalesFilterForm filterForm = new SalesFilterForm();
         filterForm.setStartDate(ZonedDateTime.now().toLocalDate().atStartOfDay(ZoneId.of("UTC")));

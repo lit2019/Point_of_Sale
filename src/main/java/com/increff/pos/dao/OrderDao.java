@@ -10,7 +10,8 @@ import java.util.List;
 
 @Repository
 public class OrderDao extends AbstractDao<OrderPojo> {
-    private static final String SELECT_BY_DATE = "select p from OrderPojo p where (p.createdAt between :startDate AND :endDate) and (p.orderStatus=:orderStatus or :orderStatus is null)";
+    private static final String SELECT_BY_DATE = "select p from OrderPojo p where (p.createdAt between :startDate AND :endDate)" +
+            " and (p.orderStatus=:orderStatus or :orderStatus is null)";
 
     public List<OrderPojo> selectByFilter(ZonedDateTime startDate, ZonedDateTime endDate, OrderStatus orderStatus) {
         TypedQuery<OrderPojo> query = createQuery(SELECT_BY_DATE);

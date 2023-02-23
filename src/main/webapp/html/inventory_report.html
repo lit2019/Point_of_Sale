@@ -11,60 +11,62 @@
 <div th:replace="snippets.html :: name_toast"></div>
 
 <div class="container">
-  <div class="row">
+    <div class="row">
 
-    <div class="col-12">
+        <div class="col-12">
 
-      <h3 style="padding-bottom:20px">Inventory report</h3>
-    </div>
-
-    <form class="form-inline" id="daily-report-form" style="padding-left:15px">
-
-      <div class="input-group mb-3">
-        <div class="input-group-prepend">
-          <label class ="input-group-text" for="brandName" ><b>Brand Name</b></label>
+            <h3 style="padding-bottom:20px">Inventory report</h3>
         </div>
-        <input type="text" class="form-control" name="brandName" id="form-brand-select"  placeholder="brand"></input>
-      </div>
-      <div class="input-group mb-3" style = "margin-left: 10px">
-        <div class="input-group-prepend">
-          <label class ="input-group-text" for="category" ><b>Category</b></label>
+
+        <form class="form-inline" id="daily-report-form" style="padding-left:15px">
+
+            <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                    <label class="input-group-text" for="brandName"><b>Brand Name</b></label>
+                </div>
+                <input type="text" class="form-control" name="brandName" id="form-brand-select"
+                       placeholder="Brand"></input>
+            </div>
+            <div class="input-group mb-3" style="margin-left: 10px">
+                <div class="input-group-prepend">
+                    <label class="input-group-text" for="category"><b>Category</b></label>
+                </div>
+                <input type="text" class="form-control" name="category" id="form-category-select"
+                       placeholder="Category"></input>
+            </div>
+        </form>
+
+        <div class="col">
+            <button type="button" class="btn btn-sm btn-primary" id="filter">Filter</button>
         </div>
-        <input type="text" class="form-control" name="category"  id="form-category-select" placeholder="category"></input>
-      </div>
-    </form>
 
-    <div class="col">
-      <button type="button" class="btn btn-sm btn-primary" id = "filter">Filter</button>
+        <div class="col-12">
+            <button type="button" class="btn btn-primary" onclick="downloadInventoryReport()">Download</button>
+        </div>
     </div>
 
-    <div class="col-12">
-      <button type="button" class="btn btn-primary" onclick="downloadInventoryReport()">Download</button>
+
+    <!-- Blank Row -->
+    <div class="row">
+        &nbsp;
     </div>
-  </div>
+    <div class="row">
 
-
-  <!-- Blank Row -->
-  <div class="row">
-    &nbsp;
-  </div>
-  <div class="row">
-
-    <!-- Table -->
-    <div class="col-12">
-      <table class="table table-striped" id="inventory-report-table">
-        <thead>
-        <tr>
-          <th scope="col">Brand</th>
-          <th scope="col">Category</th>
-          <th scope="col">Quantity</th>
-        </tr>
-        </thead>
-        <tbody>
-        </tbody>
-      </table>
+        <!-- Table -->
+        <div class="col-12">
+            <table class="table table-striped" id="inventory-report-table">
+                <thead>
+                <tr>
+                    <th scope="col">Brand</th>
+                    <th scope="col">Category</th>
+                    <th scope="col">Quantity</th>
+                </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
     </div>
-  </div>
 
 
 </div> <!-- Container end-->

@@ -6,7 +6,6 @@ com/increff/pos/dto/ProductDtoTest.class
 com/increff/pos/dao/BrandDaoTest.class
 com/increff/pos/api/InventoryApiTest.class
 com/increff/pos/api/OrderApiTest.class
-com/increff/pos/utils/TestObjectUtils.class
 com/increff/pos/api/ProductApiTest.class
 com/increff/pos/dto/OrderDtoTest.class
 com/increff/pos/dto/DailySalesDtoTest.class

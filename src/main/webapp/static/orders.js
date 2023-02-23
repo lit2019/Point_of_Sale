@@ -123,7 +123,7 @@ function displayOrders(searchWithId){
 
                 var row = '<tr>'
                 + '<td onclick="getOrderDetails(' + e.id + ')" style="color:blue;"> <u>' + e.id + '</u></td>'
-                + '<td>'  + e.createdAt + '</td>'
+                + '<td>'  + e.createdAt.replace('T',', ').replace('Z',' UTC') + '</td>'
                 + '<td>'  + e.orderStatus + '</td>'
 	            + getRow(e)
                 + '</tr>';

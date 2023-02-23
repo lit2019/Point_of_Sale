@@ -2,9 +2,9 @@
 /home/mark/IdeaProjects/pos/src/test/java/com/increff/pos/dao/ProductDaoTest.java
 /home/mark/IdeaProjects/pos/src/test/java/com/increff/pos/dto/DailySalesDtoTest.java
 /home/mark/IdeaProjects/pos/src/test/java/com/increff/pos/api/BrandApiTest.java
+/home/mark/IdeaProjects/pos/src/test/java/com/increff/pos/util/TestObjectUtils.java
 /home/mark/IdeaProjects/pos/src/test/java/com/increff/pos/api/InventoryApiTest.java
 /home/mark/IdeaProjects/pos/src/test/java/com/increff/pos/dto/InventoryDtoTest.java
-/home/mark/IdeaProjects/pos/src/test/java/com/increff/pos/utils/TestObjectUtils.java
 /home/mark/IdeaProjects/pos/src/test/java/com/increff/pos/dto/ProductDtoTest.java
 /home/mark/IdeaProjects/pos/src/test/java/com/increff/pos/jobs/DailySalesTaskTest.java
 /home/mark/IdeaProjects/pos/src/test/java/com/increff/pos/api/ProductApiTest.java

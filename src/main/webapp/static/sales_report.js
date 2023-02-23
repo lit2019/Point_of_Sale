@@ -73,7 +73,7 @@ function filter(){
 	   		displaySalesReportList(data);     //...
 	   },
 	   error: function(error){
-
+	   	    makeToast(false, error.responseJSON.message, null);
 	   }
 	});
 }

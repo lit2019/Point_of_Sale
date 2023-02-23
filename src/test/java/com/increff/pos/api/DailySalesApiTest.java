@@ -3,7 +3,7 @@ package com.increff.pos.api;
 import com.increff.pos.dao.DailySalesDao;
 import com.increff.pos.entity.DailySalesPojo;
 import com.increff.pos.spring.AbstractUnitTest;
-import com.increff.pos.utils.TestObjectUtils;
+import com.increff.pos.util.TestObjectUtils;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 

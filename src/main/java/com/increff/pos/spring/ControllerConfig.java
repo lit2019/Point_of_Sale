@@ -44,6 +44,11 @@ public class ControllerConfig extends WebMvcConfigurerAdapter {
     }
 
     @Bean
+    public InvoiceClient getInvoiceClient() {
+        return new InvoiceClient();
+    }
+
+    @Bean
     public Docket api() {
         return new Docket(DocumentationType.SWAGGER_2)//
                 .useDefaultResponseMessages(false)//
@@ -51,8 +56,8 @@ public class ControllerConfig extends WebMvcConfigurerAdapter {
                 .paths(PathSelectors.regex("/api/.*"))//
                 .build();
     }
-
     // Add configuration for Swagger
+
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/swagger-ui.html").addResourceLocations("classpath:/META-INF/resources/");
@@ -81,11 +86,6 @@ public class ControllerConfig extends WebMvcConfigurerAdapter {
         return resolver;
     }
 
-//    @Bean
-//    public InvoiceGenerator getInvoiceGenerator() {
-//        return new InvoiceGenerator();
-//    }
-
     @Bean
     public ITemplateResolver templateResolver() {
         SpringResourceTemplateResolver resolver = new SpringResourceTemplateResolver();
@@ -106,11 +106,6 @@ public class ControllerConfig extends WebMvcConfigurerAdapter {
         javaTimeModule.addDeserializer(ZonedDateTime.class, new CustomZonedDateTimeDeserializer());
         mapper.registerModule(javaTimeModule);
         return mapper;
-    }
-
-    @Bean
-    public InvoiceClient getInvoiceClient() {
-        return new InvoiceClient();
     }
 
 }

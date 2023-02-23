@@ -19,14 +19,18 @@
                     <div class="input-group-prepend">
                         <label class="input-group-text" for="input-barcode">Barcode: </label>
                     </div>
-                    <input type="text" class="form-control" name="orderStatus"  id="input-barcode" placeholder="barcode">
-                    <button type="button" class="btn btn-sm btn-primary" id="search-barcode" style="margin-left:20px" onclick="getInventoryList(true)">Search</button>
+                    <input type="text" class="form-control" name="orderStatus" id="input-barcode" placeholder="Barcode">
+                    <button type="button" class="btn btn-sm btn-primary" id="search-barcode" style="margin-left:20px"
+                            onclick="getInventoryList(true)">Search
+                    </button>
                 </div>
             </form>
 
         </div>
         <div class="col-12">
-            <button type="button" class="btn btn-sm btn-primary" th:if="${info.getRole() == 'supervisor'}" id="upload-data">Upload</button>
+            <button type="button" class="btn btn-sm btn-primary" th:if="${info.getRole() == 'supervisor'}"
+                    id="upload-data">Upload
+            </button>
             <button type="button" class="btn btn-sm btn-primary" onclick="downloadInventory()">Download</button>
         </div>
     </div>
@@ -57,7 +61,8 @@
 
     <!-- Inventory Edit Modal -->
 
-    <div class="modal" tabindex="-1" role="dialog" id="edit-inventory-modal" data-backdrop="static" data-keyboard="false">
+    <div class="modal" tabindex="-1" role="dialog" id="edit-inventory-modal" data-backdrop="static"
+         data-keyboard="false">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -69,16 +74,18 @@
                 <div class="modal-body">
                     <form class="form-inline" id="inventory-edit-form">
                         <div class="form-group">
-                            <label for="barcode" class="col-sm-2 col-form-label">&nbsp;&nbsp;&nbsp;&nbsp;Barcode&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; *</label>
+                            <label for="barcode" class="col-sm-2 col-form-label">&nbsp;&nbsp;&nbsp;&nbsp;Barcode&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                *</label>
 
                             <div class="col-sm-10" style="padding:10px;">
-                                <input type="text" class="form-control" name="barcode" placeholder="enter barcode"  readonly>
+                                <input type="text" class="form-control" name="barcode" placeholder="Enter Barcode"
+                                       readonly>
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="quantity" class="col-sm-2 col-form-label">Quantity *</label>
                             <div class="col-sm-10">
-                                <input type="text" class="form-control" name="quantity" placeholder="enter quantity">
+                                <input type="text" class="form-control" name="quantity" placeholder="Enter Quantity">
                             </div>
                         </div>
                         <input type="hidden" name="productId">
@@ -94,7 +101,8 @@
 
     <!-- Inventory TSV upload Modal -->
 
-    <div class="modal" tabindex="-1" role="dialog" id="upload-inventory-modal" data-backdrop="static" data-keyboard="false">
+    <div class="modal" tabindex="-1" role="dialog" id="upload-inventory-modal" data-backdrop="static"
+         data-keyboard="false">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
 
@@ -106,8 +114,9 @@
                 </div>
                 <div class="modal-body">
                     <div class="inventory-file">
-                        <input type="file" class="custom-file-input" id="inventoryFile">
-                        <label class="custom-file-label" for="inventoryFile" id="inventoryFileName">Choose file *</label>
+                        <input class="custom-file-input" id="inventoryFile" type="file" accept="*.tsv">
+                        <label class="custom-file-label" for="inventoryFile" id="inventoryFileName">Choose file
+                            *</label>
                     </div>
                     <a th:href="@{/sample/inventory.tsv}" target="_blank">Download Sample</a>
                 </div>

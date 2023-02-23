@@ -18,11 +18,10 @@ import org.springframework.stereotype.Service;
 
 import java.util.*;
 
-import static com.increff.pos.util.ListUtils.checkNonEmptyList;
 import static com.increff.pos.util.ValidationUtil.validate;
 
 @Service
-public class InventoryDto extends AbstractDto {
+public class InventoryDto {
     @Autowired
     private InventoryApi inventoryApi;
     @Autowired
@@ -61,7 +60,7 @@ public class InventoryDto extends AbstractDto {
 
 //        todo move to the above loop
 //        todo rename to checkIfBarcodesExist
-        checkIfBarcodesExist(barcodes);
+        productApi.checkIfBarcodesExist(barcodes);
 
         ArrayList<InventoryPojo> inventoryPojos = new ArrayList<>();
         for (InventoryForm form : forms)
@@ -113,19 +112,6 @@ public class InventoryDto extends AbstractDto {
         return true;
     }
 
-    private void checkIfBarcodesExist(List<String> barcodes) throws ApiException {
-        Map<String, ProductPojo> barcodeToProductPojoMap = ProductApi.getBarcodeToProductPojoMap(productApi.getByBarcodes(barcodes));
-        ArrayList<String> nonExistingBarcodes = new ArrayList<>();
-
-        barcodes.forEach((barcode) -> {
-            if (!barcodeToProductPojoMap.containsKey(barcode)) {
-                nonExistingBarcodes.add(barcode);
-            }
-        });
-//TODO: dose to does
-        checkNonEmptyList(nonExistingBarcodes, "Product with Barcode dose not exists,\n Erroneous barcodes : " + nonExistingBarcodes);
-    }
-
     private InventoryData convert(InventoryPojo inventoryPojo) {
         ProductPojo productPojo = productApi.get(inventoryPojo.getProductId());
         InventoryData inventoryData = new InventoryData();
@@ -147,9 +133,9 @@ public class InventoryDto extends AbstractDto {
 
     private InventoryPojo convert(InventoryForm inventoryForm) throws ApiException {
         ProductPojo productPojo = productApi.getUniqueByBarcode(inventoryForm.getBarcode());
-        if (Objects.isNull(productPojo)) {
+        if (Objects.isNull(productPojo))
             throw new ApiException(String.format("given barcode:%s doesn't exist", inventoryForm.getBarcode()));
-        }
+
         InventoryPojo inventoryPojo = new InventoryPojo();
         inventoryPojo.setProductId(productPojo.getId());
         inventoryPojo.setQuantity(inventoryForm.getQuantity());

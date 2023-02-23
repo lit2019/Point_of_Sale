@@ -112,7 +112,7 @@ public class InventoryApi extends AbstractApi {
 
         Map<Integer, InventoryPojo> productIdToInventoryPojo = getProductIdToInventoryPojoMap(getByProductIds(productIds));
         requests.forEach(request -> {
-            if (request.getQuantityToReduce() > productIdToInventoryPojo.get(request.getProductId()).getQuantity()) {
+            if ((!productIdToInventoryPojo.containsKey(request.getProductId())) || (request.getQuantityToReduce() > productIdToInventoryPojo.get(request.getProductId()).getQuantity())) {
                 barcodes.add(productIdToBarcode.get(request.getProductId()));
             }
         });

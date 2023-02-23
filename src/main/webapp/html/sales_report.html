@@ -11,110 +11,113 @@
 <div th:replace="snippets.html :: name_toast"></div>
 
 <div class="container">
-  <h3 style=" padding-bottom:10px;">Sales report</h3>
-  <div class="row">
+    <h3 style=" padding-bottom:10px;">Sales report</h3>
+    <div class="row">
 
 
-
-    <form class="form-inline" id="daily-report-form" style="margin-left: 15px">
-      <div class="input-group mb-3" style = "margin-right: 40px">
-        <div class="input-group-prepend">
-          <label class ="input-group-text" for="brandName" ><b>Brand Name</b></label>
-        </div>
-        <input class="form-control" name="brandName" id="form-brand-select"  placeholder="brand">
-      </div>
-      <div class="input-group mb-3" style = "margin-right: 400px">
-        <div class="input-group-prepend">
-          <label class ="input-group-text" for="category" ><b>Category</b></label>
-        </div>
-        <input class="form-control" name="category"  id="form-category-select" placeholder="category">
-      </div>
-      <div class="input-group mb-3" style = "margin-right: 40px">
-        <div class="input-group-prepend">
-          <label class="input-group-text" for="input-start-date">Start Date: </label>
-        </div>
-        <input type = "date" id = "input-start-date" name = "startDate">
-      </div>
-      <div class="input-group mb-3" style = "margin-right: 40px">
-        <div class="input-group-prepend">
-          <label class="input-group-text" for="input-end-date">End Date: </label>
-        </div>
-        <input type = "date" id = "input-end-date" name = "endDate">
-      </div>
-      <button type="button" class="btn btn-sm btn-primary" id = "filter" style="margin-bottom:20px; margin-right:100px">Filter</button>
-      <button type="button" class="btn btn-sm btn-primary" onclick="downloadSalesReport()" style="margin-bottom:20px; margin-right:20px">Download</button>
-    </form>
-  </div>
-
-
-  <!-- Blank Row -->
-  <div class="row">
-    &nbsp;
-  </div>
-  <div class="row">
-
-    <!-- Table -->
-    <div class="col-12">
-      <table class="table table-striped" id="inventory-report-table">
-        <thead>
-        <tr>
-          <th scope="col">Brand</th>
-          <th scope="col">Category</th>
-          <th scope="col">Quantity</th>
-          <th scope="col">Revenue</th>
-        </tr>
-        </thead>
-        <tbody>
-        </tbody>
-      </table>
+        <form class="form-inline" id="daily-report-form" style="margin-left: 15px">
+            <div class="input-group mb-3" style="margin-right: 40px">
+                <div class="input-group-prepend">
+                    <label class="input-group-text" for="brandName"><b>Brand Name</b></label>
+                </div>
+                <input class="form-control" name="brandName" id="form-brand-select" placeholder="Brand">
+            </div>
+            <div class="input-group mb-3" style="margin-right: 400px">
+                <div class="input-group-prepend">
+                    <label class="input-group-text" for="category"><b>Category</b></label>
+                </div>
+                <input class="form-control" name="category" id="form-category-select" placeholder="Category">
+            </div>
+            <div class="input-group mb-3" style="margin-right: 40px">
+                <div class="input-group-prepend">
+                    <label class="input-group-text" for="input-start-date">Start Date: </label>
+                </div>
+                <input type="date" id="input-start-date" name="startDate" onkeydown="return false">
+            </div>
+            <div class="input-group mb-3" style="margin-right: 40px">
+                <div class="input-group-prepend">
+                    <label class="input-group-text" for="input-end-date">End Date: </label>
+                </div>
+                <input type="date" id="input-end-date" name="endDate" onkeydown="return false">
+            </div>
+            <button type="button" class="btn btn-sm btn-primary" id="filter"
+                    style="margin-bottom:20px; margin-right:100px">Filter
+            </button>
+            <button type="button" class="btn btn-sm btn-primary" onclick="downloadSalesReport()"
+                    style="margin-bottom:20px; margin-right:20px">Download
+            </button>
+        </form>
     </div>
-  </div>
-<!--filter modal-->
-<!--  <div class="modal" tabindex="-1" role="dialog" id="filter-modal" data-backdrop="static" data-keyboard="false">-->
-<!--    <div class="modal-dialog" role="document">-->
-<!--      <div class="modal-content">-->
-<!--        <div class="modal-header">-->
-<!--          <h5 class="modal-title">Filter</h5>-->
-<!--          <button type="button" class="close" data-dismiss="modal" aria-label="Close">-->
-<!--            <span aria-hidden="true">&times;</span>-->
-<!--          </button>-->
-<!--        </div>-->
-<!--        <div class="modal-body">-->
-<!--          <form id="filter-form">-->
-<!--            <div class="form-group">-->
-<!--              <label class = for="brandName" ><b>Brand Name</b></label>-->
-<!--              <div class="col-sm-10" style="padding:10px;">-->
-<!--                <select class="form-control" name="brandName" id="form-brand-select"  placeholder="select brand"></select>-->
-<!--              </div>-->
-<!--            </div>-->
-<!--            <div class="form-group">-->
-<!--              <label class = for="category" ><b>Category </b></label>-->
-<!--              <div class="col-sm-10">-->
-<!--                <select class="form-control" name="category"  id="form-category-select" placeholder="select category"></select>-->
-<!--              </div>-->
-<!--            </div>-->
-<!--            <div class="form-group">-->
-<!--              <label class = for="startDate" ><b>Start Date</b></label>-->
-<!--              <div class="col-sm-10">-->
-<!--                <input type="date" class="form-control" name="startDate" placeholder="enter category">-->
-<!--              </div>-->
-<!--            </div>-->
-<!--            <div class="form-group">-->
-<!--              <label class = for="endDate" ><b>End Date</b></label>-->
-<!--              <div class="col-sm-10">-->
-<!--                <input type="date" class="form-control" name="endDate" placeholder="enter category">-->
-<!--              </div>-->
-<!--            </div>-->
-<!--            <input type="hidden" name="id">-->
-<!--          </form>-->
-<!--        </div>-->
-<!--        <div class="modal-footer">-->
-<!--          <button type="button" class="btn btn-sm btn-secondary" data-dismiss="modal">Cancel</button>-->
-<!--          <button type="button" class="btn btn-sm btn-primary" id="filter">Submit</button>-->
-<!--        </div>-->
-<!--      </div>-->
-<!--    </div>-->
-<!--  </div>-->
+
+
+    <!-- Blank Row -->
+    <div class="row">
+        &nbsp;
+    </div>
+    <div class="row">
+
+        <!-- Table -->
+        <div class="col-12">
+            <table class="table table-striped" id="inventory-report-table">
+                <thead>
+                <tr>
+                    <th scope="col">Brand</th>
+                    <th scope="col">Category</th>
+                    <th scope="col">Quantity</th>
+                    <th scope="col">Revenue</th>
+                </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <!--filter modal-->
+    <!--  <div class="modal" tabindex="-1" role="dialog" id="filter-modal" data-backdrop="static" data-keyboard="false">-->
+    <!--    <div class="modal-dialog" role="document">-->
+    <!--      <div class="modal-content">-->
+    <!--        <div class="modal-header">-->
+    <!--          <h5 class="modal-title">Filter</h5>-->
+    <!--          <button type="button" class="close" data-dismiss="modal" aria-label="Close">-->
+    <!--            <span aria-hidden="true">&times;</span>-->
+    <!--          </button>-->
+    <!--        </div>-->
+    <!--        <div class="modal-body">-->
+    <!--          <form id="filter-form">-->
+    <!--            <div class="form-group">-->
+    <!--              <label class = for="brandName" ><b>Brand Name</b></label>-->
+    <!--              <div class="col-sm-10" style="padding:10px;">-->
+    <!--                <select class="form-control" name="brandName" id="form-brand-select"  placeholder="select brand"></select>-->
+    <!--              </div>-->
+    <!--            </div>-->
+    <!--            <div class="form-group">-->
+    <!--              <label class = for="category" ><b>Category </b></label>-->
+    <!--              <div class="col-sm-10">-->
+    <!--                <select class="form-control" name="category"  id="form-category-select" placeholder="select category"></select>-->
+    <!--              </div>-->
+    <!--            </div>-->
+    <!--            <div class="form-group">-->
+    <!--              <label class = for="startDate" ><b>Start Date</b></label>-->
+    <!--              <div class="col-sm-10">-->
+    <!--                <input type="date" class="form-control" name="startDate" placeholder="enter category">-->
+    <!--              </div>-->
+    <!--            </div>-->
+    <!--            <div class="form-group">-->
+    <!--              <label class = for="endDate" ><b>End Date</b></label>-->
+    <!--              <div class="col-sm-10">-->
+    <!--                <input type="date" class="form-control" name="endDate" placeholder="enter category">-->
+    <!--              </div>-->
+    <!--            </div>-->
+    <!--            <input type="hidden" name="id">-->
+    <!--          </form>-->
+    <!--        </div>-->
+    <!--        <div class="modal-footer">-->
+    <!--          <button type="button" class="btn btn-sm btn-secondary" data-dismiss="modal">Cancel</button>-->
+    <!--          <button type="button" class="btn btn-sm btn-primary" id="filter">Submit</button>-->
+    <!--        </div>-->
+    <!--      </div>-->
+    <!--    </div>-->
+    <!--  </div>-->
 
 </div> <!-- Container end-->
 

@@ -12,7 +12,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
-import static com.increff.pos.utils.TestObjectUtils.getNewBrandPojo;
+import static com.increff.pos.util.TestObjectUtils.getNewBrandPojo;
 import static junit.framework.TestCase.*;
 
 public class BrandApiTest extends AbstractUnitTest {
@@ -28,6 +28,7 @@ public class BrandApiTest extends AbstractUnitTest {
         List<BrandPojo> pojos = new ArrayList<>();
         try {
             api.add(pojos);
+            fail("expected ApiException");
         } catch (ApiException e) {
             assertEquals("brandPojos cannot be empty", e.getMessage());
         }
@@ -42,7 +43,7 @@ public class BrandApiTest extends AbstractUnitTest {
         } catch (ApiException e) {
             assertEquals("name cannot be null", e.getMessage());
         }
-
+//Todo seperate tests in seperate c,methods
         pojo = getNewBrandPojo("name", null);
         try {
             api.add(Collections.singletonList(pojo));
@@ -55,6 +56,7 @@ public class BrandApiTest extends AbstractUnitTest {
 
     @Test
     public void testAdd() throws ApiException {
+//        todo add comments for teting nornalize
         List<BrandPojo> pojos = new ArrayList<>();
         pojos.add(getNewBrandPojo("  Name1", " catEgory1  "));
         pojos.add(getNewBrandPojo("  name2  ", "category2"));
@@ -87,7 +89,7 @@ public class BrandApiTest extends AbstractUnitTest {
     public void testUpdateExistingPojo() {
         BrandPojo pojo = getNewBrandPojo("name", "category");
         dao.insert(pojo);
-
+//todo insert two pojos here
         try {
             api.update(pojo.getId() + 1, getNewBrandPojo("name", "category"));
             fail("expected ApiException");
@@ -127,6 +129,7 @@ public class BrandApiTest extends AbstractUnitTest {
         pojos.add(getNewBrandPojo("name3", "category2"));
         pojos.forEach(pojo -> dao.insert(pojo));
 
+//        todo check for feilds as well
         pojos = api.getByFilter("name1", "category1");
         assertEquals(1, pojos.size());
 
@@ -140,16 +143,22 @@ public class BrandApiTest extends AbstractUnitTest {
         assertEquals(3, pojos.size());
     }
 
-    @Test(expected = ApiException.class)
-    public void testCheckNonExistingBrandCategory() throws ApiException {
+    @Test
+    public void testCheckNonExistingBrandCategory() {
         List<BrandPojo> pojos = new ArrayList<>();
         pojos.add(getNewBrandPojo("name1", "category1"));
         pojos.add(getNewBrandPojo("name2", "category2"));
-        api.checkNonExistingBrandCategory(pojos);
+//        todo use try catch
+        try {
+            api.checkNonExistingBrandCategory(pojos);
+            fail("expected ApiException");
+        } catch (ApiException e) {
+            assertEquals("combinations for brand name and category does not exist : [name1_category1, name2_category2]", e.getMessage());
+        }
     }
 
     @Test
-    public void testCheckExistingBrandCategory1() throws ApiException {
+    public void testCheckExistingBrandCategory1() {
         ArrayList<BrandPojo> pojos = new ArrayList<>();
         pojos.add(getNewBrandPojo("name1", "category1"));
         pojos.add(getNewBrandPojo("name2", "category2"));
@@ -163,6 +172,7 @@ public class BrandApiTest extends AbstractUnitTest {
         }
     }
 
+    //    todo no need
     @Test
     public void testCheckExistingBrandCategory2() throws ApiException {
         ArrayList<BrandPojo> pojos = new ArrayList<>();
@@ -197,16 +207,14 @@ public class BrandApiTest extends AbstractUnitTest {
 
     @Test
     public void testGetCheck() throws ApiException {
-        BrandPojo pojo = getNewBrandPojo("name", "category");
-        dao.insert(pojo);
-        BrandPojo pojo1;
-        pojo1 = api.getCheck(pojo.getId());
-        assertEquals(pojo1.getId(), pojo.getId());
+        BrandPojo pojo1 = getNewBrandPojo("name", "category");
+        dao.insert(pojo1);
+        BrandPojo pojo2 = api.getCheck(pojo1.getId());
+        assertEquals(pojo1.getId(), pojo2.getId());
     }
 
     @Test
     public void testGetCheckInvalidId() {
-
         Integer invalidId = 0;
         try {
             api.getCheck(invalidId);

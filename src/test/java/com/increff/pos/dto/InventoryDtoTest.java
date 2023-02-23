@@ -16,7 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.increff.pos.utils.TestObjectUtils.*;
+import static com.increff.pos.util.TestObjectUtils.*;
 import static junit.framework.TestCase.fail;
 import static org.junit.Assert.assertEquals;
 

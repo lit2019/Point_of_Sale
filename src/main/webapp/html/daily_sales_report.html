@@ -14,21 +14,21 @@
     <h3 style="margin-top:15px;margin-bottom:15px">Daily Sales report</h3>
     <div class="row">
         <form class="form-inline" id="daily-report-form" style="margin-left:15px">
-            <div class="input-group mb-3" style = "margin-right: 48px">
+            <div class="input-group mb-3" style="margin-right: 48px">
                 <div class="input-group-prepend">
                     <label class="input-group-text" for="input-start-date">Start Date: </label>
                 </div>
-                <input type = "date" id = "input-start-date" name = "startDate">
+                <input type="date" id="input-start-date" name="startDate" onkeydown="return false">
             </div>
-            <div class="input-group mb-3" style = "margin-right: 48px">
+            <div class="input-group mb-3" style="margin-right: 48px">
                 <div class="input-group-prepend">
                     <label class="input-group-text" for="input-end-date">End Date: </label>
                 </div>
-                <input type = "date" id = "input-end-date" name = "endDate">
+                <input type="date" id="input-end-date" name="endDate" onkeydown="return false">
             </div>
         </form>
         <div class="col">
-            <button type="button" class="btn btn-sm btn-primary" id = "filter">Filter</button>
+            <button type="button" class="btn btn-sm btn-primary" id="filter">Filter</button>
         </div>
         <div class="col">
             <button type="button" class="btn btn-sm btn-primary" onclick="downloadDailySalesReport()">Download</button>

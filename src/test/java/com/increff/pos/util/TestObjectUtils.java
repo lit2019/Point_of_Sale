@@ -1,4 +1,4 @@
-package com.increff.pos.utils;
+package com.increff.pos.util;
 
 import com.increff.pos.entity.*;
 import com.increff.pos.model.*;

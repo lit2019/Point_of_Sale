@@ -20,7 +20,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 @Service
-public class OrderDto extends AbstractDto {
+public class OrderDto {
 
     @Autowired
     private InventoryApi inventoryApi;
@@ -53,11 +53,10 @@ public class OrderDto extends AbstractDto {
         OrderPojo orderPojo = convert(orderForm);
 
         ArrayList<String> barcodes = new ArrayList<>();
-        orderItemForms.forEach(form -> {
-            barcodes.add(form.getBarcode());
-        });
+        orderItemForms.forEach(form -> barcodes.add(form.getBarcode()));
 
         ListUtils.checkDuplicates(barcodes, "duplicate barcodes exist \n Erroneous barcodes : ");
+        productApi.checkIfBarcodesExist(barcodes);
 
 //TODO rewrite getBarcodeToProductPojoMap
         Map<String, ProductPojo> barcodeToProductMap = ProductApi.getBarcodeToProductPojoMap(productApi.getByBarcodes(barcodes));
@@ -78,7 +77,7 @@ public class OrderDto extends AbstractDto {
     }
 
     public List<OrderItemData> getOrderItems(Integer orderId) throws ApiException {
-        checkNullObject(orderApi.get(orderId), String.format("order with Id : %d dose not exist", orderId));
+        orderApi.getCheck(orderId);
         ArrayList<OrderItemData> orderItemDataList = new ArrayList<>();
         List<OrderItemPojo> orderItemPojos = orderApi.getOrderItemsByOrderIds(Collections.singletonList(orderId));
         for (OrderItemPojo orderItemPojo : orderItemPojos) {
@@ -101,10 +100,10 @@ public class OrderDto extends AbstractDto {
     public List<SalesData> getSalesReport(SalesFilterForm filterForm) throws ApiException {
         ValidationUtil.validate(filterForm);
         NormalizationUtil.normalize(filterForm);
-        List<InvoicePojo> invoicePojos = invoiceApi.getByDate(filterForm.getStartDate(), filterForm.getEndDate());
+        List<OrderPojo> orderPojos = orderApi.getByFilter(filterForm.getStartDate(), filterForm.getEndDate(), OrderStatus.INVOICED);
         ArrayList<Integer> orderIds = new ArrayList<>();
-        for (InvoicePojo invoicePojo : invoicePojos)
-            orderIds.add(invoicePojo.getOrderId());
+        for (OrderPojo orderPojo : orderPojos)
+            orderIds.add(orderPojo.getId());
 
         return getSalesDataByOrderItems(filterForm, orderApi.getOrderItemsByOrderIds(orderIds));
     }
@@ -115,7 +114,7 @@ public class OrderDto extends AbstractDto {
             return Collections.singletonList(convert(orderApi.get(filterForm.getOrderId())));
         }
         ValidationUtil.validate(filterForm);
-        List<OrderPojo> orderPojos = orderApi.getByFilter(filterForm);
+        List<OrderPojo> orderPojos = orderApi.getByFilter(filterForm.getStartDate(), filterForm.getEndDate(), filterForm.getOrderStatus());
         ArrayList<OrderData> orderDataList = new ArrayList<>();
         orderPojos.forEach(orderPojo -> {
             orderDataList.add(convert(orderPojo));

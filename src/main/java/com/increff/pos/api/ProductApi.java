@@ -2,6 +2,7 @@ package com.increff.pos.api;
 
 import com.increff.pos.dao.ProductDao;
 import com.increff.pos.entity.ProductPojo;
+import com.increff.pos.util.ListUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -89,11 +90,20 @@ public class ProductApi extends AbstractApi {
         checkNonEmptyList(existingBarcodes, "Product(s) with barcode(s) already exists : " + existingBarcodes);
     }
 
+    public void checkIfBarcodesExist(List<String> barcodes) throws ApiException {
+        Map<String, ProductPojo> barcodeToProductMap = getBarcodeToProductPojoMap(getByBarcodes(barcodes));
+        ArrayList<String> nonExistingBarcodes = new ArrayList<>();
+        for (String barcode : barcodes)
+            if (!barcodeToProductMap.containsKey(barcode))
+                nonExistingBarcodes.add(barcode);
+
+        ListUtils.checkNonEmptyList(nonExistingBarcodes, "Products do not exist for Barcodes : " + barcodes);
+    }
+
     private void validate(ProductPojo productPojo) throws ApiException {
         checkNull(productPojo.getName(), "Name cannot be null");
         checkNull(productPojo.getBrandCategoryId(), "BrandCategoryId cannot be null");
         checkNull(productPojo.getMrp(), "Mrp cannot be null");
         checkNull(productPojo.getBarcode(), "Barcode cannot be null");
     }
-
 }

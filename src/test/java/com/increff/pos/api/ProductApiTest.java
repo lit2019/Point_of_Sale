@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Objects;
 
-import static com.increff.pos.utils.TestObjectUtils.getNewProductPojo;
+import static com.increff.pos.util.TestObjectUtils.getNewProductPojo;
 import static junit.framework.TestCase.*;
 
 public class ProductApiTest extends AbstractUnitTest {

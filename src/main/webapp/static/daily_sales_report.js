@@ -51,8 +51,7 @@ function filter(){
 	   		displayDailySalesReportList(data);     //...
 	   },
 	   error: function(error){
-
-	   	        alert(error.responseJSON.message);
+	   	        makeToast(false, error.responseJSON.message, null);
 	   }
 	});
 }

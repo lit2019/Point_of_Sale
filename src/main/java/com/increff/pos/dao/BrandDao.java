@@ -3,16 +3,15 @@ package com.increff.pos.dao;
 import com.increff.pos.entity.BrandPojo;
 import org.springframework.stereotype.Repository;
 
-import javax.persistence.NoResultException;
 import javax.persistence.TypedQuery;
-import java.util.ArrayList;
 import java.util.List;
 
 
 @Repository
 public class BrandDao extends AbstractDao<BrandPojo> {
 
-    private static final String SELECT_BY_NAME_CATEGORY = "select p from BrandPojo p where (:name is null or p.name=:name) and (:category is null or p.category=:category)";
+    private static final String SELECT_BY_NAME_CATEGORY = "select p from BrandPojo p where (:name is null or p.name=:name) " +
+            "and (:category is null or p.category=:category)";
     private static final String SELECT_DISTINCT_BRAND_NAMES = "select DISTINCT(c.name) from BrandPojo c";
 
     public List<BrandPojo> select(String name, String category) {
@@ -29,11 +28,7 @@ public class BrandDao extends AbstractDao<BrandPojo> {
     public List<String> selectDistinctBrandNames() {
 //        TODO: change clazz to pojo
         TypedQuery<String> query = getEntityManager().createQuery(SELECT_DISTINCT_BRAND_NAMES, String.class);
-        try {
-            return query.getResultList();
-        } catch (NoResultException e) {
-            return new ArrayList<String>();
-        }
+        return getResultList(query);
     }
 
 }

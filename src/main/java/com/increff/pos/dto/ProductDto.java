@@ -22,7 +22,7 @@ import java.util.Objects;
 import static com.increff.pos.util.ValidationUtil.validate;
 
 @Service
-public class ProductDto extends AbstractDto {
+public class ProductDto {
 
     @Autowired
     private ProductApi productApi;

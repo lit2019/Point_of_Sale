@@ -38,7 +38,7 @@ public abstract class AbstractDao<T> {
     }
 
 
-    protected List<T> getResultList(TypedQuery<T> query) {
+    protected List getResultList(TypedQuery query) {
         return query.getResultList();
     }
 
