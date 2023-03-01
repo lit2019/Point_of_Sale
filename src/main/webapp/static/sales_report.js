@@ -26,7 +26,7 @@ function displaySalesReportList(data){
 		+ '<td>' + e.brandName + '</td>'
 		+ '<td>' + e.category + '</td>'
 		+ '<td>'  + e.quantity + '</td>'
-		+ '<td>'  + e.revenue + '</td>'
+		+ '<td>'  + roundToTwo(e.revenue) + '</td>'
 		+ '</tr>';
         $tbody.append(row);
 	}
@@ -57,6 +57,10 @@ function filter(){
 	data["startDate"] = new Date($("#input-start-date").val());
 	data["endDate"] = new Date($("#input-end-date").val());
 
+    var $form = $("#daily-report-form");
+    if(!validateForm($form))
+        return;
+
     json = JSON.stringify(data);
     console.log(json);
 //    console.log(json);
@@ -81,10 +85,10 @@ function filter(){
 function init(){
 	$('#open-filter').click(openFilter);
 	$('#filter').click(filter);
+    dateLimit(document, ["input-start-date", "input-end-date"]);
+
+    formatDate();
 }
 
 
 $(document).ready(init);
-$(document).ready(filter);
-
-

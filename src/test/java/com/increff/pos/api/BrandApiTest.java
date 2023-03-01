@@ -58,7 +58,6 @@ public class BrandApiTest extends AbstractUnitTest {
 
     @Test
     public void testAdd() throws ApiException {
-//        todo add comments for teting nornalize
         List<BrandPojo> pojos = new ArrayList<>();
         pojos.add(getNewBrandPojo("  Name1", " catEgory1  "));
         pojos.add(getNewBrandPojo("  name2  ", "category2"));
@@ -93,7 +92,6 @@ public class BrandApiTest extends AbstractUnitTest {
         dao.insert(pojo1);
         BrandPojo pojo2 = getNewBrandPojo("name2", "category2");
         dao.insert(pojo2);
-//todo insert two pojos here
         try {
             api.update(pojo2.getId(), getNewBrandPojo("name", "category"));
             fail("expected ApiException");
@@ -133,7 +131,6 @@ public class BrandApiTest extends AbstractUnitTest {
         pojos.add(getNewBrandPojo("name3", "category2"));
         pojos.forEach(pojo -> dao.insert(pojo));
 
-//        todo check for feilds as well
         pojos = api.getByFilter("name1", "category1");
         assertEquals(1, pojos.size());
 
@@ -152,7 +149,6 @@ public class BrandApiTest extends AbstractUnitTest {
         List<BrandPojo> pojos = new ArrayList<>();
         pojos.add(getNewBrandPojo("name1", "category1"));
         pojos.add(getNewBrandPojo("name2", "category2"));
-//        todo use try catch
         try {
             api.checkNonExistingBrandCategory(pojos);
             fail("expected ApiException");

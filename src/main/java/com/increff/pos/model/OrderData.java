@@ -12,7 +12,6 @@ import java.time.ZonedDateTime;
 public class OrderData extends OrderForm {
     private Integer id;
 
-    //TODO ZonedDateTime
     @JsonSerialize(using = CustomZonedDateTimeSerializer.class)
     private ZonedDateTime createdAt;
 

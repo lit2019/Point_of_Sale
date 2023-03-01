@@ -2,7 +2,6 @@ package com.increff.pos.jobs;
 
 import com.increff.pos.api.ApiException;
 import com.increff.pos.api.DailySalesApi;
-import com.increff.pos.api.InvoiceApi;
 import com.increff.pos.api.OrderApi;
 import com.increff.pos.entity.DailySalesPojo;
 import com.increff.pos.entity.OrderItemPojo;
@@ -21,15 +20,12 @@ import java.util.List;
 public class DailySalesTask {
 
     @Autowired
-    private InvoiceApi invoiceApi;
-    @Autowired
     private OrderApi orderApi;
     @Autowired
     private DailySalesApi dailySalesApi;
 
     @Scheduled(initialDelay = 60000, fixedDelayString = "${app.job.delay:60000}")
     public void run() throws ApiException {
-//        todo ZoneId must be utc
         ZonedDateTime today = ZonedDateTime.now().toLocalDate().atStartOfDay(ZoneId.of("UTC"));
         ZonedDateTime tomorrow = today.plusDays(1);
         List<OrderPojo> orderPojos = orderApi.getByFilter(today, tomorrow, OrderStatus.INVOICED);

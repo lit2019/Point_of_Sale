@@ -8,7 +8,6 @@ import javax.validation.constraints.NotBlank;
 
 @Getter
 @Setter
-//TODO rename to BrandForm
 public class BrandForm {
     @NotBlank(message = "Brand name cannot be blank")
     private String name;

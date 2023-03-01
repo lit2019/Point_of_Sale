@@ -1,6 +1,7 @@
 /home/mark/IdeaProjects/pos/src/main/java/com/increff/pos/api/OrderApi.java
 /home/mark/IdeaProjects/pos/src/main/java/com/increff/pos/model/DailySalesData.java
 /home/mark/IdeaProjects/pos/src/main/java/com/increff/pos/model/OrderItemForm.java
+/home/mark/IdeaProjects/pos/src/main/java/com/increff/pos/model/PageRequestForm.java
 /home/mark/IdeaProjects/pos/src/main/java/com/increff/pos/model/SalesData.java
 /home/mark/IdeaProjects/pos/src/main/java/com/increff/pos/dao/OrderDao.java
 /home/mark/IdeaProjects/pos/src/main/java/com/increff/pos/spring/DbConfig.java
@@ -54,7 +55,6 @@
 /home/mark/IdeaProjects/pos/src/main/java/com/increff/pos/entity/OrderPojo.java
 /home/mark/IdeaProjects/pos/src/main/java/com/increff/pos/spring/ControllerConfig.java
 /home/mark/IdeaProjects/pos/src/main/java/com/increff/pos/api/BrandApi.java
-/home/mark/IdeaProjects/pos/src/main/java/com/increff/pos/controller/DailySalesController.java
 /home/mark/IdeaProjects/pos/src/main/java/com/increff/pos/entity/InvoicePojo.java
 /home/mark/IdeaProjects/pos/src/main/java/com/increff/pos/api/InvoiceApi.java
 /home/mark/IdeaProjects/pos/src/main/java/com/increff/pos/controller/InitApiController.java

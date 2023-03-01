@@ -86,7 +86,6 @@ public class OrderDtoTest extends AbstractUnitTest {
         }
     }
 
-    //todo rename methods
     @Test
     public void testAdd() throws ApiException {
         List<ProductPojo> productPojos = TestObjectUtils.getNewProductPojoList();
@@ -136,6 +135,8 @@ public class OrderDtoTest extends AbstractUnitTest {
         OrderFilterForm filterForm = new OrderFilterForm();
         filterForm.setStartDate(ZonedDateTime.now().toLocalDate().atStartOfDay(ZoneId.of("UTC")));
         filterForm.setEndDate(filterForm.getStartDate().plusDays(200));
+        filterForm.setPageNo(1);
+        filterForm.setPageSize(10);
 
         try {
             orderDto.getOrdersByFilter(filterForm);
@@ -152,7 +153,6 @@ public class OrderDtoTest extends AbstractUnitTest {
     public void testGetSalesReport() throws ApiException {
         List<BrandPojo> brandPojos = TestObjectUtils.getNewBrandPojoList();
         brandPojos.forEach(brandDao::insert);
-//todo send brandIds a parameter
         List<ProductPojo> productPojos = TestObjectUtils.getNewProductPojoList();
         productPojos.get(0).setBrandCategoryId(brandPojos.get(0).getId());
         productPojos.get(1).setBrandCategoryId(brandPojos.get(1).getId());

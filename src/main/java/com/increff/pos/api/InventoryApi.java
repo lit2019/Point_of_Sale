@@ -21,7 +21,6 @@ public class InventoryApi extends AbstractApi {
     private InventoryDao dao;
 
     public void upsert(List<InventoryPojo> inventoryPojos) throws ApiException {
-//    TODO should be seperate for each api
         ListUtils.checkEmptyList(inventoryPojos, "Inventory pojos cannot be empty");
         ArrayList<Integer> productIds = new ArrayList<>();
         for (InventoryPojo inventoryPojo : inventoryPojos) {
@@ -29,7 +28,6 @@ public class InventoryApi extends AbstractApi {
             productIds.add(inventoryPojo.getProductId());
         }
 
-//            TODO make map for productIdToInventoryPojo
         Map<Integer, InventoryPojo> productIdToInventoryPojo = getProductIdToInventoryPojoMap(getByProductIds(productIds));
         for (InventoryPojo inventoryPojo : inventoryPojos) {
             if (productIdToInventoryPojo.containsKey(inventoryPojo.getProductId()))
@@ -48,7 +46,6 @@ public class InventoryApi extends AbstractApi {
 
     public InventoryPojo getCheck(Integer id) throws ApiException {
         InventoryPojo pojo = dao.select(id);
-//        TODO use checknull
         checkNull(pojo, "Inventory with given ID does not exist, id: " + id);
         return pojo;
     }
@@ -79,17 +76,16 @@ public class InventoryApi extends AbstractApi {
         return productIdToProductMap;
     }
 
-    public List<InventoryPojo> getAll() {
-        return dao.selectAll();
+    public List<InventoryPojo> getInventories(Integer pageNo, Integer pageSize) {
+        return dao.selectByFilter(pageNo, pageSize);
     }
 
-    private List<InventoryPojo> getByProductIds(List<Integer> productIds) {
+    public List<InventoryPojo> getByProductIds(List<Integer> productIds) {
         return dao.selectByProductIds(productIds);
     }
 
     private void validate(InventoryAllocationRequest request) throws ApiException {
         checkNull(request.getProductId(), "Product Id cannot be null");
-//        TODO also check for negative values here
         checkNull(request.getQuantityToReduce(), "Quantity to reduce cannot be null");
         if (request.getQuantityToReduce() <= 0) {
             throw new ApiException("Quantity to Reduce cannot be less than 0");
@@ -97,14 +93,12 @@ public class InventoryApi extends AbstractApi {
     }
 
     private void validate(InventoryPojo pojo) throws ApiException {
-//        TODO check capital
         checkNull(pojo.getQuantity(), "Quantity cannot be null");
         checkNull(pojo.getProductId(), "Product Id cannot be null");
     }
 
     private void checkIfInventoryPresent(List<InventoryAllocationRequest> requests, Map<Integer, String> productIdToBarcode) throws ApiException {
         ArrayList<String> barcodes = new ArrayList<>();
-//        TODO use map of productIdTOInventorypojo here
 
         ArrayList<Integer> productIds = new ArrayList<>();
         for (InventoryAllocationRequest request : requests)

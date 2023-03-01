@@ -33,7 +33,6 @@ public class OrderDto {
     @Autowired
     private BrandApi brandApi;
 
-    //    todo classname should be invoiceclient and function name should be getInvoiceClient
     @Autowired
     private InvoiceClient invoiceClient;
     @Value("${app.invoiceServerBaseUrl}")
@@ -48,7 +47,6 @@ public class OrderDto {
 
         List<OrderItemForm> orderItemForms = orderForm.getOrderItemForms();
         ListUtils.checkUploadLimit(orderItemForms, MAX_UPLOAD_SIZE);
-//        TODO pass the barcodes list created in line 48
 
         OrderPojo orderPojo = convert(orderForm);
 
@@ -58,7 +56,6 @@ public class OrderDto {
         ListUtils.checkDuplicates(barcodes, "duplicate barcodes exist \n Erroneous barcodes : ");
         productApi.checkIfBarcodesExist(barcodes);
 
-//TODO rewrite getBarcodeToProductPojoMap
         Map<String, ProductPojo> barcodeToProductMap = ProductApi.getBarcodeToProductPojoMap(productApi.getByBarcodes(barcodes));
         HashMap<Integer, String> productIdToBarcode = new HashMap<>();
         for (String barcode : barcodeToProductMap.keySet())
@@ -92,11 +89,9 @@ public class OrderDto {
             generateInvoice(orderId);
             invoicePojo = invoiceApi.get(orderId);
         }
-//        TODO move to generateInvoice method
         return encoder(invoicePojo.getInvoiceUrl());
     }
 
-    //TODo make return type LIst<>
     public List<SalesData> getSalesReport(SalesFilterForm filterForm) throws ApiException {
         ValidationUtil.validate(filterForm);
         NormalizationUtil.normalize(filterForm);
@@ -108,13 +103,12 @@ public class OrderDto {
         return getSalesDataByOrderItems(filterForm, orderApi.getOrderItemsByOrderIds(orderIds));
     }
 
-    //TODO make filterform to search form
     public List<OrderData> getOrdersByFilter(OrderFilterForm filterForm) throws ApiException {
         if (Objects.nonNull(filterForm.getOrderId())) {
             return Collections.singletonList(convert(orderApi.get(filterForm.getOrderId())));
         }
         ValidationUtil.validate(filterForm);
-        List<OrderPojo> orderPojos = orderApi.getByFilter(filterForm.getStartDate(), filterForm.getEndDate(), filterForm.getOrderStatus());
+        List<OrderPojo> orderPojos = orderApi.getByFilter(filterForm.getStartDate(), filterForm.getEndDate(), filterForm.getOrderStatus(), filterForm.getPageNo(), filterForm.getPageSize());
         ArrayList<OrderData> orderDataList = new ArrayList<>();
         orderPojos.forEach(orderPojo -> {
             orderDataList.add(convert(orderPojo));
@@ -193,7 +187,6 @@ public class OrderDto {
         return (StringUtil.isEmpty(filterForm.getCategory())) || (filterForm.getCategory().equals(brandPojo.getCategory()));
     }
 
-    //todo do not take string here
     private List<OrderItemPojo> convertToOrderItemPojos(List<OrderItemForm> orderItemForms) throws ApiException {
         ArrayList<OrderItemPojo> orderItemPojos = new ArrayList<>();
         for (OrderItemForm orderItemForm : orderItemForms) {

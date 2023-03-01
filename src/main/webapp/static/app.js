@@ -12,6 +12,15 @@ function toJson($form){
     return json;
 }
 
+function dateLimit(document, dateSelectIds){
+    for (var i in dateSelectIds){
+        var dateSelectId = dateSelectIds[i];
+        var dateSelect = document.getElementById(dateSelectId);
+        var today = new Date().toISOString().split("T")[0];
+        dateSelect.setAttribute("max", today);
+    }
+}
+
 function handleAjaxError(response){
 	var response = JSON.parse(response.responseText);
 	alert(response.message);
@@ -29,7 +38,10 @@ function readFileData(file, callback){
 			callback(results);
 	  	}	
 	}
-	Papa.parse(file, config);
+	try{Papa.parse(file, config);}
+	catch(error){
+	    makeToast(false, "Please select TSV a file", null);
+	}
 }
 
 function isValidForm(form){
@@ -40,16 +52,23 @@ function isValidForm(form){
 function makeToast(isSuccessful, message, downloadFunction){
     var toastHeading = document.getElementById('toast-heading');
     var toastMessage = document.getElementById('toast-message');
+    var toastBody = document.getElementById("toast-body");
 
     $("#download-errors").show();
     if(downloadFunction===null){
         $("#download-errors").hide();
     }
 
+    toastBody.style.display = '';
+    if(message==null || message.trim()===""){
+        toastBody.style.display = 'none';
+    }
+
     if(isSuccessful){
         toastHeading.innerHTML = "Success";
         toastHeading.style.color = 'green';
         toastMessage.innerHTML = null;
+
     }else{
         toastHeading.innerHTML = "Error";
         toastHeading.style.color = 'red';
@@ -145,4 +164,49 @@ document.body.appendChild(temp_link);
 // trigger download
 temp_link.click();
 document.body.removeChild(temp_link);
+
+}
+
+function formatDate(){
+    var date = new Date();
+    var dd = String(date.getDate()).padStart(2, '0');
+    var mm = String(date.getMonth() + 1).padStart(2, '0');
+    var yyyy = date.getFullYear();
+    var today = yyyy + '-' + mm + '-' + dd;
+    $('#input-start-date').attr('max',today);
+    $('#input-end-date').attr('disabled',true);
+    $('#input-start-date').change(enableEndDate);
+}
+
+function enableEndDate(){
+
+    var startDate = $('#input-start-date').val();
+    if(startDate==""){
+        return;
+    }
+    var date = new Date(startDate);
+    date.setMonth(date.getMonth()+3);
+    var dd = String(date.getDate()).padStart(2, '0');
+    var mm = String(date.getMonth() + 1).padStart(2, '0');
+    var yyyy = date.getFullYear();
+    var maxEndDate = yyyy + '-' + mm + '-' + dd;
+    date = new Date();
+    dd = String(date.getDate()).padStart(2, '0');
+    mm = String(date.getMonth() + 1).padStart(2, '0');
+    yyyy = date.getFullYear();
+    var today = yyyy + '-' + mm + '-' + dd;
+
+        $('#input-end-date').attr('disabled',false);
+        $('#input-end-date').attr('min',startDate);
+        if(maxEndDate>today){
+            $('#input-end-date').attr('max',today);
+        }
+        else{
+            $('#input-end-date').attr('max',maxEndDate);
+        }
+}
+
+
+function roundToTwo(num) {
+    return +(Math.round(num + "e+2")  + "e-2");
 }

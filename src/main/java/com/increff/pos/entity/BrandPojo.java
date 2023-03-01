@@ -21,7 +21,6 @@ public class BrandPojo extends BaseEntity {
     @TableGenerator(name = POS_BRAND_SEQ, pkColumnValue = POS_BRAND_SEQ, table = POS_SEQ_TABLE_NAME)
     @GeneratedValue(strategy = GenerationType.TABLE, generator = POS_BRAND_SEQ)
     private Integer id;
-    //TODO remove allocation SIZE
     @Column(nullable = false)
     private String name;
     @Column(nullable = false)

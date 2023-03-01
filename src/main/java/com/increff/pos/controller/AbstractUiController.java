@@ -30,5 +30,4 @@ public abstract class AbstractUiController {
         mav.addObject("baseUrl", baseUrl);
         return mav;
     }
-
 }

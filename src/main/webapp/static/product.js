@@ -33,17 +33,52 @@ function addProductDialog(event){
 function getSelectedIndex(id){
     return document.getElementById(id).selectedIndex
 }
+var pageNo = 1;
+var pageSize = 10;
+
+function setPageDetails(data){
+    data["pageNo"] = pageNo;
+    data["pageSize"] = pageSize;
+}
+
+function nextPage(){
+    if(document.getElementById('product-table').rows.length<pageSize){
+        return;
+    }
+    pageNo++;
+    document.getElementById("page-number").innerHTML = pageNo;
+    filter(false);
+}
+function previousPage(){
+    pageNo = document.getElementById("page-number").innerHTML;
+    if(pageNo>1){
+        pageNo--;
+        document.getElementById("page-number").innerHTML = pageNo;
+
+        filter(false);
+    }
+}
+
 function filter(searchByBarcode){
 	var url = getProductFilterUrl();
 	data = {};
+	setPageDetails(data);
 	if(searchByBarcode){
+
+        var $form = $("#barcode-search-form");
+         if(!validateForm($form))
+             return;
+
 	    if($("#input-barcode").val().trim()===""){
 	        makeToast(false,"barcode cannot be blank",null);
 	        return;
 	    }
 	    data["barcode"] = $("#input-barcode").val().trim();
+        document.getElementById("page-number").innerHTML = 1;
+
 	}
 	else{
+
         if($("#filter-brand-select").val().trim()!=""){
             data["brandName"] = $("#filter-brand-select").val();
         }
@@ -65,9 +100,12 @@ function filter(searchByBarcode){
 	   success: function(data) {
 	   		console.log(data);
 	   		displayProductList(data);     //...
+	   		if(data.length==0 && pageNo>1){
+       		    previousPage();
+       		}
+
 	   },
 	   error: function(error){
-            alert(error.responseJSON.message);
 	   }
 	});
 }
@@ -77,13 +115,18 @@ function uploadProduct(event){
 	var $form = $("#product-form");
     if(!validateForm($form))
         return;
+
 	data = toMap($form)
 
 	if(getSelectedIndex("form-brand-select")!=0){
 	    data["brandName"] = $("#form-brand-select").val();
+	}else{
+        data["brandName"] = null;
 	}
 	if(getSelectedIndex("form-category-select")!=0){
 	    data["category"] = $("#form-category-select").val();
+	}else{
+	    data["category"] = null;
 	}
 	var json = "["+JSON.stringify(data)+"]";
 	var url = getAddProductsUrl();
@@ -97,7 +140,10 @@ function uploadProduct(event){
        },
 	   success: function(response) {
 	   		console.log("Product created");
-	   		getProductList();     //...
+	   		$('#product-form-modal').modal('toggle');
+	   		makeToast(true, "", null);
+            filter(false);
+
 	   },
 	   error: function(error){
 	   	   makeToast(false, error.responseJSON.message, null);
@@ -110,7 +156,6 @@ function uploadProduct(event){
 }
 
 function updateProduct(event){
-	$('#edit-product-modal').modal('toggle');
 	//Get the ID
 	var id = $("#product-edit-form input[name=id]").val();
 	var url = getProductUrl() +"/"+id;
@@ -120,19 +165,23 @@ function updateProduct(event){
 
     if(!validateForm($form))
         return;
+
 	var json = toJson($form);
 
 	$.ajax({
 	   url: url,
-	   type: 'PUT',
+	   type: 'PATCH',
 	   data: json,
 	   headers: {
        	'Content-Type': 'application/json'
        },
 	   success: function(response) {
             console.log("Product update");
+	$('#edit-product-modal').modal('toggle');
+
             $("#product-form").hide();
-            getProductList();     //...
+            makeToast(true, "", null);
+	   		filter(false);
 	   },
 	   error: function(error){
 	        makeToast(false, error.responseJSON.message, null);
@@ -144,22 +193,6 @@ function updateProduct(event){
 }
 
 
-function getProductList(){
-	var url = getProductUrl();
-	$.ajax({
-	   url: url,
-	   type: 'GET',
-	   success: function(data) {
-	   		console.log("Product data fetched");
-	   		console.log(data);
-	   		displayProductList(data);     //...
-	   },
-	   error: function(error){
-	   		alert(error.responseJSON.message);
-
-	   }
-	});
-}
 
 // FILE UPLOAD METHODS
 var fileData = [];
@@ -174,6 +207,18 @@ function processData(){
 
 function readFileDataCallback(results){
 	fileData = results.data;
+	if(fileData.length === 0){
+       errorMessage("File is empty!")
+       return;
+    }
+    var row = fileData[0];
+    var title = Object.keys(row);
+    if(title.length!=5 || title[0]!='productName' || title[1]!='brandName' || title[2]!='category' || title[3]!='mrp' || title[4]!='barcode'){
+        var message = "Incorrect tsv format please check the sample file!";
+        makeToast(false, message, null);
+        errorData = message;
+        return;
+    }
 	uploadRows();
 }
 
@@ -194,7 +239,7 @@ function uploadRows(){
 	   success: function(response) {
 	        $('#upload-product-modal').modal('toggle');
 	   		makeToast(true, "", null);
-            getProductList();
+            filter(false);
 
 	   },
 	   error: function(error){
@@ -255,6 +300,7 @@ function displayEditProduct(id){
 	});
 }
 
+
 function resetUploadDialog(){
 	//Reset file name
 	var $file = $('#productFile');
@@ -266,7 +312,8 @@ function resetUploadDialog(){
 	errorData = [];
 	//Update counts
 	updateUploadDialog();
-	getProductList();
+	            filter(false);
+
 }
 function updateUploadDialog(){
 	$('#rowCount').html("" + fileData.length);
@@ -336,6 +383,13 @@ $("#form-brand-select").change(function () {
 function makeCategoryDropDown(brandName,dropDownCategory,initialCategory){
         emptyDropdown(dropDownCategory);
 
+        if(brandName.trim().length==0){
+            brandName = null;
+        }
+
+        if(brandName==null){
+            return;
+        }
         url = getBrandCategoryListUrl();
 	data = {"name":brandName, "category":null};
 
@@ -426,13 +480,14 @@ tableToCSV(document, "product-table", 5);
 //INITIALIZATION CODE
 function init(){
 	$('#add-product').click(addProductDialog);
-	$('#refresh-data').click(getProductList);
+	$('#refresh-data').click(filter(false));
     $('#upload-data').click(displayUploadData);
     $('#process-data').click(processData);
     $('#download-errors').click(downloadErrors);
 	$('#form-add-product').click(uploadProduct);
 	$('#update-product').click(updateProduct);
     $('#productFile').on('change', updateFileName)
+    restrictDates(document);
 }
 
 $(document).ready(init);

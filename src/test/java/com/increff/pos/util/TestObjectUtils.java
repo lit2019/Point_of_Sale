@@ -41,13 +41,6 @@ public class TestObjectUtils {
         return pojo;
     }
 
-    public static BrandSearchForm getNewBrandSearchForm(String name, String category) {
-        BrandSearchForm form = new BrandSearchForm();
-        form.setName(name);
-        form.setCategory(category);
-        return form;
-    }
-
     public static OrderItemPojo getNewOrderItemPojo(Integer orderId, Integer productId, Integer quantity, Double sellingPrice) {
         OrderItemPojo pojo = new OrderItemPojo();
         pojo.setOrderId(orderId);
@@ -65,7 +58,7 @@ public class TestObjectUtils {
         return form;
     }
 
-    public static ArrayList<ProductPojo> getNewProductPojoList() {
+    public static List<ProductPojo> getNewProductPojoList() {
         ArrayList<ProductPojo> productPojoList = new ArrayList<>();
         productPojoList.add(getNewProductPojo(1, "product1", "barcode1", 100.0));
         productPojoList.add(getNewProductPojo(1, "product2", "barcode2", 100.0));
@@ -91,6 +84,8 @@ public class TestObjectUtils {
         form.setBrandName(brand);
         form.setCategory(category);
         form.setBarcode(barcode);
+        form.setPageNo(1);
+        form.setPageSize(1000);
         return form;
     }
 

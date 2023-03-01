@@ -1,7 +1,7 @@
 
 function getDailySalesReportUrl(){
 	var baseUrl = $("meta[name=baseUrl]").attr("content")
-	return baseUrl + "/api/dailysales";
+	return baseUrl + "/api/report/dailysales";
 }
 
 //UI DISPLAY METHODS
@@ -17,7 +17,7 @@ function displayDailySalesReportList(data){
 		+ '<td>' + e.date.split("T")[0] + '</td>'
 		+ '<td>' + e.invoicedOrdersCount + '</td>'
 		+ '<td>'  + e.invoicedItemsCount + '</td>'
-		+ '<td>'  + e.totalRevenue + '</td>'
+		+ '<td>'  + roundToTwo(e.totalRevenue) + '</td>'
 		+ '</tr>';
         $tbody.append(row);
 	}
@@ -34,6 +34,10 @@ function filter(){
 	data = {};
 	data["startDate"] = new Date($("#input-start-date").val());
 	data["endDate"] = new Date($("#input-end-date").val());
+
+    var $form = $("#daily-report-form");
+    if(!validateForm($form))
+        return;
 
     json = JSON.stringify(data);
     console.log(json);
@@ -58,6 +62,8 @@ function filter(){
 
 function init(){
 	$('#filter').click(filter);
+    dateLimit(document, ["input-start-date", "input-end-date"]);
+    formatDate();
 }
 
 

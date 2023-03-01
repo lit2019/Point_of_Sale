@@ -11,26 +11,26 @@
 <div th:replace="snippets.html :: name_toast"></div>
 
 <div class="container">
-    <h3 style="margin-top:15px;margin-bottom:15px">Daily Sales report</h3>
+    <h3 style="margin-top:15px;margin-bottom:15px">Daily Sales Report</h3>
     <div class="row">
         <form class="form-inline" id="daily-report-form" style="margin-left:15px">
             <div class="input-group mb-3" style="margin-right: 48px">
                 <div class="input-group-prepend">
                     <label class="input-group-text" for="input-start-date">Start Date: </label>
                 </div>
-                <input type="date" id="input-start-date" name="startDate" onkeydown="return false">
+                <input required type="date" id="input-start-date" name="startDate" onkeydown="return false">
             </div>
             <div class="input-group mb-3" style="margin-right: 48px">
                 <div class="input-group-prepend">
                     <label class="input-group-text" for="input-end-date">End Date: </label>
                 </div>
-                <input type="date" id="input-end-date" name="endDate" onkeydown="return false">
+                <input required type="date" id="input-end-date" name="endDate" onkeydown="return false">
             </div>
         </form>
         <div class="col">
             <button type="button" class="btn btn-sm btn-primary" id="filter">Filter</button>
         </div>
-        <div class="col">
+        <div class="col" style="margin-left:400px">
             <button type="button" class="btn btn-sm btn-primary" onclick="downloadDailySalesReport()">Download</button>
         </div>
     </div>

@@ -4,6 +4,7 @@ import com.increff.pos.api.ApiException;
 import com.increff.pos.model.LoginForm;
 import com.increff.pos.spring.AuthRole;
 import com.increff.pos.util.SecurityUtil;
+import com.increff.pos.util.StringUtil;
 import com.increff.pos.util.UserPrincipal;
 import com.increff.pos.util.ValidationUtil;
 import org.springframework.beans.factory.annotation.Value;
@@ -29,6 +30,7 @@ public class LoginDto {
 
     public ModelAndView login(HttpServletRequest req, LoginForm loginForm) throws ApiException {
         ValidationUtil.validate(loginForm);
+        loginForm.setEmail(StringUtil.normaliseText(loginForm.getEmail()));
         if (isSupervisor(loginForm)) {
             role = AuthRole.SUPERVISOR;
         } else {
@@ -36,7 +38,6 @@ public class LoginDto {
         }
 
         // Create authentication object
-//        todo change this
         Authentication authentication = convert(role, loginForm);
         // Create new session
         HttpSession session = req.getSession(true);
@@ -45,7 +46,7 @@ public class LoginDto {
         // Attach Authentication object to the Security Context
         SecurityUtil.setAuthentication(authentication);
 
-        return new ModelAndView("redirect:/ui/inventory");
+        return new ModelAndView("redirect:/ui/brands");
     }
 
     private boolean isSupervisor(LoginForm loginForm) {

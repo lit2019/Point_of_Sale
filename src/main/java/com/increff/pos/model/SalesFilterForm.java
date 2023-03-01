@@ -11,10 +11,10 @@ import java.time.ZonedDateTime;
 @Getter
 @Setter
 public class SalesFilterForm {
-    @NotNull
+    @NotNull(message = "Start Date cannot be null")
     @JsonDeserialize(using = CustomZonedDateTimeDeserializer.class)
     private ZonedDateTime startDate;
-    @NotNull
+    @NotNull(message = "End Date cannot be null")
     @JsonDeserialize(using = CustomZonedDateTimeDeserializer.class)
     private ZonedDateTime endDate;
     private String brandName;

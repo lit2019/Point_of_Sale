@@ -1,12 +1,10 @@
 package com.increff.pos.controller;
 
 import com.increff.pos.api.ApiException;
+import com.increff.pos.dto.DailySalesDto;
 import com.increff.pos.dto.InventoryDto;
 import com.increff.pos.dto.OrderDto;
-import com.increff.pos.model.InventoryReportData;
-import com.increff.pos.model.InventorySearchForm;
-import com.increff.pos.model.SalesData;
-import com.increff.pos.model.SalesFilterForm;
+import com.increff.pos.model.*;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +24,8 @@ public class ReportController {
     private OrderDto orderDto;
     @Autowired
     private InventoryDto inventoryDto;
+    @Autowired
+    private DailySalesDto dailySalesDto;
 
     @ApiOperation(value = "gets sales report by start date, end date, brand name and category")
     @RequestMapping(path = "/sales", method = RequestMethod.POST)
@@ -33,10 +33,15 @@ public class ReportController {
         return orderDto.getSalesReport(filterForm);
     }
 
-    //    todo make filter for brand and category
     @ApiOperation(value = "gets Inventory report")
     @RequestMapping(path = "/inventory", method = RequestMethod.POST)
     public List<InventoryReportData> getInventoryReport(@RequestBody InventorySearchForm filterForm) throws ApiException {
         return inventoryDto.getInventoryReport(filterForm);
+    }
+
+    @ApiOperation(value = "gets Daily Sales by date range")
+    @RequestMapping(path = "/dailysales", method = RequestMethod.POST)
+    public List<DailySalesData> getByDate(@RequestBody DailySalesFilterForm filterForm) throws ApiException {
+        return dailySalesDto.getByFilter(filterForm);
     }
 }

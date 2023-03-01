@@ -7,17 +7,12 @@ import java.util.Objects;
 
 public class NormalizationUtil {
 
-    public static void normalize(BrandForm form) {
-        form.setName(StringUtil.normaliseText(form.getName()));
-        form.setCategory(StringUtil.normaliseText(form.getCategory()));
-    }
-
-    public static void normalize(BrandSearchForm searchForm) {
-        if (Objects.nonNull(searchForm.getCategory())) {
-            searchForm.setCategory(StringUtil.normaliseText(searchForm.getCategory()));
+    public static void normalize(BrandForm brandForm) {
+        if (Objects.nonNull(brandForm.getCategory())) {
+            brandForm.setCategory(StringUtil.normaliseText(brandForm.getCategory()));
         }
-        if (Objects.nonNull(searchForm.getName())) {
-            searchForm.setName(StringUtil.normaliseText(searchForm.getName()));
+        if (Objects.nonNull(brandForm.getName())) {
+            brandForm.setName(StringUtil.normaliseText(brandForm.getName()));
         }
     }
 

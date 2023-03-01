@@ -25,7 +25,6 @@ public class ProductPojo extends BaseEntity {
     @Column(nullable = false)
     private Double mrp;
 
-    //    TODO: use unique constraints annotation in class
     @Column(nullable = false)
     private String barcode;
 }

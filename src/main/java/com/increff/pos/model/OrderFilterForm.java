@@ -10,7 +10,7 @@ import java.time.ZonedDateTime;
 
 @Getter
 @Setter
-public class OrderFilterForm {
+public class OrderFilterForm extends PageRequestForm {
     @NotNull(message = "End Date cannot be null")
     @JsonDeserialize(using = CustomZonedDateTimeDeserializer.class)
     private ZonedDateTime endDate;

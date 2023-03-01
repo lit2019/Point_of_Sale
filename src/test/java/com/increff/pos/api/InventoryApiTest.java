@@ -19,6 +19,7 @@ import java.util.List;
 import static com.increff.pos.util.TestObjectUtils.*;
 import static junit.framework.TestCase.fail;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 public class InventoryApiTest extends AbstractUnitTest {
     @Autowired
@@ -30,7 +31,7 @@ public class InventoryApiTest extends AbstractUnitTest {
     @Autowired
     private ProductDao productDao;
 
-    private ArrayList<ProductPojo> productPojos;
+    private List<ProductPojo> productPojos;
 
     @Before
     public void setup() {
@@ -133,11 +134,19 @@ public class InventoryApiTest extends AbstractUnitTest {
     }
 
     @Test
-    public void testGetAll() {
+    public void testGetInventories() {
         List<InventoryPojo> inventoryPojos = getNewInventoryPojoList(productPojos);
         inventoryPojos.forEach(inventoryDao::insert);
-        assertEquals(inventoryPojos.size(), inventoryApi.getAll().size());
+
+        List<InventoryPojo> inventoryPojos2 = inventoryApi.getInventories(1, 2);
+        assertNotNull(inventoryPojos2);
+        assertEquals(2, inventoryPojos2.size());
+
+        inventoryPojos2 = inventoryApi.getInventories(1, 3);
+        assertNotNull(inventoryPojos2);
+        assertEquals(3, inventoryPojos2.size());
     }
+
 
     private void assertEqualsInventoryPojo(InventoryPojo inventoryPojo, InventoryPojo inventoryPojo2) {
         assertEquals(inventoryPojo.getProductId(), inventoryPojo2.getProductId());

@@ -8,7 +8,6 @@ com/increff/pos/util/SecurityUtil.class
 com/increff/pos/entity/TableConstants.class
 com/increff/pos/entity/InvoicePojo.class
 com/increff/pos/dao/InventoryDao.class
-com/increff/pos/model/UserForm.class
 com/increff/pos/api/ApiException.class
 com/increff/pos/api/DailySalesApi.class
 com/increff/pos/model/ProductSearchForm.class
@@ -51,6 +50,7 @@ com/increff/pos/api/BrandApi.class
 com/increff/pos/controller/LoginController.class
 com/increff/pos/model/OrderItemForm.class
 com/increff/pos/entity/BrandPojo.class
+com/increff/pos/model/PageRequestForm.class
 com/increff/pos/controller/BrandController.class
 com/increff/pos/spring/SpringConfig.class
 com/increff/pos/jobs/DailySalesTask.class
@@ -73,7 +73,6 @@ com/increff/pos/model/OrderItemData.class
 com/increff/pos/spring/DbConfig.class
 com/increff/pos/model/DailySalesData.class
 com/increff/pos/api/ProductApi.class
-com/increff/pos/controller/InitApiController.class
 com/increff/pos/entity/OrderPojo.class
 com/increff/pos/dao/BrandDao.class
 com/increff/pos/dto/LoginDto.class
@@ -84,5 +83,4 @@ com/increff/pos/dto/BrandDto.class
 com/increff/pos/model/InvoiceData.class
 com/increff/pos/controller/SiteUiController.class
 com/increff/pos/controller/ReportController.class
-com/increff/pos/controller/DailySalesController.class
 com/increff/pos/model/InventorySearchForm.class

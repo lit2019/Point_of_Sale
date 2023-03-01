@@ -9,38 +9,12 @@
 <nav th:replace="snippets.html :: name_app_navbar"></nav>
 <!-- Toast -->
 
+<div th:replace="snippets.html :: name_toast"></div>
 <div class="container">
-    <div th:replace="snippets.html :: name_toast"></div>
     <div class="row">
         &nbsp;
     </div>
     <h3>Orders</h3>
-    <div class="row">
-        &nbsp;
-    </div>
-
-    <div class="row">
-        <form class="form-inline" id="order-id-search-form" style="padding-left:15px;">
-            <div class="input-group mb-3" style="margin-right: 48px">
-                <div class="input-group-prepend">
-                    <label class="input-group-text" for="input-order-id">Order Id: </label>
-                </div>
-                <input type="text" class="form-control" name="orderStatus" id="input-order-id" placeholder="Order Id">
-            </div>
-        </form>
-
-        <div class="col">
-            <button type="button" class="btn btn-sm btn-primary" id="search-order-id" onclick="displayOrders(true)">
-                Search
-            </button>
-        </div>
-    </div>
-
-    <!--   create center div-->
-    <div class="row">
-        <div style="margin:0 auto;">OR</div>
-    </div>
-
     <div class="row">
         &nbsp;
     </div>
@@ -51,22 +25,22 @@
                 <div class="input-group-prepend">
                     <label class="input-group-text" for="input-start-date">Start Date: </label>
                 </div>
-                <input type="date" id="input-start-date" name="startDate" onkeydown="return false">
+                <input required type="date" id="input-start-date" name="startDate" onkeydown="return false">
             </div>
             <div class="input-group mb-3" style="margin-right: 48px">
                 <div class="input-group-prepend">
                     <label class="input-group-text" for="input-end-date">End Date: </label>
                 </div>
-                <input type="date" id="input-end-date" name="endDate" onkeydown="return false">
+                <input required type="date" id="input-end-date" name="endDate" onkeydown="return false">
             </div>
             <div class="input-group mb-3" style="margin-right: 48px">
                 <div class="input-group-prepend">
                     <label class="input-group-text" for="input-order-status">Order Status: </label>
                 </div>
                 <select class="form-control" name="orderStatus" id="input-order-status" placeholder="Status">
-                    <option value=null>all</option>
-                    <option value="CREATED">created</option>
-                    <option value="INVOICED">invoiced</option>
+                    <option value=null>Any</option>
+                    <option value="CREATED">Created</option>
+                    <option value="INVOICED">Invoiced</option>
                 </select>
 
             </div>
@@ -80,6 +54,38 @@
             <button type="button" class="btn btn-sm btn-primary" id="open-create-dialog">Create Order</button>
         </div>
     </div>
+
+    <!--   create center div-->
+    <div class="row">
+        <div style="margin:0 auto;">OR</div>
+    </div>
+
+    <div class="row">
+        <form class="form-inline" id="order-id-search-form" style="padding-left:15px;">
+            <div class="input-group mb-3" style="margin-right: 48px">
+                <div class="input-group-prepend">
+                    <label class="input-group-text" for="input-order-id">Order Id: </label>
+                </div>
+                <input required type="number" class="form-control" name="orderStatus" id="input-order-id"
+                       placeholder="Order Id" step="1">
+            </div>
+        </form>
+
+        <div class="col">
+            <button type="button" class="btn btn-sm btn-primary" id="search-order-id" onclick="displayOrders(true)">
+                Search
+            </button>
+
+            <!--        </div>-->
+            <!--        <div class="col">-->
+            <button style="margin-left:565px" onclick="previousPage()">&lt;</button>
+            <text id="page-number">1</text>
+            <button onclick="nextPage()">&gt;</button>
+        </div>
+
+    </div>
+
+
     <div class="row">
         &nbsp;
     </div>
@@ -90,7 +96,7 @@
                 <thead>
                 <tr>
                     <th scope="col">Order Id</th>
-                    <th scope="col">Date</th>
+                    <th scope="col">Creation Date</th>
                     <th scope="col">Order Status</th>
                     <th scope="col">Invoice</th>
 
@@ -141,13 +147,15 @@
                         <!-- order item Table -->
                         <div class="col-12">
                             <table class="table table-striped" id="order-items-table">
+                                <text id="order-id-details" style="margin:5px">
+                                </text>
                                 <thead>
                                 <tr>
                                     <th scope="col">S.No.</th>
                                     <th scope="col">Product Name</th>
                                     <th scope="col">Barcode</th>
                                     <th scope="col">Quantity</th>
-                                    <th scope="col">Selling Price</th>
+                                    <th scope="col">Unit Selling Price</th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -176,18 +184,20 @@
                 <div class="modal-body">
                     <div class="container">
                         <div class="row">
-                            <form>
-                                <div class="form-row" id="order-item-form">
+                            <form id="order-item-form">
+                                <div class="form-row">
                                     <div class="col">
-                                        <input type="text" class="form-control" name="barcode" placeholder="Barcode">
+                                        <input required type="text" class="form-control" name="barcode"
+                                               placeholder="Barcode">
                                     </div>
                                     <div class="col">
-                                        <input type="number" class="form-control" name="quantity"
+                                        <input required type="number" class="form-control" name="quantity" step="1"
                                                placeholder="Quantity">
                                     </div>
                                     <div class="col">
-                                        <input type="number" class="form-control" name="sellingPrice"
-                                               placeholder="Selling Price">
+                                        <input required type="number" class="form-control" name="sellingPrice"
+                                               step=".0001"
+                                               placeholder="Selling Price(in Rs)">
                                     </div>
                                     <div class="col">
                                         <button type="button" class="btn btn-sm btn-primary" id="add-item">Add item

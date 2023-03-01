@@ -27,7 +27,6 @@ public class OrderApi extends AbstractApi {
     private Integer maxDateRange;
 
     public void add(OrderPojo orderPojo, List<OrderItemPojo> orderItemPojos) throws ApiException {
-//        TODO make seperate methods in each api for checking upload limit
         orderPojo.setOrderStatus(OrderStatus.CREATED);
         orderDao.insert(orderPojo);
 
@@ -49,7 +48,6 @@ public class OrderApi extends AbstractApi {
     }
 
     public List<OrderItemPojo> getOrderItemsByOrderIds(List<Integer> orderIds) {
-//        TODO return empty list if input is empty
         if (CollectionUtils.isEmpty(orderIds)) {
             return new ArrayList<>();
         }
@@ -57,13 +55,22 @@ public class OrderApi extends AbstractApi {
     }
 
     public List<OrderPojo> getByFilter(ZonedDateTime startDate, ZonedDateTime endDate, OrderStatus orderStatus) throws ApiException {
-//        TODO move endDate.plusdays() logic to ui
         endDate = endDate.plusDays(1);
         if (!startDate.isBefore(endDate)) throw new ApiException("Start Date must be Before End Date");
         if (ChronoUnit.DAYS.between(startDate, endDate) > maxDateRange)
             throw new ApiException(String.format("start date and end date cannot be more than %d days apart", maxDateRange));
 
         return orderDao.selectByFilter(startDate, endDate, orderStatus);
+    }
+
+    public List<OrderPojo> getByFilter(ZonedDateTime startDate, ZonedDateTime endDate, OrderStatus orderStatus, Integer pageNo, Integer pageSize) throws ApiException {
+
+        endDate = endDate.plusDays(1);
+        if (!startDate.isBefore(endDate)) throw new ApiException("Start Date must be Before End Date");
+        if (ChronoUnit.DAYS.between(startDate, endDate) > maxDateRange)
+            throw new ApiException(String.format("start date and end date cannot be more than %d days apart", maxDateRange));
+
+        return orderDao.selectByFilter(startDate, endDate, orderStatus, pageNo, pageSize);
     }
 
     public void setStatus(Integer id, OrderStatus invoiced) {

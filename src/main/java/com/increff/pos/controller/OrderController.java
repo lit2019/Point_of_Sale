@@ -27,7 +27,6 @@ public class OrderController {
         dto.add(orderForm);
     }
 
-    //TODO make it id only(didn't rename, cause there are 2 ids orderId and orderItemId)
     @ApiOperation(value = "gets list of order items by orderId")
     @RequestMapping(path = "items/{orderId}", method = RequestMethod.GET)
     public List<OrderItemData> getOrderItems(@PathVariable Integer orderId) throws ApiException {
@@ -40,13 +39,10 @@ public class OrderController {
         return dto.getOrdersByFilter(orderFilterForm);
     }
 
-    //TODO: use seperate controller for invoice
     @ApiOperation(value = "gets invoice with orderId")
     @RequestMapping(path = "/invoice/{orderId}", method = RequestMethod.GET)
     public String getInvoice(@PathVariable Integer orderId) throws ApiException, IOException {
         return dto.getInvoice(orderId);
     }
-
-    //TODO make a controller for all the reports
 
 }

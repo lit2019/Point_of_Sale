@@ -16,7 +16,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.increff.pos.util.TestObjectUtils.*;
+import static com.increff.pos.util.TestObjectUtils.getNewBrandForm;
+import static com.increff.pos.util.TestObjectUtils.getNewBrandPojo;
 import static junit.framework.TestCase.fail;
 import static org.junit.Assert.assertEquals;
 
@@ -104,16 +105,16 @@ public class BrandDtoTest extends AbstractUnitTest {
         pojos.forEach(pojo -> dao.insert(pojo));
 
         List<BrandData> datas;
-        datas = dto.get(getNewBrandSearchForm(" Name1", "  category1  "));
+        datas = dto.get(getNewBrandForm(" Name1", "  category1  "));
         TestCase.assertEquals(pojos.stream().filter(pojo -> pojo.getName().equals("name1") && pojo.getCategory().equals("category1")).collect(Collectors.toList()).size(), datas.size());
 
-        datas = dto.get(getNewBrandSearchForm("name1", null));
+        datas = dto.get(getNewBrandForm("name1", null));
         TestCase.assertEquals(pojos.stream().filter(pojo -> pojo.getName().equals("name1")).collect(Collectors.toList()).size(), datas.size());
 
-        datas = dto.get(getNewBrandSearchForm(null, "categorY2"));
+        datas = dto.get(getNewBrandForm(null, "categorY2"));
         TestCase.assertEquals(pojos.stream().filter(pojo -> pojo.getCategory().equals("category2")).collect(Collectors.toList()).size(), datas.size());
 
-        datas = dto.get(getNewBrandSearchForm(null, null));
+        datas = dto.get(getNewBrandForm(null, null));
         TestCase.assertEquals(pojos.size(), datas.size());
     }
 

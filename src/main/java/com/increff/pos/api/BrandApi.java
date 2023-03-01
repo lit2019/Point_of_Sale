@@ -22,20 +22,12 @@ public class BrandApi extends AbstractApi {
     private BrandDao dao;
     private static final Integer MAX_UPLOAD_SIZE = 5000;
 
-    // TODO:use checknull in abstractdto
-
-    // TODO:remove single add funtion directly call dao.insert
-
-    //        TODO: use checknull from AbstractDTo
-    //    TODO: return updated pojo
     public BrandPojo update(Integer id, BrandPojo brandPojo) throws ApiException {
         validate(brandPojo);
-//        TODO use getCheck over here and use checkExistingBrandCategory();
 
         BrandPojo pojoWithSameFields = getByNameCategory(brandPojo.getName(), brandPojo.getCategory());
         if (Objects.nonNull(pojoWithSameFields)) {
-
-            if (pojoWithSameFields.getId() == id) {
+            if (pojoWithSameFields.getId() - id == 0) {
                 return brandPojo;
             } else {
                 throw new ApiException(String.format("given name:%s and category:%s already exists", pojoWithSameFields.getName(), pojoWithSameFields.getCategory()));
@@ -97,7 +89,6 @@ public class BrandApi extends AbstractApi {
 
     public void checkExistingBrandCategory(List<BrandPojo> pojos) throws ApiException {
         ArrayList<String> existingCombinations = new ArrayList<>();
-//        TODO:use foreach instead
         for (BrandPojo pojo : pojos)
             if (Objects.nonNull(getByNameCategory(pojo.getName(), pojo.getCategory())))
                 existingCombinations.add(pojo.getName() + "_" + pojo.getCategory());

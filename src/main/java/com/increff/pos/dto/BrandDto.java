@@ -5,7 +5,6 @@ import com.increff.pos.api.BrandApi;
 import com.increff.pos.entity.BrandPojo;
 import com.increff.pos.model.BrandData;
 import com.increff.pos.model.BrandForm;
-import com.increff.pos.model.BrandSearchForm;
 import com.increff.pos.util.ListUtils;
 import com.increff.pos.util.NormalizationUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,23 +16,21 @@ import java.util.List;
 import static com.increff.pos.util.ValidationUtil.validate;
 
 @Service
-//TODO remove sending BrandUpsertForm
 public class BrandDto {
     @Autowired
     private BrandApi api;
     private static final Integer MAX_UPLOAD_SIZE = 5000;
 
-    //TODO:move to api
     public void add(List<BrandForm> forms) throws ApiException {
         ListUtils.checkEmptyList(forms, "Brand Forms cannot be empty");
         ListUtils.checkUploadLimit(forms, MAX_UPLOAD_SIZE);
 
         List<BrandPojo> pojos = new ArrayList<>();
         for (BrandForm form : forms)
-            validate(form); //TODO: use checkValid javax validation {validate->normalize ->service}
+            validate(form);
 
         for (BrandForm form : forms)
-            NormalizationUtil.normalize(form); //TODO:use normalize in api level
+            NormalizationUtil.normalize(form);
 
         checkDuplicate(forms);
 
@@ -47,7 +44,7 @@ public class BrandDto {
         return convert(api.get(id));
     }
 
-    public List<BrandData> get(BrandSearchForm form) {
+    public List<BrandData> get(BrandForm form) {
         NormalizationUtil.normalize(form);
 
         List<BrandPojo> pojos = api.getByFilter(form.getName(), form.getCategory());
@@ -66,15 +63,9 @@ public class BrandDto {
         validate(form);
         NormalizationUtil.normalize(form);
 
-        //TODO move to API
-//        TODO: use checknull from AbstractDTo
-
-        //TODO move to API
         api.update(id, convert(form));
     }
 
-    //    TODO: create methods for throwing exceptions
-    //TODO rename variable more appropriately
     private void checkDuplicate(List<BrandForm> forms) throws ApiException {
         ArrayList<String> brandCategoryCombinations = new ArrayList<>();
 
@@ -94,7 +85,6 @@ public class BrandDto {
     }
 
 
-    //TODO normalisationUtil class
     private BrandPojo convert(BrandForm form) {
         BrandPojo pojo = new BrandPojo();
         pojo.setCategory(form.getCategory());

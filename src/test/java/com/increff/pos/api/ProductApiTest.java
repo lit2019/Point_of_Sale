@@ -9,8 +9,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 import static com.increff.pos.util.TestObjectUtils.getNewProductPojo;
+import static com.increff.pos.util.TestObjectUtils.getNewProductPojoList;
 import static junit.framework.TestCase.*;
 
 public class ProductApiTest extends AbstractUnitTest {
@@ -140,10 +142,13 @@ public class ProductApiTest extends AbstractUnitTest {
 
     @Test
     public void testGetByBrandIds() {
-        assertEquals(0, productApi.getByBrandIds(Collections.emptyList()).size());
+        assertEquals(0, productApi.getByBrandIds(new ArrayList<>()).size());
         ProductPojo pojo = getNewProductPojo(1, "product", "barcode", 12.0);
         productDao.insert(pojo);
-        assertEquals(pojo.getId(), productApi.getByBrandIds(Collections.singletonList(1)).get(0).getId());
+        List<ProductPojo> productPojos = productApi.getByBrandIds(Collections.singletonList(pojo.getBrandCategoryId()));
+        assertNotNull(productPojos);
+        assertEquals(1, productPojos.size());
+        assertEqualsPojo(pojo, productPojos.get(0));
     }
 
 
@@ -188,6 +193,37 @@ public class ProductApiTest extends AbstractUnitTest {
         }
     }
 
+    @Test
+    public void testGetBYFilterEmptyBrandIds() {
+        List<ProductPojo> productPojos = productApi.getByFilter(new ArrayList<>(), 1, 10);
+        assertNotNull(productPojos);
+        assertEquals(0, productPojos.size());
+    }
+
+    @Test
+    public void testGetByFilter() {
+        List<ProductPojo> productPojos = getNewProductPojoList();
+        productPojos.forEach(productDao::insert);
+
+        ArrayList<Integer> brandIds = new ArrayList<>();
+        productPojos.forEach(productPojo -> brandIds.add(productPojo.getBrandCategoryId()));
+
+        List<ProductPojo> productPojos2 = productApi.getByFilter(brandIds, 1, 10);
+        assertNotNull(productPojos2);
+        assertEquals(productPojos.size(), productPojos2.size());
+        productPojos2.forEach(productPojo -> assertTrue(brandIds.contains(productPojo.getBrandCategoryId())));
+    }
+
+    @Test
+    public void testCheckIfBarcodesExist() {
+        String barcode = "barcode1";
+        try {
+            productApi.checkIfBarcodesExist(Collections.singletonList(barcode));
+        } catch (ApiException e) {
+            assertEquals(String.format("Products do not exist for Barcodes : [%s]", barcode), e.getMessage());
+        }
+    }
+
     private void assertEqualsPojo(ProductPojo pojo1, ProductPojo pojo2) {
         assertEquals(pojo1.getId(), pojo2.getId());
         assertEquals(pojo1.getBrandCategoryId(), pojo2.getBrandCategoryId());
@@ -195,4 +231,6 @@ public class ProductApiTest extends AbstractUnitTest {
         assertEquals(pojo1.getBarcode(), pojo2.getBarcode());
         assertEquals(pojo1.getMrp(), pojo2.getMrp());
     }
+
+
 }

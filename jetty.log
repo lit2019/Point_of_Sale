@@ -4751,3 +4751,789 @@ Caused by: org.springframework.beans.factory.NoSuchBeanDefinitionException: No q
 2023-02-23 15:30:18 INFO  SecurityConfig:48 - Configuration complete
 2023-02-23 15:36:18 INFO  SecurityConfig:48 - Configuration complete
 2023-02-23 16:02:00 INFO  SecurityConfig:48 - Configuration complete
+2023-02-23 11:02:14 INFO  SecurityConfig:48 - Configuration complete
+2023-02-23 11:02:31 INFO  SecurityConfig:48 - Configuration complete
+2023-02-23 11:10:31 INFO  SecurityConfig:48 - Configuration complete
+2023-02-23 11:14:57 INFO  SecurityConfig:48 - Configuration complete
+2023-02-23 16:53:03 INFO  SecurityConfig:48 - Configuration complete
+2023-02-23 16:53:45 INFO  SecurityConfig:48 - Configuration complete
+2023-02-23 16:55:04 INFO  SecurityConfig:48 - Configuration complete
+2023-02-23 16:55:26 INFO  SecurityConfig:48 - Configuration complete
+2023-02-23 16:55:51 INFO  SecurityConfig:48 - Configuration complete
+2023-02-23 16:59:15 INFO  SecurityConfig:48 - Configuration complete
+2023-02-23 17:52:46 INFO  SecurityConfig:48 - Configuration complete
+2023-02-23 18:23:22 INFO  SecurityConfig:48 - Configuration complete
+2023-02-23 18:32:58 INFO  SecurityConfig:48 - Configuration complete
+2023-02-23 18:35:41 INFO  SecurityConfig:48 - Configuration complete
+2023-02-23 18:36:40 INFO  SecurityConfig:48 - Configuration complete
+2023-02-23 18:38:26 INFO  SecurityConfig:48 - Configuration complete
+2023-02-23 18:38:39 INFO  SecurityConfig:48 - Configuration complete
+2023-02-23 18:42:05 INFO  SecurityConfig:48 - Configuration complete
+2023-02-23 18:43:20 INFO  SecurityConfig:48 - Configuration complete
+2023-02-23 13:15:29 WARN  AnnotationConfigWebApplicationContext:550 - Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'inventoryController': Unsatisfied dependency expressed through field 'dto'; nested exception is org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'inventoryDto': Unsatisfied dependency expressed through field 'productApi'; nested exception is org.springframework.beans.factory.NoSuchBeanDefinitionException: No qualifying bean of type 'com.increff.pos.api.ProductApi' available: expected at least 1 bean which qualifies as autowire candidate. Dependency annotations: {@org.springframework.beans.factory.annotation.Autowired(required=true)}
+2023-02-23 13:15:29 ERROR DispatcherServlet:502 - Context initialization failed
+org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'inventoryController': Unsatisfied dependency expressed through field 'dto'; nested exception is org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'inventoryDto': Unsatisfied dependency expressed through field 'productApi'; nested exception is org.springframework.beans.factory.NoSuchBeanDefinitionException: No qualifying bean of type 'com.increff.pos.api.ProductApi' available: expected at least 1 bean which qualifies as autowire candidate. Dependency annotations: {@org.springframework.beans.factory.annotation.Autowired(required=true)}
+	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor$AutowiredFieldElement.inject(AutowiredAnnotationBeanPostProcessor.java:588)
+	at org.springframework.beans.factory.annotation.InjectionMetadata.inject(InjectionMetadata.java:88)
+	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor.postProcessPropertyValues(AutowiredAnnotationBeanPostProcessor.java:366)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.populateBean(AbstractAutowireCapableBeanFactory.java:1264)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:553)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:483)
+	at org.springframework.beans.factory.support.AbstractBeanFactory$1.getObject(AbstractBeanFactory.java:306)
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:230)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:302)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:197)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.preInstantiateSingletons(DefaultListableBeanFactory.java:761)
+	at org.springframework.context.support.AbstractApplicationContext.finishBeanFactoryInitialization(AbstractApplicationContext.java:866)
+	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:542)
+	at org.springframework.web.servlet.FrameworkServlet.configureAndRefreshWebApplicationContext(FrameworkServlet.java:668)
+	at org.springframework.web.servlet.FrameworkServlet.initWebApplicationContext(FrameworkServlet.java:540)
+	at org.springframework.web.servlet.FrameworkServlet.initServletBean(FrameworkServlet.java:494)
+	at org.springframework.web.servlet.HttpServletBean.init(HttpServletBean.java:136)
+	at javax.servlet.GenericServlet.init(GenericServlet.java:244)
+	at org.eclipse.jetty.servlet.ServletHolder.initServlet(ServletHolder.java:599)
+	at org.eclipse.jetty.servlet.ServletHolder.initialize(ServletHolder.java:425)
+	at org.eclipse.jetty.servlet.ServletHandler.lambda$initialize$0(ServletHandler.java:751)
+	at java.util.stream.SortedOps$SizedRefSortingSink.end(SortedOps.java:357)
+	at java.util.stream.AbstractPipeline.copyInto(AbstractPipeline.java:483)
+	at java.util.stream.AbstractPipeline.wrapAndCopyInto(AbstractPipeline.java:472)
+	at java.util.stream.StreamSpliterators$WrappingSpliterator.forEachRemaining(StreamSpliterators.java:313)
+	at java.util.stream.Streams$ConcatSpliterator.forEachRemaining(Streams.java:743)
+	at java.util.stream.Streams$ConcatSpliterator.forEachRemaining(Streams.java:742)
+	at java.util.stream.ReferencePipeline$Head.forEach(ReferencePipeline.java:647)
+	at org.eclipse.jetty.servlet.ServletHandler.initialize(ServletHandler.java:744)
+	at org.eclipse.jetty.servlet.ServletContextHandler.startContext(ServletContextHandler.java:361)
+	at org.eclipse.jetty.webapp.WebAppContext.startWebapp(WebAppContext.java:1443)
+	at org.eclipse.jetty.maven.plugin.JettyWebAppContext.startWebapp(JettyWebAppContext.java:328)
+	at org.eclipse.jetty.webapp.WebAppContext.startContext(WebAppContext.java:1407)
+	at org.eclipse.jetty.server.handler.ContextHandler.doStart(ContextHandler.java:821)
+	at org.eclipse.jetty.servlet.ServletContextHandler.doStart(ServletContextHandler.java:276)
+	at org.eclipse.jetty.webapp.WebAppContext.doStart(WebAppContext.java:524)
+	at org.eclipse.jetty.maven.plugin.JettyWebAppContext.doStart(JettyWebAppContext.java:397)
+	at org.eclipse.jetty.util.component.AbstractLifeCycle.start(AbstractLifeCycle.java:72)
+	at org.eclipse.jetty.maven.plugin.JettyRunMojo.restartWebApp(JettyRunMojo.java:513)
+	at org.eclipse.jetty.maven.plugin.JettyRunMojo$1.onPathWatchEvents(JettyRunMojo.java:357)
+	at org.eclipse.jetty.util.PathWatcher.notifyEvents(PathWatcher.java:1342)
+	at org.eclipse.jetty.util.PathWatcher.run(PathWatcher.java:1169)
+	at java.lang.Thread.run(Thread.java:750)
+Caused by: org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'inventoryDto': Unsatisfied dependency expressed through field 'productApi'; nested exception is org.springframework.beans.factory.NoSuchBeanDefinitionException: No qualifying bean of type 'com.increff.pos.api.ProductApi' available: expected at least 1 bean which qualifies as autowire candidate. Dependency annotations: {@org.springframework.beans.factory.annotation.Autowired(required=true)}
+	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor$AutowiredFieldElement.inject(AutowiredAnnotationBeanPostProcessor.java:588)
+	at org.springframework.beans.factory.annotation.InjectionMetadata.inject(InjectionMetadata.java:88)
+	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor.postProcessPropertyValues(AutowiredAnnotationBeanPostProcessor.java:366)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.populateBean(AbstractAutowireCapableBeanFactory.java:1264)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:553)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:483)
+	at org.springframework.beans.factory.support.AbstractBeanFactory$1.getObject(AbstractBeanFactory.java:306)
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:230)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:302)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:202)
+	at org.springframework.beans.factory.config.DependencyDescriptor.resolveCandidate(DependencyDescriptor.java:208)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.doResolveDependency(DefaultListableBeanFactory.java:1138)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.resolveDependency(DefaultListableBeanFactory.java:1066)
+	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor$AutowiredFieldElement.inject(AutowiredAnnotationBeanPostProcessor.java:585)
+	... 42 more
+Caused by: org.springframework.beans.factory.NoSuchBeanDefinitionException: No qualifying bean of type 'com.increff.pos.api.ProductApi' available: expected at least 1 bean which qualifies as autowire candidate. Dependency annotations: {@org.springframework.beans.factory.annotation.Autowired(required=true)}
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.raiseNoMatchingBeanFound(DefaultListableBeanFactory.java:1486)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.doResolveDependency(DefaultListableBeanFactory.java:1104)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.resolveDependency(DefaultListableBeanFactory.java:1066)
+	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor$AutowiredFieldElement.inject(AutowiredAnnotationBeanPostProcessor.java:585)
+	... 55 more
+2023-02-23 18:47:25 INFO  SecurityConfig:48 - Configuration complete
+2023-02-23 18:56:28 INFO  SecurityConfig:48 - Configuration complete
+2023-02-23 14:04:29 WARN  AnnotationConfigWebApplicationContext:550 - Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'inventoryController': Unsatisfied dependency expressed through field 'dto'; nested exception is org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'inventoryDto': Unsatisfied dependency expressed through field 'productApi'; nested exception is org.springframework.beans.factory.NoSuchBeanDefinitionException: No qualifying bean of type 'com.increff.pos.api.ProductApi' available: expected at least 1 bean which qualifies as autowire candidate. Dependency annotations: {@org.springframework.beans.factory.annotation.Autowired(required=true)}
+2023-02-23 14:04:29 ERROR DispatcherServlet:502 - Context initialization failed
+org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'inventoryController': Unsatisfied dependency expressed through field 'dto'; nested exception is org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'inventoryDto': Unsatisfied dependency expressed through field 'productApi'; nested exception is org.springframework.beans.factory.NoSuchBeanDefinitionException: No qualifying bean of type 'com.increff.pos.api.ProductApi' available: expected at least 1 bean which qualifies as autowire candidate. Dependency annotations: {@org.springframework.beans.factory.annotation.Autowired(required=true)}
+	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor$AutowiredFieldElement.inject(AutowiredAnnotationBeanPostProcessor.java:588)
+	at org.springframework.beans.factory.annotation.InjectionMetadata.inject(InjectionMetadata.java:88)
+	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor.postProcessPropertyValues(AutowiredAnnotationBeanPostProcessor.java:366)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.populateBean(AbstractAutowireCapableBeanFactory.java:1264)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:553)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:483)
+	at org.springframework.beans.factory.support.AbstractBeanFactory$1.getObject(AbstractBeanFactory.java:306)
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:230)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:302)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:197)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.preInstantiateSingletons(DefaultListableBeanFactory.java:761)
+	at org.springframework.context.support.AbstractApplicationContext.finishBeanFactoryInitialization(AbstractApplicationContext.java:866)
+	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:542)
+	at org.springframework.web.servlet.FrameworkServlet.configureAndRefreshWebApplicationContext(FrameworkServlet.java:668)
+	at org.springframework.web.servlet.FrameworkServlet.initWebApplicationContext(FrameworkServlet.java:540)
+	at org.springframework.web.servlet.FrameworkServlet.initServletBean(FrameworkServlet.java:494)
+	at org.springframework.web.servlet.HttpServletBean.init(HttpServletBean.java:136)
+	at javax.servlet.GenericServlet.init(GenericServlet.java:244)
+	at org.eclipse.jetty.servlet.ServletHolder.initServlet(ServletHolder.java:599)
+	at org.eclipse.jetty.servlet.ServletHolder.initialize(ServletHolder.java:425)
+	at org.eclipse.jetty.servlet.ServletHandler.lambda$initialize$0(ServletHandler.java:751)
+	at java.util.stream.SortedOps$SizedRefSortingSink.end(SortedOps.java:357)
+	at java.util.stream.AbstractPipeline.copyInto(AbstractPipeline.java:483)
+	at java.util.stream.AbstractPipeline.wrapAndCopyInto(AbstractPipeline.java:472)
+	at java.util.stream.StreamSpliterators$WrappingSpliterator.forEachRemaining(StreamSpliterators.java:313)
+	at java.util.stream.Streams$ConcatSpliterator.forEachRemaining(Streams.java:743)
+	at java.util.stream.Streams$ConcatSpliterator.forEachRemaining(Streams.java:742)
+	at java.util.stream.ReferencePipeline$Head.forEach(ReferencePipeline.java:647)
+	at org.eclipse.jetty.servlet.ServletHandler.initialize(ServletHandler.java:744)
+	at org.eclipse.jetty.servlet.ServletContextHandler.startContext(ServletContextHandler.java:361)
+	at org.eclipse.jetty.webapp.WebAppContext.startWebapp(WebAppContext.java:1443)
+	at org.eclipse.jetty.maven.plugin.JettyWebAppContext.startWebapp(JettyWebAppContext.java:328)
+	at org.eclipse.jetty.webapp.WebAppContext.startContext(WebAppContext.java:1407)
+	at org.eclipse.jetty.server.handler.ContextHandler.doStart(ContextHandler.java:821)
+	at org.eclipse.jetty.servlet.ServletContextHandler.doStart(ServletContextHandler.java:276)
+	at org.eclipse.jetty.webapp.WebAppContext.doStart(WebAppContext.java:524)
+	at org.eclipse.jetty.maven.plugin.JettyWebAppContext.doStart(JettyWebAppContext.java:397)
+	at org.eclipse.jetty.util.component.AbstractLifeCycle.start(AbstractLifeCycle.java:72)
+	at org.eclipse.jetty.maven.plugin.JettyRunMojo.restartWebApp(JettyRunMojo.java:513)
+	at org.eclipse.jetty.maven.plugin.JettyRunMojo$1.onPathWatchEvents(JettyRunMojo.java:357)
+	at org.eclipse.jetty.util.PathWatcher.notifyEvents(PathWatcher.java:1342)
+	at org.eclipse.jetty.util.PathWatcher.run(PathWatcher.java:1169)
+	at java.lang.Thread.run(Thread.java:750)
+Caused by: org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'inventoryDto': Unsatisfied dependency expressed through field 'productApi'; nested exception is org.springframework.beans.factory.NoSuchBeanDefinitionException: No qualifying bean of type 'com.increff.pos.api.ProductApi' available: expected at least 1 bean which qualifies as autowire candidate. Dependency annotations: {@org.springframework.beans.factory.annotation.Autowired(required=true)}
+	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor$AutowiredFieldElement.inject(AutowiredAnnotationBeanPostProcessor.java:588)
+	at org.springframework.beans.factory.annotation.InjectionMetadata.inject(InjectionMetadata.java:88)
+	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor.postProcessPropertyValues(AutowiredAnnotationBeanPostProcessor.java:366)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.populateBean(AbstractAutowireCapableBeanFactory.java:1264)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:553)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:483)
+	at org.springframework.beans.factory.support.AbstractBeanFactory$1.getObject(AbstractBeanFactory.java:306)
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:230)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:302)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:202)
+	at org.springframework.beans.factory.config.DependencyDescriptor.resolveCandidate(DependencyDescriptor.java:208)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.doResolveDependency(DefaultListableBeanFactory.java:1138)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.resolveDependency(DefaultListableBeanFactory.java:1066)
+	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor$AutowiredFieldElement.inject(AutowiredAnnotationBeanPostProcessor.java:585)
+	... 42 more
+Caused by: org.springframework.beans.factory.NoSuchBeanDefinitionException: No qualifying bean of type 'com.increff.pos.api.ProductApi' available: expected at least 1 bean which qualifies as autowire candidate. Dependency annotations: {@org.springframework.beans.factory.annotation.Autowired(required=true)}
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.raiseNoMatchingBeanFound(DefaultListableBeanFactory.java:1486)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.doResolveDependency(DefaultListableBeanFactory.java:1104)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.resolveDependency(DefaultListableBeanFactory.java:1066)
+	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor$AutowiredFieldElement.inject(AutowiredAnnotationBeanPostProcessor.java:585)
+	... 55 more
+2023-02-23 19:41:34 INFO  SecurityConfig:48 - Configuration complete
+2023-02-23 19:48:31 INFO  SecurityConfig:48 - Configuration complete
+2023-02-23 19:49:57 INFO  SecurityConfig:48 - Configuration complete
+2023-02-23 19:51:30 INFO  SecurityConfig:48 - Configuration complete
+2023-02-23 19:52:33 INFO  SecurityConfig:48 - Configuration complete
+2023-02-23 19:55:23 INFO  SecurityConfig:48 - Configuration complete
+2023-02-23 20:00:35 INFO  SecurityConfig:48 - Configuration complete
+2023-02-23 20:03:00 INFO  SecurityConfig:48 - Configuration complete
+2023-02-23 20:19:33 INFO  SecurityConfig:48 - Configuration complete
+2023-02-23 20:19:55 INFO  SecurityConfig:48 - Configuration complete
+2023-02-23 20:20:21 INFO  SecurityConfig:48 - Configuration complete
+2023-02-23 20:21:53 INFO  SecurityConfig:48 - Configuration complete
+2023-02-23 20:22:42 INFO  SecurityConfig:48 - Configuration complete
+2023-02-23 20:24:19 INFO  SecurityConfig:48 - Configuration complete
+2023-02-23 14:55:19 WARN  AnnotationConfigWebApplicationContext:550 - Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'orderController': Unsatisfied dependency expressed through field 'dto'; nested exception is org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'orderDto': Unsatisfied dependency expressed through field 'inventoryApi'; nested exception is org.springframework.beans.factory.NoSuchBeanDefinitionException: No qualifying bean of type 'com.increff.pos.api.InventoryApi' available: expected at least 1 bean which qualifies as autowire candidate. Dependency annotations: {@org.springframework.beans.factory.annotation.Autowired(required=true)}
+2023-02-23 14:55:19 ERROR DispatcherServlet:502 - Context initialization failed
+org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'orderController': Unsatisfied dependency expressed through field 'dto'; nested exception is org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'orderDto': Unsatisfied dependency expressed through field 'inventoryApi'; nested exception is org.springframework.beans.factory.NoSuchBeanDefinitionException: No qualifying bean of type 'com.increff.pos.api.InventoryApi' available: expected at least 1 bean which qualifies as autowire candidate. Dependency annotations: {@org.springframework.beans.factory.annotation.Autowired(required=true)}
+	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor$AutowiredFieldElement.inject(AutowiredAnnotationBeanPostProcessor.java:588)
+	at org.springframework.beans.factory.annotation.InjectionMetadata.inject(InjectionMetadata.java:88)
+	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor.postProcessPropertyValues(AutowiredAnnotationBeanPostProcessor.java:366)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.populateBean(AbstractAutowireCapableBeanFactory.java:1264)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:553)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:483)
+	at org.springframework.beans.factory.support.AbstractBeanFactory$1.getObject(AbstractBeanFactory.java:306)
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:230)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:302)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:197)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.preInstantiateSingletons(DefaultListableBeanFactory.java:761)
+	at org.springframework.context.support.AbstractApplicationContext.finishBeanFactoryInitialization(AbstractApplicationContext.java:866)
+	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:542)
+	at org.springframework.web.servlet.FrameworkServlet.configureAndRefreshWebApplicationContext(FrameworkServlet.java:668)
+	at org.springframework.web.servlet.FrameworkServlet.initWebApplicationContext(FrameworkServlet.java:540)
+	at org.springframework.web.servlet.FrameworkServlet.initServletBean(FrameworkServlet.java:494)
+	at org.springframework.web.servlet.HttpServletBean.init(HttpServletBean.java:136)
+	at javax.servlet.GenericServlet.init(GenericServlet.java:244)
+	at org.eclipse.jetty.servlet.ServletHolder.initServlet(ServletHolder.java:599)
+	at org.eclipse.jetty.servlet.ServletHolder.initialize(ServletHolder.java:425)
+	at org.eclipse.jetty.servlet.ServletHandler.lambda$initialize$0(ServletHandler.java:751)
+	at java.util.stream.SortedOps$SizedRefSortingSink.end(SortedOps.java:357)
+	at java.util.stream.AbstractPipeline.copyInto(AbstractPipeline.java:483)
+	at java.util.stream.AbstractPipeline.wrapAndCopyInto(AbstractPipeline.java:472)
+	at java.util.stream.StreamSpliterators$WrappingSpliterator.forEachRemaining(StreamSpliterators.java:313)
+	at java.util.stream.Streams$ConcatSpliterator.forEachRemaining(Streams.java:743)
+	at java.util.stream.Streams$ConcatSpliterator.forEachRemaining(Streams.java:742)
+	at java.util.stream.ReferencePipeline$Head.forEach(ReferencePipeline.java:647)
+	at org.eclipse.jetty.servlet.ServletHandler.initialize(ServletHandler.java:744)
+	at org.eclipse.jetty.servlet.ServletContextHandler.startContext(ServletContextHandler.java:361)
+	at org.eclipse.jetty.webapp.WebAppContext.startWebapp(WebAppContext.java:1443)
+	at org.eclipse.jetty.maven.plugin.JettyWebAppContext.startWebapp(JettyWebAppContext.java:328)
+	at org.eclipse.jetty.webapp.WebAppContext.startContext(WebAppContext.java:1407)
+	at org.eclipse.jetty.server.handler.ContextHandler.doStart(ContextHandler.java:821)
+	at org.eclipse.jetty.servlet.ServletContextHandler.doStart(ServletContextHandler.java:276)
+	at org.eclipse.jetty.webapp.WebAppContext.doStart(WebAppContext.java:524)
+	at org.eclipse.jetty.maven.plugin.JettyWebAppContext.doStart(JettyWebAppContext.java:397)
+	at org.eclipse.jetty.util.component.AbstractLifeCycle.start(AbstractLifeCycle.java:72)
+	at org.eclipse.jetty.maven.plugin.JettyRunMojo.restartWebApp(JettyRunMojo.java:513)
+	at org.eclipse.jetty.maven.plugin.JettyRunMojo$1.onPathWatchEvents(JettyRunMojo.java:357)
+	at org.eclipse.jetty.util.PathWatcher.notifyEvents(PathWatcher.java:1342)
+	at org.eclipse.jetty.util.PathWatcher.run(PathWatcher.java:1169)
+	at java.lang.Thread.run(Thread.java:750)
+Caused by: org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'orderDto': Unsatisfied dependency expressed through field 'inventoryApi'; nested exception is org.springframework.beans.factory.NoSuchBeanDefinitionException: No qualifying bean of type 'com.increff.pos.api.InventoryApi' available: expected at least 1 bean which qualifies as autowire candidate. Dependency annotations: {@org.springframework.beans.factory.annotation.Autowired(required=true)}
+	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor$AutowiredFieldElement.inject(AutowiredAnnotationBeanPostProcessor.java:588)
+	at org.springframework.beans.factory.annotation.InjectionMetadata.inject(InjectionMetadata.java:88)
+	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor.postProcessPropertyValues(AutowiredAnnotationBeanPostProcessor.java:366)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.populateBean(AbstractAutowireCapableBeanFactory.java:1264)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:553)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:483)
+	at org.springframework.beans.factory.support.AbstractBeanFactory$1.getObject(AbstractBeanFactory.java:306)
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:230)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:302)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:202)
+	at org.springframework.beans.factory.config.DependencyDescriptor.resolveCandidate(DependencyDescriptor.java:208)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.doResolveDependency(DefaultListableBeanFactory.java:1138)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.resolveDependency(DefaultListableBeanFactory.java:1066)
+	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor$AutowiredFieldElement.inject(AutowiredAnnotationBeanPostProcessor.java:585)
+	... 42 more
+Caused by: org.springframework.beans.factory.NoSuchBeanDefinitionException: No qualifying bean of type 'com.increff.pos.api.InventoryApi' available: expected at least 1 bean which qualifies as autowire candidate. Dependency annotations: {@org.springframework.beans.factory.annotation.Autowired(required=true)}
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.raiseNoMatchingBeanFound(DefaultListableBeanFactory.java:1486)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.doResolveDependency(DefaultListableBeanFactory.java:1104)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.resolveDependency(DefaultListableBeanFactory.java:1066)
+	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor$AutowiredFieldElement.inject(AutowiredAnnotationBeanPostProcessor.java:585)
+	... 55 more
+2023-02-23 20:42:36 INFO  SecurityConfig:48 - Configuration complete
+2023-02-23 20:45:00 INFO  SecurityConfig:48 - Configuration complete
+2023-02-23 15:15:05 WARN  AnnotationConfigWebApplicationContext:550 - Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'inventoryController': Unsatisfied dependency expressed through field 'dto'; nested exception is org.springframework.beans.factory.NoSuchBeanDefinitionException: No qualifying bean of type 'com.increff.pos.dto.InventoryDto' available: expected at least 1 bean which qualifies as autowire candidate. Dependency annotations: {@org.springframework.beans.factory.annotation.Autowired(required=true)}
+2023-02-23 15:15:05 ERROR DispatcherServlet:502 - Context initialization failed
+org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'inventoryController': Unsatisfied dependency expressed through field 'dto'; nested exception is org.springframework.beans.factory.NoSuchBeanDefinitionException: No qualifying bean of type 'com.increff.pos.dto.InventoryDto' available: expected at least 1 bean which qualifies as autowire candidate. Dependency annotations: {@org.springframework.beans.factory.annotation.Autowired(required=true)}
+	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor$AutowiredFieldElement.inject(AutowiredAnnotationBeanPostProcessor.java:588)
+	at org.springframework.beans.factory.annotation.InjectionMetadata.inject(InjectionMetadata.java:88)
+	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor.postProcessPropertyValues(AutowiredAnnotationBeanPostProcessor.java:366)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.populateBean(AbstractAutowireCapableBeanFactory.java:1264)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:553)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:483)
+	at org.springframework.beans.factory.support.AbstractBeanFactory$1.getObject(AbstractBeanFactory.java:306)
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:230)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:302)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:197)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.preInstantiateSingletons(DefaultListableBeanFactory.java:761)
+	at org.springframework.context.support.AbstractApplicationContext.finishBeanFactoryInitialization(AbstractApplicationContext.java:866)
+	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:542)
+	at org.springframework.web.servlet.FrameworkServlet.configureAndRefreshWebApplicationContext(FrameworkServlet.java:668)
+	at org.springframework.web.servlet.FrameworkServlet.initWebApplicationContext(FrameworkServlet.java:540)
+	at org.springframework.web.servlet.FrameworkServlet.initServletBean(FrameworkServlet.java:494)
+	at org.springframework.web.servlet.HttpServletBean.init(HttpServletBean.java:136)
+	at javax.servlet.GenericServlet.init(GenericServlet.java:244)
+	at org.eclipse.jetty.servlet.ServletHolder.initServlet(ServletHolder.java:599)
+	at org.eclipse.jetty.servlet.ServletHolder.initialize(ServletHolder.java:425)
+	at org.eclipse.jetty.servlet.ServletHandler.lambda$initialize$0(ServletHandler.java:751)
+	at java.util.stream.SortedOps$SizedRefSortingSink.end(SortedOps.java:357)
+	at java.util.stream.AbstractPipeline.copyInto(AbstractPipeline.java:483)
+	at java.util.stream.AbstractPipeline.wrapAndCopyInto(AbstractPipeline.java:472)
+	at java.util.stream.StreamSpliterators$WrappingSpliterator.forEachRemaining(StreamSpliterators.java:313)
+	at java.util.stream.Streams$ConcatSpliterator.forEachRemaining(Streams.java:743)
+	at java.util.stream.Streams$ConcatSpliterator.forEachRemaining(Streams.java:742)
+	at java.util.stream.ReferencePipeline$Head.forEach(ReferencePipeline.java:647)
+	at org.eclipse.jetty.servlet.ServletHandler.initialize(ServletHandler.java:744)
+	at org.eclipse.jetty.servlet.ServletContextHandler.startContext(ServletContextHandler.java:361)
+	at org.eclipse.jetty.webapp.WebAppContext.startWebapp(WebAppContext.java:1443)
+	at org.eclipse.jetty.maven.plugin.JettyWebAppContext.startWebapp(JettyWebAppContext.java:328)
+	at org.eclipse.jetty.webapp.WebAppContext.startContext(WebAppContext.java:1407)
+	at org.eclipse.jetty.server.handler.ContextHandler.doStart(ContextHandler.java:821)
+	at org.eclipse.jetty.servlet.ServletContextHandler.doStart(ServletContextHandler.java:276)
+	at org.eclipse.jetty.webapp.WebAppContext.doStart(WebAppContext.java:524)
+	at org.eclipse.jetty.maven.plugin.JettyWebAppContext.doStart(JettyWebAppContext.java:397)
+	at org.eclipse.jetty.util.component.AbstractLifeCycle.start(AbstractLifeCycle.java:72)
+	at org.eclipse.jetty.maven.plugin.JettyRunMojo.restartWebApp(JettyRunMojo.java:513)
+	at org.eclipse.jetty.maven.plugin.JettyRunMojo$1.onPathWatchEvents(JettyRunMojo.java:357)
+	at org.eclipse.jetty.util.PathWatcher.notifyEvents(PathWatcher.java:1342)
+	at org.eclipse.jetty.util.PathWatcher.run(PathWatcher.java:1169)
+	at java.lang.Thread.run(Thread.java:750)
+Caused by: org.springframework.beans.factory.NoSuchBeanDefinitionException: No qualifying bean of type 'com.increff.pos.dto.InventoryDto' available: expected at least 1 bean which qualifies as autowire candidate. Dependency annotations: {@org.springframework.beans.factory.annotation.Autowired(required=true)}
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.raiseNoMatchingBeanFound(DefaultListableBeanFactory.java:1486)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.doResolveDependency(DefaultListableBeanFactory.java:1104)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.resolveDependency(DefaultListableBeanFactory.java:1066)
+	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor$AutowiredFieldElement.inject(AutowiredAnnotationBeanPostProcessor.java:585)
+	... 42 more
+2023-02-24 10:49:39 INFO  SecurityConfig:48 - Configuration complete
+2023-02-24 10:54:43 INFO  SecurityConfig:48 - Configuration complete
+2023-02-24 10:57:00 INFO  SecurityConfig:48 - Configuration complete
+2023-02-24 05:30:57 INFO  SecurityConfig:48 - Configuration complete
+2023-02-24 11:19:01 INFO  SecurityConfig:48 - Configuration complete
+2023-02-24 11:19:53 INFO  SecurityConfig:48 - Configuration complete
+2023-02-24 11:21:47 INFO  SecurityConfig:48 - Configuration complete
+2023-02-24 11:28:34 INFO  SecurityConfig:48 - Configuration complete
+2023-02-24 11:29:36 INFO  SecurityConfig:48 - Configuration complete
+2023-02-24 11:43:44 INFO  SecurityConfig:48 - Configuration complete
+2023-02-24 11:49:24 INFO  SecurityConfig:48 - Configuration complete
+2023-02-24 11:53:10 INFO  SecurityConfig:48 - Configuration complete
+2023-02-24 11:57:01 INFO  SecurityConfig:48 - Configuration complete
+2023-02-24 06:27:36 INFO  SecurityConfig:48 - Configuration complete
+2023-02-24 06:27:53 INFO  SecurityConfig:48 - Configuration complete
+2023-02-24 06:39:15 INFO  SecurityConfig:48 - Configuration complete
+2023-02-24 12:10:10 INFO  SecurityConfig:48 - Configuration complete
+2023-02-24 12:14:03 INFO  SecurityConfig:48 - Configuration complete
+2023-02-24 12:15:23 INFO  SecurityConfig:48 - Configuration complete
+2023-02-24 06:57:15 INFO  SecurityConfig:48 - Configuration complete
+2023-02-24 07:03:42 INFO  SecurityConfig:48 - Configuration complete
+2023-02-24 12:33:52 INFO  SecurityConfig:48 - Configuration complete
+2023-02-24 07:09:47 INFO  SecurityConfig:48 - Configuration complete
+2023-02-24 12:41:12 INFO  SecurityConfig:48 - Configuration complete
+2023-02-24 07:14:49 INFO  SecurityConfig:48 - Configuration complete
+2023-02-24 12:45:00 INFO  SecurityConfig:48 - Configuration complete
+2023-02-24 12:47:30 INFO  SecurityConfig:50 - Configuration complete
+2023-02-24 07:20:59 INFO  SecurityConfig:50 - Configuration complete
+2023-02-24 12:52:01 INFO  SecurityConfig:50 - Configuration complete
+2023-02-24 12:53:15 INFO  SecurityConfig:50 - Configuration complete
+2023-02-24 12:55:14 INFO  SecurityConfig:50 - Configuration complete
+2023-02-24 12:58:22 INFO  SecurityConfig:50 - Configuration complete
+2023-02-24 12:59:21 INFO  SecurityConfig:50 - Configuration complete
+2023-02-24 13:55:22 WARN  SqlExceptionHelper:137 - SQL Error: 0, SQLState: 08S01
+2023-02-24 13:55:22 ERROR SqlExceptionHelper:142 - Communications link failure
+
+The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
+2023-02-24 13:55:22 ERROR TaskUtils$LoggingErrorHandler:95 - Unexpected error occurred in scheduled task.
+org.springframework.transaction.CannotCreateTransactionException: Could not open JPA EntityManager for transaction; nested exception is org.hibernate.exception.JDBCConnectionException: Unable to acquire JDBC Connection
+	at org.springframework.orm.jpa.JpaTransactionManager.doBegin(JpaTransactionManager.java:431)
+	at org.springframework.transaction.support.AbstractPlatformTransactionManager.getTransaction(AbstractPlatformTransactionManager.java:373)
+	at org.springframework.transaction.interceptor.TransactionAspectSupport.createTransactionIfNecessary(TransactionAspectSupport.java:447)
+	at org.springframework.transaction.interceptor.TransactionAspectSupport.invokeWithinTransaction(TransactionAspectSupport.java:277)
+	at org.springframework.transaction.interceptor.TransactionInterceptor.invoke(TransactionInterceptor.java:96)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:179)
+	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:656)
+	at com.increff.pos.api.OrderApi$$EnhancerBySpringCGLIB$$19bd6a6d.getByFilter(<generated>)
+	at com.increff.pos.jobs.DailySalesTask.run(DailySalesTask.java:35)
+	at sun.reflect.GeneratedMethodAccessor124.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.springframework.scheduling.support.ScheduledMethodRunnable.run(ScheduledMethodRunnable.java:65)
+	at org.springframework.scheduling.support.DelegatingErrorHandlingRunnable.run(DelegatingErrorHandlingRunnable.java:54)
+	at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)
+	at java.util.concurrent.FutureTask.runAndReset(FutureTask.java:308)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.access$301(ScheduledThreadPoolExecutor.java:180)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.run(ScheduledThreadPoolExecutor.java:294)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at java.lang.Thread.run(Thread.java:750)
+Caused by: org.hibernate.exception.JDBCConnectionException: Unable to acquire JDBC Connection
+	at org.hibernate.exception.internal.SQLStateConversionDelegate.convert(SQLStateConversionDelegate.java:115)
+	at org.hibernate.exception.internal.StandardSQLExceptionConverter.convert(StandardSQLExceptionConverter.java:42)
+	at org.hibernate.engine.jdbc.spi.SqlExceptionHelper.convert(SqlExceptionHelper.java:113)
+	at org.hibernate.engine.jdbc.spi.SqlExceptionHelper.convert(SqlExceptionHelper.java:99)
+	at org.hibernate.resource.jdbc.internal.LogicalConnectionManagedImpl.acquireConnectionIfNeeded(LogicalConnectionManagedImpl.java:109)
+	at org.hibernate.resource.jdbc.internal.LogicalConnectionManagedImpl.getPhysicalConnection(LogicalConnectionManagedImpl.java:136)
+	at org.hibernate.resource.jdbc.internal.LogicalConnectionManagedImpl.getConnectionForTransactionManagement(LogicalConnectionManagedImpl.java:254)
+	at org.hibernate.resource.jdbc.internal.LogicalConnectionManagedImpl.begin(LogicalConnectionManagedImpl.java:262)
+	at org.hibernate.resource.transaction.backend.jdbc.internal.JdbcResourceLocalTransactionCoordinatorImpl$TransactionDriverControlImpl.begin(JdbcResourceLocalTransactionCoordinatorImpl.java:236)
+	at org.hibernate.engine.transaction.internal.TransactionImpl.begin(TransactionImpl.java:86)
+	at org.springframework.orm.jpa.vendor.HibernateJpaDialect.beginTransaction(HibernateJpaDialect.java:189)
+	at org.springframework.orm.jpa.JpaTransactionManager.doBegin(JpaTransactionManager.java:380)
+	... 20 more
+Caused by: com.mysql.cj.jdbc.exceptions.CommunicationsException: Communications link failure
+
+The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
+	at com.mysql.cj.jdbc.exceptions.SQLError.createCommunicationsException(SQLError.java:174)
+	at com.mysql.cj.jdbc.exceptions.SQLExceptionsMapping.translateException(SQLExceptionsMapping.java:64)
+	at com.mysql.cj.jdbc.ConnectionImpl.createNewIO(ConnectionImpl.java:827)
+	at com.mysql.cj.jdbc.ConnectionImpl.<init>(ConnectionImpl.java:447)
+	at com.mysql.cj.jdbc.ConnectionImpl.getInstance(ConnectionImpl.java:237)
+	at com.mysql.cj.jdbc.NonRegisteringDriver.connect(NonRegisteringDriver.java:199)
+	at org.apache.commons.dbcp.DriverConnectionFactory.createConnection(DriverConnectionFactory.java:38)
+	at org.apache.commons.dbcp.PoolableConnectionFactory.makeObject(PoolableConnectionFactory.java:582)
+	at org.apache.commons.pool.impl.GenericObjectPool.borrowObject(GenericObjectPool.java:1148)
+	at org.apache.commons.dbcp.PoolingDataSource.getConnection(PoolingDataSource.java:106)
+	at org.apache.commons.dbcp.BasicDataSource.getConnection(BasicDataSource.java:1044)
+	at org.hibernate.engine.jdbc.connections.internal.DatasourceConnectionProviderImpl.getConnection(DatasourceConnectionProviderImpl.java:122)
+	at org.hibernate.internal.NonContextualJdbcConnectionAccess.obtainConnection(NonContextualJdbcConnectionAccess.java:35)
+	at org.hibernate.resource.jdbc.internal.LogicalConnectionManagedImpl.acquireConnectionIfNeeded(LogicalConnectionManagedImpl.java:106)
+	... 27 more
+Caused by: com.mysql.cj.exceptions.CJCommunicationsException: Communications link failure
+
+The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
+	at sun.reflect.NativeConstructorAccessorImpl.newInstance0(Native Method)
+	at sun.reflect.NativeConstructorAccessorImpl.newInstance(NativeConstructorAccessorImpl.java:62)
+	at sun.reflect.DelegatingConstructorAccessorImpl.newInstance(DelegatingConstructorAccessorImpl.java:45)
+	at java.lang.reflect.Constructor.newInstance(Constructor.java:423)
+	at com.mysql.cj.exceptions.ExceptionFactory.createException(ExceptionFactory.java:61)
+	at com.mysql.cj.exceptions.ExceptionFactory.createException(ExceptionFactory.java:105)
+	at com.mysql.cj.exceptions.ExceptionFactory.createException(ExceptionFactory.java:151)
+	at com.mysql.cj.exceptions.ExceptionFactory.createCommunicationsException(ExceptionFactory.java:167)
+	at com.mysql.cj.protocol.a.NativeSocketConnection.connect(NativeSocketConnection.java:91)
+	at com.mysql.cj.NativeSession.connect(NativeSession.java:150)
+	at com.mysql.cj.jdbc.ConnectionImpl.connectOneTryOnly(ConnectionImpl.java:947)
+	at com.mysql.cj.jdbc.ConnectionImpl.createNewIO(ConnectionImpl.java:817)
+	... 38 more
+Caused by: java.net.ConnectException: Connection refused (Connection refused)
+	at java.net.PlainSocketImpl.socketConnect(Native Method)
+	at java.net.AbstractPlainSocketImpl.doConnect(AbstractPlainSocketImpl.java:350)
+	at java.net.AbstractPlainSocketImpl.connectToAddress(AbstractPlainSocketImpl.java:206)
+	at java.net.AbstractPlainSocketImpl.connect(AbstractPlainSocketImpl.java:188)
+	at java.net.SocksSocketImpl.connect(SocksSocketImpl.java:392)
+	at java.net.Socket.connect(Socket.java:607)
+	at com.mysql.cj.protocol.StandardSocketFactory.connect(StandardSocketFactory.java:155)
+	at com.mysql.cj.protocol.a.NativeSocketConnection.connect(NativeSocketConnection.java:65)
+	... 41 more
+2023-02-24 13:57:51 INFO  SecurityConfig:50 - Configuration complete
+2023-02-24 08:29:04 INFO  SecurityConfig:50 - Configuration complete
+2023-02-24 08:34:04 INFO  SecurityConfig:50 - Configuration complete
+2023-02-24 14:11:21 INFO  SecurityConfig:50 - Configuration complete
+2023-02-24 14:38:37 INFO  SecurityConfig:50 - Configuration complete
+2023-02-24 14:39:59 INFO  SecurityConfig:50 - Configuration complete
+2023-02-24 14:41:12 INFO  SecurityConfig:50 - Configuration complete
+2023-02-24 14:44:51 INFO  SecurityConfig:50 - Configuration complete
+2023-02-24 15:11:17 INFO  SecurityConfig:50 - Configuration complete
+2023-02-24 15:31:42 INFO  SecurityConfig:50 - Configuration complete
+2023-02-24 15:41:30 INFO  SecurityConfig:50 - Configuration complete
+2023-02-24 10:16:21 INFO  SecurityConfig:50 - Configuration complete
+2023-02-24 16:18:46 INFO  SecurityConfig:50 - Configuration complete
+2023-02-24 11:04:31 INFO  SecurityConfig:50 - Configuration complete
+2023-02-24 12:05:51 INFO  SecurityConfig:50 - Configuration complete
+2023-02-24 17:36:28 INFO  SecurityConfig:50 - Configuration complete
+2023-02-24 18:05:40 INFO  SecurityConfig:50 - Configuration complete
+2023-02-24 18:09:52 INFO  SecurityConfig:50 - Configuration complete
+2023-02-24 18:15:46 INFO  SecurityConfig:50 - Configuration complete
+2023-02-24 18:18:25 INFO  SecurityConfig:50 - Configuration complete
+2023-02-24 18:19:48 INFO  SecurityConfig:50 - Configuration complete
+2023-02-24 18:37:49 INFO  SecurityConfig:50 - Configuration complete
+2023-02-24 18:44:21 INFO  SecurityConfig:50 - Configuration complete
+2023-02-27 10:34:04 INFO  SecurityConfig:50 - Configuration complete
+2023-02-27 11:04:45 INFO  SecurityConfig:50 - Configuration complete
+2023-02-27 11:06:37 INFO  SecurityConfig:50 - Configuration complete
+2023-02-27 11:12:36 INFO  SecurityConfig:50 - Configuration complete
+2023-02-27 11:13:40 INFO  SecurityConfig:50 - Configuration complete
+2023-02-27 11:27:19 INFO  SecurityConfig:50 - Configuration complete
+2023-02-27 11:33:04 INFO  SecurityConfig:50 - Configuration complete
+2023-02-27 11:34:55 INFO  SecurityConfig:50 - Configuration complete
+2023-02-27 11:37:32 INFO  SecurityConfig:50 - Configuration complete
+2023-02-27 11:42:19 INFO  SecurityConfig:50 - Configuration complete
+2023-02-27 11:42:32 INFO  SecurityConfig:50 - Configuration complete
+2023-02-27 11:43:13 INFO  SecurityConfig:50 - Configuration complete
+2023-02-27 11:47:30 INFO  SecurityConfig:50 - Configuration complete
+2023-02-27 11:52:26 INFO  SecurityConfig:50 - Configuration complete
+2023-02-27 11:53:06 INFO  SecurityConfig:50 - Configuration complete
+2023-02-27 11:57:25 INFO  SecurityConfig:50 - Configuration complete
+2023-02-27 11:58:39 INFO  SecurityConfig:50 - Configuration complete
+2023-02-27 12:06:44 INFO  SecurityConfig:50 - Configuration complete
+2023-02-27 12:13:09 INFO  SecurityConfig:50 - Configuration complete
+2023-02-27 12:17:00 INFO  SecurityConfig:50 - Configuration complete
+2023-02-27 12:23:01 INFO  SecurityConfig:50 - Configuration complete
+2023-02-27 12:23:52 INFO  SecurityConfig:50 - Configuration complete
+2023-02-27 06:56:37 WARN  AnnotationConfigWebApplicationContext:550 - Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'productApi': Unsatisfied dependency expressed through field 'dao'; nested exception is org.springframework.beans.factory.NoSuchBeanDefinitionException: No qualifying bean of type 'com.increff.pos.dao.ProductDao' available: expected at least 1 bean which qualifies as autowire candidate. Dependency annotations: {@org.springframework.beans.factory.annotation.Autowired(required=true)}
+2023-02-27 06:56:37 ERROR DispatcherServlet:502 - Context initialization failed
+org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'productApi': Unsatisfied dependency expressed through field 'dao'; nested exception is org.springframework.beans.factory.NoSuchBeanDefinitionException: No qualifying bean of type 'com.increff.pos.dao.ProductDao' available: expected at least 1 bean which qualifies as autowire candidate. Dependency annotations: {@org.springframework.beans.factory.annotation.Autowired(required=true)}
+	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor$AutowiredFieldElement.inject(AutowiredAnnotationBeanPostProcessor.java:588)
+	at org.springframework.beans.factory.annotation.InjectionMetadata.inject(InjectionMetadata.java:88)
+	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor.postProcessPropertyValues(AutowiredAnnotationBeanPostProcessor.java:366)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.populateBean(AbstractAutowireCapableBeanFactory.java:1264)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:553)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:483)
+	at org.springframework.beans.factory.support.AbstractBeanFactory$1.getObject(AbstractBeanFactory.java:306)
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:230)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:302)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:197)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.preInstantiateSingletons(DefaultListableBeanFactory.java:761)
+	at org.springframework.context.support.AbstractApplicationContext.finishBeanFactoryInitialization(AbstractApplicationContext.java:866)
+	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:542)
+	at org.springframework.web.servlet.FrameworkServlet.configureAndRefreshWebApplicationContext(FrameworkServlet.java:668)
+	at org.springframework.web.servlet.FrameworkServlet.initWebApplicationContext(FrameworkServlet.java:540)
+	at org.springframework.web.servlet.FrameworkServlet.initServletBean(FrameworkServlet.java:494)
+	at org.springframework.web.servlet.HttpServletBean.init(HttpServletBean.java:136)
+	at javax.servlet.GenericServlet.init(GenericServlet.java:244)
+	at org.eclipse.jetty.servlet.ServletHolder.initServlet(ServletHolder.java:599)
+	at org.eclipse.jetty.servlet.ServletHolder.initialize(ServletHolder.java:425)
+	at org.eclipse.jetty.servlet.ServletHandler.lambda$initialize$0(ServletHandler.java:751)
+	at java.util.stream.SortedOps$SizedRefSortingSink.end(SortedOps.java:357)
+	at java.util.stream.AbstractPipeline.copyInto(AbstractPipeline.java:483)
+	at java.util.stream.AbstractPipeline.wrapAndCopyInto(AbstractPipeline.java:472)
+	at java.util.stream.StreamSpliterators$WrappingSpliterator.forEachRemaining(StreamSpliterators.java:313)
+	at java.util.stream.Streams$ConcatSpliterator.forEachRemaining(Streams.java:743)
+	at java.util.stream.Streams$ConcatSpliterator.forEachRemaining(Streams.java:742)
+	at java.util.stream.ReferencePipeline$Head.forEach(ReferencePipeline.java:647)
+	at org.eclipse.jetty.servlet.ServletHandler.initialize(ServletHandler.java:744)
+	at org.eclipse.jetty.servlet.ServletContextHandler.startContext(ServletContextHandler.java:361)
+	at org.eclipse.jetty.webapp.WebAppContext.startWebapp(WebAppContext.java:1443)
+	at org.eclipse.jetty.maven.plugin.JettyWebAppContext.startWebapp(JettyWebAppContext.java:328)
+	at org.eclipse.jetty.webapp.WebAppContext.startContext(WebAppContext.java:1407)
+	at org.eclipse.jetty.server.handler.ContextHandler.doStart(ContextHandler.java:821)
+	at org.eclipse.jetty.servlet.ServletContextHandler.doStart(ServletContextHandler.java:276)
+	at org.eclipse.jetty.webapp.WebAppContext.doStart(WebAppContext.java:524)
+	at org.eclipse.jetty.maven.plugin.JettyWebAppContext.doStart(JettyWebAppContext.java:397)
+	at org.eclipse.jetty.util.component.AbstractLifeCycle.start(AbstractLifeCycle.java:72)
+	at org.eclipse.jetty.maven.plugin.JettyRunMojo.restartWebApp(JettyRunMojo.java:513)
+	at org.eclipse.jetty.maven.plugin.JettyRunMojo$1.onPathWatchEvents(JettyRunMojo.java:357)
+	at org.eclipse.jetty.util.PathWatcher.notifyEvents(PathWatcher.java:1342)
+	at org.eclipse.jetty.util.PathWatcher.run(PathWatcher.java:1169)
+	at java.lang.Thread.run(Thread.java:750)
+Caused by: org.springframework.beans.factory.NoSuchBeanDefinitionException: No qualifying bean of type 'com.increff.pos.dao.ProductDao' available: expected at least 1 bean which qualifies as autowire candidate. Dependency annotations: {@org.springframework.beans.factory.annotation.Autowired(required=true)}
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.raiseNoMatchingBeanFound(DefaultListableBeanFactory.java:1486)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.doResolveDependency(DefaultListableBeanFactory.java:1104)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.resolveDependency(DefaultListableBeanFactory.java:1066)
+	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor$AutowiredFieldElement.inject(AutowiredAnnotationBeanPostProcessor.java:585)
+	... 42 more
+2023-02-27 12:30:23 INFO  SecurityConfig:50 - Configuration complete
+2023-02-27 12:32:17 INFO  SecurityConfig:50 - Configuration complete
+2023-02-27 12:48:34 INFO  SecurityConfig:50 - Configuration complete
+2023-02-27 12:50:38 INFO  SecurityConfig:50 - Configuration complete
+2023-02-27 12:53:07 INFO  SecurityConfig:50 - Configuration complete
+2023-02-27 12:54:26 INFO  SecurityConfig:50 - Configuration complete
+2023-02-27 12:59:37 INFO  SecurityConfig:50 - Configuration complete
+2023-02-27 13:00:43 INFO  SecurityConfig:50 - Configuration complete
+2023-02-27 13:02:36 INFO  SecurityConfig:50 - Configuration complete
+2023-02-27 13:05:41 INFO  SecurityConfig:50 - Configuration complete
+2023-02-27 13:08:03 INFO  SecurityConfig:50 - Configuration complete
+2023-02-27 13:09:44 INFO  SecurityConfig:50 - Configuration complete
+2023-02-27 13:29:22 INFO  SecurityConfig:50 - Configuration complete
+2023-02-27 13:31:24 INFO  SecurityConfig:50 - Configuration complete
+2023-02-27 13:34:53 INFO  SecurityConfig:50 - Configuration complete
+2023-02-27 13:38:08 INFO  SecurityConfig:50 - Configuration complete
+2023-02-27 13:40:32 INFO  SecurityConfig:50 - Configuration complete
+2023-02-27 13:44:04 INFO  SecurityConfig:50 - Configuration complete
+2023-02-27 13:47:51 INFO  SecurityConfig:50 - Configuration complete
+2023-02-27 15:13:16 INFO  SecurityConfig:50 - Configuration complete
+2023-02-27 15:18:36 INFO  SecurityConfig:50 - Configuration complete
+2023-02-27 15:23:40 INFO  SecurityConfig:50 - Configuration complete
+2023-02-27 15:25:18 INFO  SecurityConfig:50 - Configuration complete
+2023-02-27 15:31:50 INFO  SecurityConfig:50 - Configuration complete
+2023-02-27 10:07:49 INFO  SecurityConfig:50 - Configuration complete
+2023-02-27 15:49:00 INFO  SecurityConfig:50 - Configuration complete
+2023-02-27 15:50:36 INFO  SecurityConfig:50 - Configuration complete
+2023-02-27 15:51:12 INFO  SecurityConfig:50 - Configuration complete
+2023-02-27 15:52:20 INFO  SecurityConfig:50 - Configuration complete
+2023-02-27 15:55:48 INFO  SecurityConfig:50 - Configuration complete
+2023-02-27 15:56:11 INFO  SecurityConfig:50 - Configuration complete
+2023-02-27 15:56:49 INFO  SecurityConfig:50 - Configuration complete
+2023-02-27 17:43:21 INFO  SecurityConfig:50 - Configuration complete
+2023-02-27 12:13:28 WARN  AnnotationConfigWebApplicationContext:550 - Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'brandController': Unsatisfied dependency expressed through field 'dto'; nested exception is org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'brandDto': Unsatisfied dependency expressed through field 'api'; nested exception is org.springframework.beans.factory.NoSuchBeanDefinitionException: No qualifying bean of type 'com.increff.pos.api.BrandApi' available: expected at least 1 bean which qualifies as autowire candidate. Dependency annotations: {@org.springframework.beans.factory.annotation.Autowired(required=true)}
+2023-02-27 12:13:28 ERROR DispatcherServlet:502 - Context initialization failed
+org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'brandController': Unsatisfied dependency expressed through field 'dto'; nested exception is org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'brandDto': Unsatisfied dependency expressed through field 'api'; nested exception is org.springframework.beans.factory.NoSuchBeanDefinitionException: No qualifying bean of type 'com.increff.pos.api.BrandApi' available: expected at least 1 bean which qualifies as autowire candidate. Dependency annotations: {@org.springframework.beans.factory.annotation.Autowired(required=true)}
+	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor$AutowiredFieldElement.inject(AutowiredAnnotationBeanPostProcessor.java:588)
+	at org.springframework.beans.factory.annotation.InjectionMetadata.inject(InjectionMetadata.java:88)
+	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor.postProcessPropertyValues(AutowiredAnnotationBeanPostProcessor.java:366)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.populateBean(AbstractAutowireCapableBeanFactory.java:1264)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:553)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:483)
+	at org.springframework.beans.factory.support.AbstractBeanFactory$1.getObject(AbstractBeanFactory.java:306)
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:230)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:302)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:197)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.preInstantiateSingletons(DefaultListableBeanFactory.java:761)
+	at org.springframework.context.support.AbstractApplicationContext.finishBeanFactoryInitialization(AbstractApplicationContext.java:866)
+	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:542)
+	at org.springframework.web.servlet.FrameworkServlet.configureAndRefreshWebApplicationContext(FrameworkServlet.java:668)
+	at org.springframework.web.servlet.FrameworkServlet.initWebApplicationContext(FrameworkServlet.java:540)
+	at org.springframework.web.servlet.FrameworkServlet.initServletBean(FrameworkServlet.java:494)
+	at org.springframework.web.servlet.HttpServletBean.init(HttpServletBean.java:136)
+	at javax.servlet.GenericServlet.init(GenericServlet.java:244)
+	at org.eclipse.jetty.servlet.ServletHolder.initServlet(ServletHolder.java:599)
+	at org.eclipse.jetty.servlet.ServletHolder.initialize(ServletHolder.java:425)
+	at org.eclipse.jetty.servlet.ServletHandler.lambda$initialize$0(ServletHandler.java:751)
+	at java.util.stream.SortedOps$SizedRefSortingSink.end(SortedOps.java:357)
+	at java.util.stream.AbstractPipeline.copyInto(AbstractPipeline.java:483)
+	at java.util.stream.AbstractPipeline.wrapAndCopyInto(AbstractPipeline.java:472)
+	at java.util.stream.StreamSpliterators$WrappingSpliterator.forEachRemaining(StreamSpliterators.java:313)
+	at java.util.stream.Streams$ConcatSpliterator.forEachRemaining(Streams.java:743)
+	at java.util.stream.Streams$ConcatSpliterator.forEachRemaining(Streams.java:742)
+	at java.util.stream.ReferencePipeline$Head.forEach(ReferencePipeline.java:647)
+	at org.eclipse.jetty.servlet.ServletHandler.initialize(ServletHandler.java:744)
+	at org.eclipse.jetty.servlet.ServletContextHandler.startContext(ServletContextHandler.java:361)
+	at org.eclipse.jetty.webapp.WebAppContext.startWebapp(WebAppContext.java:1443)
+	at org.eclipse.jetty.maven.plugin.JettyWebAppContext.startWebapp(JettyWebAppContext.java:328)
+	at org.eclipse.jetty.webapp.WebAppContext.startContext(WebAppContext.java:1407)
+	at org.eclipse.jetty.server.handler.ContextHandler.doStart(ContextHandler.java:821)
+	at org.eclipse.jetty.servlet.ServletContextHandler.doStart(ServletContextHandler.java:276)
+	at org.eclipse.jetty.webapp.WebAppContext.doStart(WebAppContext.java:524)
+	at org.eclipse.jetty.maven.plugin.JettyWebAppContext.doStart(JettyWebAppContext.java:397)
+	at org.eclipse.jetty.util.component.AbstractLifeCycle.start(AbstractLifeCycle.java:72)
+	at org.eclipse.jetty.maven.plugin.JettyRunMojo.restartWebApp(JettyRunMojo.java:513)
+	at org.eclipse.jetty.maven.plugin.JettyRunMojo$1.onPathWatchEvents(JettyRunMojo.java:357)
+	at org.eclipse.jetty.util.PathWatcher.notifyEvents(PathWatcher.java:1342)
+	at org.eclipse.jetty.util.PathWatcher.run(PathWatcher.java:1169)
+	at java.lang.Thread.run(Thread.java:750)
+Caused by: org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'brandDto': Unsatisfied dependency expressed through field 'api'; nested exception is org.springframework.beans.factory.NoSuchBeanDefinitionException: No qualifying bean of type 'com.increff.pos.api.BrandApi' available: expected at least 1 bean which qualifies as autowire candidate. Dependency annotations: {@org.springframework.beans.factory.annotation.Autowired(required=true)}
+	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor$AutowiredFieldElement.inject(AutowiredAnnotationBeanPostProcessor.java:588)
+	at org.springframework.beans.factory.annotation.InjectionMetadata.inject(InjectionMetadata.java:88)
+	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor.postProcessPropertyValues(AutowiredAnnotationBeanPostProcessor.java:366)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.populateBean(AbstractAutowireCapableBeanFactory.java:1264)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:553)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:483)
+	at org.springframework.beans.factory.support.AbstractBeanFactory$1.getObject(AbstractBeanFactory.java:306)
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:230)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:302)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:202)
+	at org.springframework.beans.factory.config.DependencyDescriptor.resolveCandidate(DependencyDescriptor.java:208)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.doResolveDependency(DefaultListableBeanFactory.java:1138)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.resolveDependency(DefaultListableBeanFactory.java:1066)
+	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor$AutowiredFieldElement.inject(AutowiredAnnotationBeanPostProcessor.java:585)
+	... 42 more
+Caused by: org.springframework.beans.factory.NoSuchBeanDefinitionException: No qualifying bean of type 'com.increff.pos.api.BrandApi' available: expected at least 1 bean which qualifies as autowire candidate. Dependency annotations: {@org.springframework.beans.factory.annotation.Autowired(required=true)}
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.raiseNoMatchingBeanFound(DefaultListableBeanFactory.java:1486)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.doResolveDependency(DefaultListableBeanFactory.java:1104)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.resolveDependency(DefaultListableBeanFactory.java:1066)
+	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor$AutowiredFieldElement.inject(AutowiredAnnotationBeanPostProcessor.java:585)
+	... 55 more
+2023-02-27 17:46:37 INFO  SecurityConfig:50 - Configuration complete
+2023-02-27 12:18:25 INFO  SecurityConfig:50 - Configuration complete
+2023-02-27 17:54:10 INFO  SecurityConfig:50 - Configuration complete
+2023-02-28 10:37:27 INFO  SecurityConfig:50 - Configuration complete
+2023-02-28 10:38:36 INFO  SecurityConfig:50 - Configuration complete
+2023-02-28 10:55:09 INFO  SecurityConfig:50 - Configuration complete
+2023-02-28 11:02:00 INFO  SecurityConfig:50 - Configuration complete
+2023-02-28 11:12:25 INFO  SecurityConfig:50 - Configuration complete
+2023-02-28 11:14:11 INFO  SecurityConfig:50 - Configuration complete
+2023-02-28 05:46:14 INFO  SecurityConfig:50 - Configuration complete
+2023-02-28 11:18:19 INFO  SecurityConfig:50 - Configuration complete
+2023-02-28 11:24:52 INFO  SecurityConfig:50 - Configuration complete
+2023-02-28 11:43:00 INFO  SecurityConfig:50 - Configuration complete
+2023-02-28 11:48:06 INFO  SecurityConfig:50 - Configuration complete
+2023-02-28 11:50:01 INFO  SecurityConfig:50 - Configuration complete
+2023-02-28 11:51:03 INFO  SecurityConfig:50 - Configuration complete
+2023-02-28 11:52:31 INFO  SecurityConfig:50 - Configuration complete
+2023-02-28 11:53:43 INFO  SecurityConfig:50 - Configuration complete
+2023-02-28 11:55:11 INFO  SecurityConfig:50 - Configuration complete
+2023-02-28 06:26:19 INFO  SecurityConfig:50 - Configuration complete
+2023-02-28 06:31:23 INFO  SecurityConfig:50 - Configuration complete
+2023-02-28 12:09:56 INFO  SecurityConfig:50 - Configuration complete
+2023-02-28 12:18:08 INFO  SecurityConfig:50 - Configuration complete
+2023-02-28 12:24:19 INFO  SecurityConfig:50 - Configuration complete
+2023-02-28 12:26:52 INFO  SecurityConfig:50 - Configuration complete
+2023-02-28 12:32:17 INFO  SecurityConfig:50 - Configuration complete
+2023-02-28 12:36:45 INFO  SecurityConfig:50 - Configuration complete
+2023-02-28 12:42:30 INFO  SecurityConfig:50 - Configuration complete
+2023-02-28 12:44:52 INFO  SecurityConfig:50 - Configuration complete
+2023-02-28 12:52:29 INFO  SecurityConfig:50 - Configuration complete
+2023-02-28 12:56:43 INFO  SecurityConfig:50 - Configuration complete
+2023-02-28 13:06:44 INFO  SecurityConfig:50 - Configuration complete
+2023-02-28 13:07:12 INFO  SecurityConfig:50 - Configuration complete
+2023-02-28 13:11:02 INFO  SecurityConfig:50 - Configuration complete
+2023-02-28 13:12:17 INFO  SecurityConfig:50 - Configuration complete
+2023-02-28 08:13:40 WARN  AnnotationConfigWebApplicationContext:550 - Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'brandController': Failed to introspect bean class [com.increff.pos.controller.BrandController] for lookup method metadata: could not find class that it depends on; nested exception is java.lang.NoClassDefFoundError: com/increff/pos/model/BrandSearchForm
+2023-02-28 08:13:40 ERROR DispatcherServlet:502 - Context initialization failed
+org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'brandController': Failed to introspect bean class [com.increff.pos.controller.BrandController] for lookup method metadata: could not find class that it depends on; nested exception is java.lang.NoClassDefFoundError: com/increff/pos/model/BrandSearchForm
+	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor.determineCandidateConstructors(AutowiredAnnotationBeanPostProcessor.java:269)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.determineConstructorsFromBeanPostProcessors(AbstractAutowireCapableBeanFactory.java:1118)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBeanInstance(AbstractAutowireCapableBeanFactory.java:1091)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:513)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:483)
+	at org.springframework.beans.factory.support.AbstractBeanFactory$1.getObject(AbstractBeanFactory.java:306)
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:230)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:302)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:197)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.preInstantiateSingletons(DefaultListableBeanFactory.java:761)
+	at org.springframework.context.support.AbstractApplicationContext.finishBeanFactoryInitialization(AbstractApplicationContext.java:866)
+	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:542)
+	at org.springframework.web.servlet.FrameworkServlet.configureAndRefreshWebApplicationContext(FrameworkServlet.java:668)
+	at org.springframework.web.servlet.FrameworkServlet.initWebApplicationContext(FrameworkServlet.java:540)
+	at org.springframework.web.servlet.FrameworkServlet.initServletBean(FrameworkServlet.java:494)
+	at org.springframework.web.servlet.HttpServletBean.init(HttpServletBean.java:136)
+	at javax.servlet.GenericServlet.init(GenericServlet.java:244)
+	at org.eclipse.jetty.servlet.ServletHolder.initServlet(ServletHolder.java:599)
+	at org.eclipse.jetty.servlet.ServletHolder.initialize(ServletHolder.java:425)
+	at org.eclipse.jetty.servlet.ServletHandler.lambda$initialize$0(ServletHandler.java:751)
+	at java.util.stream.SortedOps$SizedRefSortingSink.end(SortedOps.java:357)
+	at java.util.stream.AbstractPipeline.copyInto(AbstractPipeline.java:483)
+	at java.util.stream.AbstractPipeline.wrapAndCopyInto(AbstractPipeline.java:472)
+	at java.util.stream.StreamSpliterators$WrappingSpliterator.forEachRemaining(StreamSpliterators.java:313)
+	at java.util.stream.Streams$ConcatSpliterator.forEachRemaining(Streams.java:743)
+	at java.util.stream.Streams$ConcatSpliterator.forEachRemaining(Streams.java:742)
+	at java.util.stream.ReferencePipeline$Head.forEach(ReferencePipeline.java:647)
+	at org.eclipse.jetty.servlet.ServletHandler.initialize(ServletHandler.java:744)
+	at org.eclipse.jetty.servlet.ServletContextHandler.startContext(ServletContextHandler.java:361)
+	at org.eclipse.jetty.webapp.WebAppContext.startWebapp(WebAppContext.java:1443)
+	at org.eclipse.jetty.maven.plugin.JettyWebAppContext.startWebapp(JettyWebAppContext.java:328)
+	at org.eclipse.jetty.webapp.WebAppContext.startContext(WebAppContext.java:1407)
+	at org.eclipse.jetty.server.handler.ContextHandler.doStart(ContextHandler.java:821)
+	at org.eclipse.jetty.servlet.ServletContextHandler.doStart(ServletContextHandler.java:276)
+	at org.eclipse.jetty.webapp.WebAppContext.doStart(WebAppContext.java:524)
+	at org.eclipse.jetty.maven.plugin.JettyWebAppContext.doStart(JettyWebAppContext.java:397)
+	at org.eclipse.jetty.util.component.AbstractLifeCycle.start(AbstractLifeCycle.java:72)
+	at org.eclipse.jetty.maven.plugin.JettyRunMojo.restartWebApp(JettyRunMojo.java:513)
+	at org.eclipse.jetty.maven.plugin.JettyRunMojo$1.onPathWatchEvents(JettyRunMojo.java:357)
+	at org.eclipse.jetty.util.PathWatcher.notifyEvents(PathWatcher.java:1342)
+	at org.eclipse.jetty.util.PathWatcher.run(PathWatcher.java:1169)
+	at java.lang.Thread.run(Thread.java:750)
+Caused by: java.lang.NoClassDefFoundError: com/increff/pos/model/BrandSearchForm
+	at java.lang.Class.getDeclaredMethods0(Native Method)
+	at java.lang.Class.privateGetDeclaredMethods(Class.java:2701)
+	at java.lang.Class.getDeclaredMethods(Class.java:1975)
+	at org.springframework.util.ReflectionUtils.getDeclaredMethods(ReflectionUtils.java:613)
+	at org.springframework.util.ReflectionUtils.doWithMethods(ReflectionUtils.java:524)
+	at org.springframework.util.ReflectionUtils.doWithMethods(ReflectionUtils.java:510)
+	at org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor.determineCandidateConstructors(AutowiredAnnotationBeanPostProcessor.java:247)
+	... 41 more
+Caused by: java.lang.ClassNotFoundException: com.increff.pos.model.BrandSearchForm
+	at org.codehaus.plexus.classworlds.strategy.SelfFirstStrategy.loadClass(SelfFirstStrategy.java:50)
+	at org.codehaus.plexus.classworlds.realm.ClassRealm.unsynchronizedLoadClass(ClassRealm.java:271)
+	at org.codehaus.plexus.classworlds.realm.ClassRealm.loadClass(ClassRealm.java:247)
+	at org.codehaus.plexus.classworlds.realm.ClassRealm.loadClass(ClassRealm.java:239)
+	at org.eclipse.jetty.webapp.WebAppClassLoader.loadClass(WebAppClassLoader.java:543)
+	at java.lang.ClassLoader.loadClass(ClassLoader.java:351)
+	... 48 more
+2023-02-28 13:49:05 INFO  SecurityConfig:50 - Configuration complete
+2023-02-28 15:21:00 INFO  SecurityConfig:50 - Configuration complete
+2023-02-28 15:25:00 INFO  SecurityConfig:50 - Configuration complete
+2023-02-28 15:36:24 INFO  SecurityConfig:50 - Configuration complete
+2023-02-28 15:42:07 INFO  SecurityConfig:50 - Configuration complete
+2023-02-28 10:17:49 INFO  SecurityConfig:50 - Configuration complete
+2023-02-28 10:19:30 INFO  SecurityConfig:50 - Configuration complete
+2023-02-28 15:50:25 INFO  SecurityConfig:50 - Configuration complete
+2023-02-28 15:52:09 INFO  SecurityConfig:50 - Configuration complete
+2023-02-28 10:24:52 INFO  SecurityConfig:50 - Configuration complete
+2023-02-28 15:56:25 INFO  SecurityConfig:50 - Configuration complete
+2023-02-28 16:01:49 INFO  SecurityConfig:50 - Configuration complete
+2023-02-28 10:48:59 INFO  SecurityConfig:50 - Configuration complete
+2023-02-28 16:19:15 INFO  SecurityConfig:50 - Configuration complete
+2023-03-01 10:24:34 INFO  SecurityConfig:50 - Configuration complete
+2023-03-01 04:55:07 INFO  SecurityConfig:50 - Configuration complete
+2023-03-01 11:34:28 INFO  SecurityConfig:50 - Configuration complete
+2023-03-01 06:04:35 INFO  SecurityConfig:50 - Configuration complete
+2023-03-01 11:41:51 INFO  SecurityConfig:50 - Configuration complete
+2023-03-01 06:51:36 INFO  SecurityConfig:50 - Configuration complete
+2023-03-01 06:54:24 WARN  AnnotationConfigWebApplicationContext:550 - Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.BeanDefinitionStoreException: Failed to parse configuration class [com.increff.pos.spring.SpringConfig]; nested exception is java.io.FileNotFoundException: class path resource [com/increff/pos/api/AbstractApi.class] cannot be opened because it does not exist
+2023-03-01 06:54:24 ERROR DispatcherServlet:502 - Context initialization failed
+org.springframework.beans.factory.BeanDefinitionStoreException: Failed to parse configuration class [com.increff.pos.spring.SpringConfig]; nested exception is java.io.FileNotFoundException: class path resource [com/increff/pos/api/AbstractApi.class] cannot be opened because it does not exist
+	at org.springframework.context.annotation.ConfigurationClassParser.parse(ConfigurationClassParser.java:180)
+	at org.springframework.context.annotation.ConfigurationClassPostProcessor.processConfigBeanDefinitions(ConfigurationClassPostProcessor.java:308)
+	at org.springframework.context.annotation.ConfigurationClassPostProcessor.postProcessBeanDefinitionRegistry(ConfigurationClassPostProcessor.java:228)
+	at org.springframework.context.support.PostProcessorRegistrationDelegate.invokeBeanDefinitionRegistryPostProcessors(PostProcessorRegistrationDelegate.java:270)
+	at org.springframework.context.support.PostProcessorRegistrationDelegate.invokeBeanFactoryPostProcessors(PostProcessorRegistrationDelegate.java:93)
+	at org.springframework.context.support.AbstractApplicationContext.invokeBeanFactoryPostProcessors(AbstractApplicationContext.java:686)
+	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:524)
+	at org.springframework.web.servlet.FrameworkServlet.configureAndRefreshWebApplicationContext(FrameworkServlet.java:668)
+	at org.springframework.web.servlet.FrameworkServlet.initWebApplicationContext(FrameworkServlet.java:540)
+	at org.springframework.web.servlet.FrameworkServlet.initServletBean(FrameworkServlet.java:494)
+	at org.springframework.web.servlet.HttpServletBean.init(HttpServletBean.java:136)
+	at javax.servlet.GenericServlet.init(GenericServlet.java:244)
+	at org.eclipse.jetty.servlet.ServletHolder.initServlet(ServletHolder.java:599)
+	at org.eclipse.jetty.servlet.ServletHolder.initialize(ServletHolder.java:425)
+	at org.eclipse.jetty.servlet.ServletHandler.lambda$initialize$0(ServletHandler.java:751)
+	at java.util.stream.SortedOps$SizedRefSortingSink.end(SortedOps.java:357)
+	at java.util.stream.AbstractPipeline.copyInto(AbstractPipeline.java:483)
+	at java.util.stream.AbstractPipeline.wrapAndCopyInto(AbstractPipeline.java:472)
+	at java.util.stream.StreamSpliterators$WrappingSpliterator.forEachRemaining(StreamSpliterators.java:313)
+	at java.util.stream.Streams$ConcatSpliterator.forEachRemaining(Streams.java:743)
+	at java.util.stream.Streams$ConcatSpliterator.forEachRemaining(Streams.java:742)
+	at java.util.stream.ReferencePipeline$Head.forEach(ReferencePipeline.java:647)
+	at org.eclipse.jetty.servlet.ServletHandler.initialize(ServletHandler.java:744)
+	at org.eclipse.jetty.servlet.ServletContextHandler.startContext(ServletContextHandler.java:361)
+	at org.eclipse.jetty.webapp.WebAppContext.startWebapp(WebAppContext.java:1443)
+	at org.eclipse.jetty.maven.plugin.JettyWebAppContext.startWebapp(JettyWebAppContext.java:328)
+	at org.eclipse.jetty.webapp.WebAppContext.startContext(WebAppContext.java:1407)
+	at org.eclipse.jetty.server.handler.ContextHandler.doStart(ContextHandler.java:821)
+	at org.eclipse.jetty.servlet.ServletContextHandler.doStart(ServletContextHandler.java:276)
+	at org.eclipse.jetty.webapp.WebAppContext.doStart(WebAppContext.java:524)
+	at org.eclipse.jetty.maven.plugin.JettyWebAppContext.doStart(JettyWebAppContext.java:397)
+	at org.eclipse.jetty.util.component.AbstractLifeCycle.start(AbstractLifeCycle.java:72)
+	at org.eclipse.jetty.maven.plugin.JettyRunMojo.restartWebApp(JettyRunMojo.java:513)
+	at org.eclipse.jetty.maven.plugin.JettyRunMojo$1.onPathWatchEvents(JettyRunMojo.java:357)
+	at org.eclipse.jetty.util.PathWatcher.notifyEvents(PathWatcher.java:1342)
+	at org.eclipse.jetty.util.PathWatcher.run(PathWatcher.java:1169)
+	at java.lang.Thread.run(Thread.java:750)
+Caused by: java.io.FileNotFoundException: class path resource [com/increff/pos/api/AbstractApi.class] cannot be opened because it does not exist
+	at org.springframework.core.io.ClassPathResource.getInputStream(ClassPathResource.java:172)
+	at org.springframework.core.type.classreading.SimpleMetadataReader.<init>(SimpleMetadataReader.java:50)
+	at org.springframework.core.type.classreading.SimpleMetadataReaderFactory.getMetadataReader(SimpleMetadataReaderFactory.java:98)
+	at org.springframework.core.type.classreading.CachingMetadataReaderFactory.getMetadataReader(CachingMetadataReaderFactory.java:102)
+	at org.springframework.core.type.classreading.SimpleMetadataReaderFactory.getMetadataReader(SimpleMetadataReaderFactory.java:93)
+	at org.springframework.context.annotation.ConfigurationClassParser.asSourceClass(ConfigurationClassParser.java:671)
+	at org.springframework.context.annotation.ConfigurationClassParser$SourceClass.getSuperClass(ConfigurationClassParser.java:835)
+	at org.springframework.context.annotation.ConfigurationClassParser.doProcessConfigurationClass(ConfigurationClassParser.java:308)
+	at org.springframework.context.annotation.ConfigurationClassParser.processConfigurationClass(ConfigurationClassParser.java:230)
+	at org.springframework.context.annotation.ConfigurationClassParser.parse(ConfigurationClassParser.java:189)
+	at org.springframework.context.annotation.ConfigurationClassParser.doProcessConfigurationClass(ConfigurationClassParser.java:272)
+	at org.springframework.context.annotation.ConfigurationClassParser.processConfigurationClass(ConfigurationClassParser.java:230)
+	at org.springframework.context.annotation.ConfigurationClassParser.parse(ConfigurationClassParser.java:197)
+	at org.springframework.context.annotation.ConfigurationClassParser.parse(ConfigurationClassParser.java:166)
+	... 36 more
+2023-03-01 12:49:32 INFO  SecurityConfig:50 - Configuration complete
+2023-03-01 12:59:19 INFO  SecurityConfig:50 - Configuration complete
+2023-03-01 12:59:40 INFO  SecurityConfig:50 - Configuration complete
+2023-03-01 08:05:04 INFO  SecurityConfig:50 - Configuration complete

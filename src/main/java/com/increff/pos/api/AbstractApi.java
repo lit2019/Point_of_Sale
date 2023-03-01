@@ -10,8 +10,6 @@ import java.util.Objects;
 @Transactional(rollbackOn = Exception.class)
 public abstract class AbstractApi {
 
-    //TODO remove this
-
     protected void checkNull(Object object, String message) throws ApiException {
         if (Objects.isNull(object)) {
             throw new ApiException(message);

@@ -24,12 +24,14 @@
                 <div class="input-group-prepend">
                     <label class="input-group-text" for="input-barcode">Barcode: </label>
                 </div>
-                <input type="text" class="form-control" name="orderStatus" id="input-barcode" placeholder="Barcode">
+                <input required type="text" maxlength="15" class="form-control" name="orderStatus" id="input-barcode"
+                       placeholder="Barcode">
             </div>
         </form>
 
         <div class="col">
-            <button type="button" class="btn btn-sm btn-primary" id="search-barcode" onclick="filter(true)">Search</button>
+            <button type="button" class="btn btn-sm btn-primary" id="search-barcode" onclick="filter(true)">Search
+            </button>
         </div>
     </div>
     <div class="row">
@@ -38,19 +40,21 @@
 
     <div class="row" style="padding:15px;">
 
-        <form class="form-inline" id="daily-report-form">
+        <form class="form-inline" id="brand-category-search-form">
 
             <div class="input-group mb-3" style="margin-right: 48px">
                 <div class="input-group-prepend">
                     <label class="input-group-text" for="brandName"><b>Brand Name</b></label>
                 </div>
-                <input class="form-control" name="brandName" id="filter-brand-select" placeholder="Brand"></input>
+                <input required class="form-control" name="brandName" id="filter-brand-select"
+                       placeholder="Brand"></input>
             </div>
             <div class="input-group mb-3" style="margin-right: 48px">
                 <div class="input-group-prepend">
                     <label class="input-group-text" for="category"><b>Category</b></label>
                 </div>
-                <input class="form-control" name="category" id="filter-category-select" placeholder="Category"></input>
+                <input required class="form-control" name="category" id="filter-category-select"
+                       placeholder="Category"></input>
             </div>
         </form>
 
@@ -69,6 +73,10 @@
                     id="upload-data">Upload
             </button>
             <button type="button" class="btn btn-sm btn-primary" onclick="downloadProductTable()">Download</button>
+
+            <button style="margin-left:800px" onclick="previousPage()">&lt;</button>
+            <text id="page-number">1</text>
+            <button onclick="nextPage()">&gt;</button>
         </div>
     </div>
 
@@ -95,8 +103,8 @@
                 <tbody>
                 </tbody>
 
-            </table>
 
+            </table>
         </div>
     </div>
 
@@ -114,34 +122,36 @@
                         <div class="form-group">
                             <label class="required" for="brandName"><b>Brand Name </b></label>
                             <div class="col-sm-10">
-                                <select class="form-control" name="brandName" id="form-brand-select"
+                                <select required class="form-control" name="brandName" id="form-brand-select"
                                         placeholder="Select Brand"></select>
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="required" for="category"><b>Category </b></label>
                             <div class="col-sm-10">
-                                <select class="form-control" name="category" id="form-category-select"
+                                <select required class="form-control" name="category" id="form-category-select"
                                         placeholder="Select Category"></select>
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="required" for="productName"><b>Product Name </b></label>
                             <div class="col-sm-10">
-                                <input type="text" class="form-control" name="productName"
+                                <input required type="text" maxlength="15" class="form-control" name="productName"
                                        placeholder="Enter Product Name">
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="required" for="mrp"><b>MRP </b></label>
                             <div class="col-sm-10">
-                                <input type="number" class="form-control" name="mrp" placeholder="Enter MRP in Rs.">
+                                <input required type="number" class="form-control" name="mrp"
+                                       placeholder="Enter MRP in Rs." step=".01">
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="required" for="barcode"><b>Barcode </b></label>
                             <div class="col-sm-10">
-                                <input type="text" class="form-control" name="barcode" placeholder="Enter Barcode">
+                                <input required type="text" maxlength="15" class="form-control" name="barcode"
+                                       placeholder="Enter Barcode">
                             </div>
                         </div>
                     </form>
@@ -168,32 +178,36 @@
                         <div class="form-group">
                             <label for="brandName"><b>Brand Name </b></label>
                             <div class="col-sm-10">
-                                <input class="form-control" name="brandName" id="edit-brand-select" readonly></input>
+                                <input required class="form-control" name="brandName" id="edit-brand-select"
+                                       readonly></input>
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="category"><b>Category </b></label>
                             <div class="col-sm-10">
-                                <input class="form-control" name="category" id="edit-category-select" readonly></input>
+                                <input required class="form-control" name="category" id="edit-category-select"
+                                       readonly></input>
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="required" for="productName"><b>Product Name </b></label>
                             <div class="col-sm-10">
-                                <input type="text" class="form-control" name="productName"
+                                <input required type="text" maxlength="15" class="form-control" name="productName"
                                        placeholder="Enter Product Name">
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="required" for="mrp"><b>MRP </b></label>
                             <div class="col-sm-10">
-                                <input type="number" class="form-control" name="mrp" placeholder="Enter MRP in Rs.">
+                                <input required type="number" class="form-control" name="mrp"
+                                       placeholder="Enter MRP in Rs." step=".01">
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="barcode"><b>Barcode </b></label>
                             <div class="col-sm-10">
-                                <input type="text" class="form-control" name="barcode" placeholder="Enter Barcode" readonly>
+                                <input required type="text" maxlength="15" class="form-control" name="barcode"
+                                       placeholder="Enter Barcode" readonly>
                             </div>
                         </div>
                         <input type="hidden" name="id">
@@ -222,7 +236,7 @@
 
                 <div class="modal-body">
                     <div class="product-file">
-                        <input class="custom-file-input" id="productFile" type="file" accept="*.tsv">
+                        <input class="custom-file-input" id="productFile" type="file" accept=".tsv">
                         <label class="custom-file-label" for="productFile" id="productFileName">Choose file </b></label>
                     </div>
                     <br>

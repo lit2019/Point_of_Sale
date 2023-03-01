@@ -11,7 +11,7 @@
 <div th:replace="snippets.html :: name_toast"></div>
 
 <div class="container">
-    <h3 style=" padding-bottom:10px;">Sales report</h3>
+    <h3 style=" padding-bottom:10px;">Sales Report</h3>
     <div class="row">
 
 
@@ -32,19 +32,19 @@
                 <div class="input-group-prepend">
                     <label class="input-group-text" for="input-start-date">Start Date: </label>
                 </div>
-                <input type="date" id="input-start-date" name="startDate" onkeydown="return false">
+                <input required type="date" id="input-start-date" name="startDate" onkeydown="return false">
             </div>
-            <div class="input-group mb-3" style="margin-right: 40px">
+            <div class="input-group mb-3" style="margin-right: 40px;margin-left: 132px">
                 <div class="input-group-prepend">
                     <label class="input-group-text" for="input-end-date">End Date: </label>
                 </div>
-                <input type="date" id="input-end-date" name="endDate" onkeydown="return false">
+                <input required type="date" id="input-end-date" name="endDate" onkeydown="return false">
             </div>
             <button type="button" class="btn btn-sm btn-primary" id="filter"
-                    style="margin-bottom:20px; margin-right:100px">Filter
+                    style="margin-bottom:20px; margin-right:100px; margin-left:100px">Filter
             </button>
             <button type="button" class="btn btn-sm btn-primary" onclick="downloadSalesReport()"
-                    style="margin-bottom:20px; margin-right:20px">Download
+                    style="margin-bottom:20px; margin-right:20px; margin-left:100px">Download
             </button>
         </form>
     </div>

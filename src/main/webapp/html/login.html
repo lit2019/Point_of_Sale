@@ -23,8 +23,8 @@
                 <div class="card-body">
                     <form action="/pos/session/login" class="form-inline" id="login-form" method="POST">
                         <div class="col-sm-10">
-                            <input class="form-control" id="email" name="email" placeholder="Enter Email"
-                                   type="text">
+                            <input required class="form-control" id="email" name="email" placeholder="Enter Email"
+                                   type="email">
                         </div>
                         <button class="btn btn-sm btn-primary" id="login" type="submit">Go</button>
                     </form>
@@ -49,4 +49,6 @@
 
 </body>
 
+<script th:src="@{/static/brand.js}"/>
+</script>
 </html>

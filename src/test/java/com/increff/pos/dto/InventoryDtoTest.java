@@ -102,8 +102,7 @@ public class InventoryDtoTest extends AbstractUnitTest {
         inventoryPojos.add(getNewInventoryPojo(productPojos.get(1).getId(), 10));
         inventoryPojos.forEach(inventoryDao::insert);
 
-        assertEquals(1, inventoryDto.getInventories("barcode1").size());
-        assertEquals(2, inventoryDto.getInventories(null).size());
+        assertEquals(1, inventoryDto.getInventoryByBarcode("barcode1").size());
     }
 
     @Test

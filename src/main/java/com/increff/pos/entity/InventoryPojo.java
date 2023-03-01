@@ -12,7 +12,6 @@ import javax.persistence.*;
 
 public class InventoryPojo extends BaseEntity {
 
-    //TODO use Column(name = "") here as well and at all places applicable
     @Id
     @Column(name = "product_id")
     private Integer productId;

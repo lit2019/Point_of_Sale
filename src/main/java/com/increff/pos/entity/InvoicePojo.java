@@ -19,7 +19,6 @@ public class InvoicePojo extends BaseEntity {
     private Integer orderId;
 
 
-    //TODO rename to invoice_url
     @Column(name = "invoice_url", nullable = false)
     private String invoiceUrl;
 }

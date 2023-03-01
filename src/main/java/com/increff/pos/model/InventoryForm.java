@@ -8,7 +8,6 @@ import javax.validation.constraints.PositiveOrZero;
 
 @Getter
 @Setter
-//TODO rename to InventoryForm
 public class InventoryForm {
     @NotBlank(message = "Barcode cannot be blank")
     private String barcode;

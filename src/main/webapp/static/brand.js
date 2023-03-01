@@ -26,6 +26,7 @@ function addBrand(event){
 	        $("#brand-form-modal").modal('toggle');
 	   		console.log("Brand created");
 	   		getBrandList();
+	   		makeToast(true, "", null);
 	   },
 	   error: function(error){
 	        console.log(error);
@@ -58,6 +59,7 @@ function updateBrand(event){
 	$('#edit-brand-modal').modal('toggle');
 	   		console.log("Brand update");
 	   		getBrandList();     //...
+	   		makeToast(true, "", null);
 	   },
 	   error: function(error){
 	   	        message = (error.responseJSON.message);
@@ -108,6 +110,18 @@ function processData(){
 
 function readFileDataCallback(results){
 	fileData = results.data;
+	if(fileData.length === 0){
+       errorMessage("File is empty!")
+       return;
+    }
+    var row = fileData[0];
+    var title = Object.keys(row);
+    if(title.length!=2 || title[0]!='name' || title[1]!='category'){
+        var message = "Incorrect tsv format please check the sample file!";
+        makeToast(false, message, null);
+        errorData = message;
+        return;
+    }
 	uploadRows();
 }
 

@@ -7,12 +7,10 @@ import com.increff.pos.api.ProductApi;
 import com.increff.pos.entity.BrandPojo;
 import com.increff.pos.entity.InventoryPojo;
 import com.increff.pos.entity.ProductPojo;
-import com.increff.pos.model.InventoryData;
-import com.increff.pos.model.InventoryForm;
-import com.increff.pos.model.InventoryReportData;
-import com.increff.pos.model.InventorySearchForm;
+import com.increff.pos.model.*;
 import com.increff.pos.util.ListUtils;
 import com.increff.pos.util.NormalizationUtil;
+import com.increff.pos.util.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -30,20 +28,30 @@ public class InventoryDto {
     private BrandApi brandApi;
     private static final Integer MAX_UPLOAD_SIZE = 5000;
 
-    //      TODO: add pagination (end priority)
-//    todo remove
-    public List<InventoryData> getInventories(String barcode) throws ApiException {
-        if (Objects.nonNull(barcode)) {
-            Integer productId = productApi.getUniqueByBarcode(barcode).getId();
-            return Collections.singletonList(get(productId));
-        }
-        return convert(inventoryApi.getAll());
+    public List<InventoryData> getInventoryByBarcode(String barcode) throws ApiException {
+        StringUtil.checkEmptyString(barcode, "Barcode cannot be null");
+
+        ProductPojo productPojo = productApi.getUniqueByBarcode(barcode);
+        if (Objects.isNull(productPojo)) return new ArrayList<>();
+
+        InventoryData inventoryData = get(productPojo.getId());
+        if (Objects.isNull(inventoryData)) return new ArrayList<>();
+
+        return Collections.singletonList(inventoryData);
+    }
+
+    public List<InventoryData> getInventoriesByBrandIds(List<Integer> brandIds) {
+        List<ProductPojo> productPojos = productApi.getByBrandIds(brandIds);
+
+        List<Integer> productIds = new ArrayList<>();
+        productPojos.forEach(productPojo -> productIds.add(productPojo.getId()));
+
+        return convert(inventoryApi.getByProductIds(productIds));
     }
 
     public InventoryData get(Integer id) throws ApiException {
         return convert(inventoryApi.get(id));
     }
-//          TODO move public methods to top
 
     public void add(List<InventoryForm> forms) throws ApiException {
         ListUtils.checkEmptyList(forms, "Inventory Forms cannot be empty");
@@ -55,11 +63,8 @@ public class InventoryDto {
             NormalizationUtil.normalize(form);
             barcodes.add(form.getBarcode());
         }
-//        TODO check for capital in error messages
         ListUtils.checkDuplicates(barcodes, "duplicate barcodes provided, \n Erroneous barcodes : ");
 
-//        todo move to the above loop
-//        todo rename to checkIfBarcodesExist
         productApi.checkIfBarcodesExist(barcodes);
 
         ArrayList<InventoryPojo> inventoryPojos = new ArrayList<>();
@@ -69,23 +74,24 @@ public class InventoryDto {
         inventoryApi.upsert(inventoryPojos);
     }
 
-    public List<InventoryReportData> getInventoryReport(InventorySearchForm searchForm) throws ApiException {
-        List<InventoryData> inventoryDataList = getInventories(null);
-        HashMap<Integer, Integer> brandIdToQuantity = new HashMap<>();
+    public List<InventoryReportData> getInventoryReport(InventorySearchForm searchForm) {
 
+        List<BrandPojo> brandPojos = brandApi.getByFilter(searchForm.getBrandName(), searchForm.getCategory());
+        ArrayList<Integer> brandIds = new ArrayList<>();
+        brandPojos.forEach(brandPojo -> brandIds.add(brandPojo.getId()));
+
+        List<InventoryData> inventoryDataList = getInventoriesByBrandIds(brandIds);
+
+        HashMap<Integer, Integer> brandIdToQuantity = new HashMap<>();
         for (InventoryData inventoryData : inventoryDataList) {
             ProductPojo productPojo = productApi.get(inventoryData.getProductId());
-            BrandPojo brandPojo = brandApi.get(productPojo.getBrandCategoryId());
-            Integer key = brandPojo.getId();
+            Integer key = productPojo.getBrandCategoryId();
             brandIdToQuantity.put(key, brandIdToQuantity.getOrDefault(key, 0) + inventoryData.getQuantity());
         }
-        ArrayList<InventoryReportData> inventoryReportDataList = new ArrayList<>();
 
+        ArrayList<InventoryReportData> inventoryReportDataList = new ArrayList<>();
         for (Integer brandCategoryId : brandIdToQuantity.keySet()) {
             BrandPojo brandPojo = brandApi.get(brandCategoryId);
-            if (!isAllowed(searchForm, brandPojo)) {
-                continue;
-            }
             InventoryReportData reportData = new InventoryReportData();
             reportData.setBrandName(brandPojo.getName());
             reportData.setCategory(brandPojo.getCategory());
@@ -102,14 +108,8 @@ public class InventoryDto {
         inventoryApi.update(productApi.getUniqueByBarcode(inventoryForm.getBarcode()).getId(), convert(inventoryForm));
     }
 
-    private boolean isAllowed(InventorySearchForm searchForm, BrandPojo brandPojo) {
-        if (Objects.nonNull(searchForm.getBrandName()) && !searchForm.getBrandName().equals(brandPojo.getName())) {
-            return false;
-        }
-        if (Objects.nonNull(searchForm.getCategory()) && !searchForm.getCategory().equals(brandPojo.getCategory())) {
-            return false;
-        }
-        return true;
+    public List<InventoryData> getInventoriesByPageRequest(PageRequestForm pageRequestForm) {
+        return convert(inventoryApi.getInventories(pageRequestForm.getPageNo(), pageRequestForm.getPageSize()));
     }
 
     private InventoryData convert(InventoryPojo inventoryPojo) {

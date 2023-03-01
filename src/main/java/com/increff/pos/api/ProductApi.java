@@ -22,10 +22,9 @@ public class ProductApi extends AbstractApi {
 
     public void add(List<ProductPojo> productPojos) throws ApiException {
         checkEmptyList(productPojos, "ProductPojos cannot be empty");
-//        TODO move to api
-        for (ProductPojo productPojo : productPojos) {
+        for (ProductPojo productPojo : productPojos)
             validate(productPojo);
-        }
+
         checkExistingBarcode(productPojos);
         for (ProductPojo productPojo : productPojos)
             dao.insert(productPojo);
@@ -50,7 +49,6 @@ public class ProductApi extends AbstractApi {
         return dao.select(id);
     }
 
-    //    TODO cahange to public statis input should be list of pojos from getByBarcode
     public static Map<String, ProductPojo> getBarcodeToProductPojoMap(List<ProductPojo> pojos) {
         HashMap<String, ProductPojo> barcodeToProductMap = new HashMap<>();
         pojos.forEach(pojo -> {
@@ -67,12 +65,20 @@ public class ProductApi extends AbstractApi {
         return dao.selectByBarcodes(barcodes);
     }
 
-    public List<ProductPojo> getByBrandIds(List<Integer> brandIds) {
-        if (CollectionUtils.isEmpty(brandIds)) {
+    public List<ProductPojo> getByFilter(List<Integer> brandIds, Integer pageNo, Integer pageSize) {
+        if (CollectionUtils.isEmpty(brandIds))
             return new ArrayList<>();
-        }
+
+        return dao.selectByFilter(brandIds, pageNo, pageSize);
+    }
+
+    public List<ProductPojo> getByBrandIds(List<Integer> brandIds) {
+        if (CollectionUtils.isEmpty(brandIds))
+            return new ArrayList<>();
+
         return dao.selectByBrandIds(brandIds);
     }
+
 
     public ProductPojo getCheck(Integer id) throws ApiException {
         ProductPojo productPojo = dao.select(id);

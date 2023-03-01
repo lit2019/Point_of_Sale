@@ -35,8 +35,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.POST, "/api/brands/search").hasAnyAuthority(AuthRole.OPERATOR, AuthRole.SUPERVISOR)//
                 .antMatchers("/api/brands/**").hasAuthority(AuthRole.SUPERVISOR)
                 .antMatchers(HttpMethod.GET, "/api/products/**").hasAnyAuthority(AuthRole.OPERATOR, AuthRole.SUPERVISOR)//
+                .antMatchers(HttpMethod.POST, "/api/products/filter").hasAnyAuthority(AuthRole.OPERATOR, AuthRole.SUPERVISOR)//
                 .antMatchers("/api/products/**").hasAuthority(AuthRole.SUPERVISOR)
                 .antMatchers(HttpMethod.GET, "/api/inventory/**").hasAnyAuthority(AuthRole.OPERATOR, AuthRole.SUPERVISOR)//
+                .antMatchers(HttpMethod.POST, "/api/inventory/search").hasAnyAuthority(AuthRole.OPERATOR, AuthRole.SUPERVISOR)//
                 .antMatchers("/api/inventory/**").hasAuthority(AuthRole.SUPERVISOR)
                 .antMatchers("/api/orders/**").hasAnyAuthority(AuthRole.SUPERVISOR, AuthRole.OPERATOR)//
                 .antMatchers("/api/**").hasAnyAuthority(AuthRole.SUPERVISOR, AuthRole.OPERATOR)

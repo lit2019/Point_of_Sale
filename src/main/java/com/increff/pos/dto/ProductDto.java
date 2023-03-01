@@ -29,7 +29,6 @@ public class ProductDto {
     @Autowired
     private BrandApi brandApi;
     private static final Integer MAX_UPLOAD_SIZE = 5000;
-    //    TODO: add pagination (end priority)
 
     public ProductData get(Integer id) throws ApiException {
         return convert(productApi.get(id));
@@ -53,7 +52,6 @@ public class ProductDto {
         ListUtils.checkUploadLimit(productPojos, MAX_UPLOAD_SIZE);
         productApi.add(productPojos);
     }
-    //TODO move public methods to top
 
     public void update(Integer id, ProductUpdateForm updateForm) throws ApiException {
         validate(updateForm);
@@ -62,6 +60,7 @@ public class ProductDto {
     }
 
     public List<ProductData> filter(ProductSearchForm searchForm) throws ApiException {
+        validate(searchForm);
         if (Objects.nonNull(searchForm.getBarcode())) {
             return convert(productApi.getByBarcodes(Collections.singletonList(searchForm.getBarcode())));
         }
@@ -71,7 +70,7 @@ public class ProductDto {
 
         ArrayList<Integer> brandIds = new ArrayList<>();
         brandPojos.forEach(brandPojo -> brandIds.add(brandPojo.getId()));
-        return convert(productApi.getByBrandIds(brandIds));
+        return convert(productApi.getByFilter(brandIds, searchForm.getPageNo(), searchForm.getPageSize()));
     }
 
 

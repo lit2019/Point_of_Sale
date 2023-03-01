@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice
-//TODO rename to RestAppControllerAdvice
 public class RestAppControllerAdvice {
 
     @ExceptionHandler(ApiException.class)

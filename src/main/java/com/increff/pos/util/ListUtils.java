@@ -10,13 +10,13 @@ import java.util.List;
 public class ListUtils {
 
     public static void checkNonEmptyList(List list, String message) throws ApiException {
-        if (!CollectionUtils.isEmpty(list)) { //TODO:use colleectionutils
+        if (!CollectionUtils.isEmpty(list)) {
             throw new ApiException(message);
         }
     }
 
     public static void checkEmptyList(List list, String message) throws ApiException {
-        if (CollectionUtils.isEmpty(list)) { //TODO:use colleectionutils
+        if (CollectionUtils.isEmpty(list)) {
             throw new ApiException(message);
         }
     }

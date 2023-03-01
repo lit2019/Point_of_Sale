@@ -22,7 +22,7 @@ function addInventory(event){
 	   success: function(response) {
 	        $("#inventory-form-modal").hide();
 	   		console.log("Inventory created");
-	   		getInventoryList(false);
+	   		getInventoryList();
 	   }, 
 	   error: function(error){
 	        console.log(error);
@@ -34,7 +34,6 @@ function addInventory(event){
 }
 
 function updateInventory(event){
-	$('#edit-inventory-modal').modal('toggle');
 	//Get the ID
 	var id = $("#inventory-edit-form input[name=id]").val();	
 	var url = getInventoryUrl();
@@ -42,6 +41,8 @@ function updateInventory(event){
 	//Set the values to update
 	var $form = $("#inventory-edit-form");
 	var json = toJson($form);
+    if(!validateForm($form))
+        return;
 
 	$.ajax({
 	   url: url, 
@@ -52,10 +53,12 @@ function updateInventory(event){
        }, 	   
 	   success: function(response) {
 	   		console.log("Inventory update");	
-	   		getInventoryList(false);     //...
+	   		getInventoryList();     //...
+	$('#edit-inventory-modal').modal('toggle');
+
 	   }, 
-	   error: function(){
-	   	        alert(error.responseJSON.message);
+	   error: function(error){
+	   	        makeToast(false,error.responseJSON.message, null);
 
 	   }
 	});
@@ -63,15 +66,12 @@ function updateInventory(event){
 	return false;
 }
 
-function getInventoryList(searchByBarcode){
-    barcode = "";
-    if(searchByBarcode){
-        if($("#input-barcode").val().trim()===""){
-            makeToast(false, "barcode cannot be blank",null);
-            return;
-        }
+function getInventoryListByBarcode(){
+       var $form = $("#barcode-search-form");
+             if(!validateForm($form))
+                 return;
+
         barcode = $("#input-barcode").val().trim();
-    }
     console.log("barcode"+barcode)
 	var url = getInventoryUrl()+"/search/"+barcode;
 	$.ajax({
@@ -81,9 +81,11 @@ function getInventoryList(searchByBarcode){
 	   		console.log("Inventory data fetched");
 	   		console.log(data);	
 	   		displayInventoryList(data);     //...
-	   }, 
-	   error: function(){
+            document.getElementById("page-number").innerHTML = 1;
 
+	   }, 
+	   error: function(error){
+	   	   makeToast(false, error.responseJSON.message, null);
 	   }
 	});
 }
@@ -101,6 +103,18 @@ function processData(){
 
 function readFileDataCallback(results){
 	fileData = results.data;
+	if(fileData.length === 0){
+       errorMessage("File is empty!")
+       return;
+    }
+    var row = fileData[0];
+    var title = Object.keys(row);
+    if(title.length!=2 || title[0]!='barcode' || title[1]!='quantity'){
+        var message = "Incorrect tsv format please check the sample file!";
+        makeToast(false, message, null);
+        errorData = message;
+        return;
+    }
 	uploadRows();
 }
 
@@ -119,7 +133,7 @@ function uploadRows(){
 	   success: function(response) {
 	        $('#upload-inventory-modal').modal('toggle');
 	   		makeToast(true, "", null);
-            getInventoryList(false);
+            getInventoryList();
 
 	   }, 
 	   error: function(error){
@@ -131,6 +145,63 @@ function uploadRows(){
 	   		makeToast(false, message, downloadErrors);
 	   }
 	});
+}
+
+function setPageDetails(data){
+    data.pageNo = pageNo;
+    data.pageSize = pageSize;
+}
+
+
+function nextPage(){
+    if(document.getElementById('inventory-table').rows.length<pageSize){
+        return;
+    }
+    pageNo++;
+    document.getElementById("page-number").innerHTML = pageNo;
+    getInventoryList();
+}
+function previousPage(){
+    pageNo = document.getElementById("page-number").innerHTML;
+    if(pageNo>1){
+        pageNo--;
+    document.getElementById("page-number").innerHTML = pageNo;
+
+    getInventoryList();
+    }
+}
+
+var pageNo = 1;
+var pageSize = 10;
+
+function getInventoryList(){
+    data = {};
+
+	setPageDetails(data);
+
+    json = JSON.stringify(data);
+    console.log(json);
+    var url = getInventoryUrl()+"/search";
+//    console.log(json);
+	$.ajax({
+	   url: url,
+	   type: 'POST',
+	   data: json,
+	   headers: {
+       	'Content-Type': 'application/json'
+       },
+	   success: function(data) {
+	   		console.log(data);
+	   		displayInventoryList(data);     //...
+	   		if(data.length==0 && pageNo>1){
+       		    previousPage();
+       		}
+
+	   },
+	   error: function(error){
+	   }
+	});
+
 }
 
 function downloadErrors(){
@@ -185,7 +256,7 @@ function resetUploadDialog(){
 	fileData = [];
 	errorData = "";
 	//Update counts	
-	getInventoryList(false);
+	getInventoryList();
 }
 
 function updateFileName(){
@@ -253,6 +324,6 @@ tableToCSV(document, "inventory-table", 3);
 
 
 $(document).ready(init);
-$(document).ready(getInventoryList(false));
+$(document).ready(getInventoryList());
 
 

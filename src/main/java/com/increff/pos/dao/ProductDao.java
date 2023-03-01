@@ -10,12 +10,11 @@ import java.util.List;
 @Repository
 public class ProductDao extends AbstractDao<ProductPojo> {
     private static final String SELECT_BY_BARCODES = "select p from ProductPojo p where p.barcode IN :barcodes";
-    private static final String SELECT_BY_BRAND_IDS = "select p from ProductPojo p where p.brandCategoryId IN :brandIds";
+    private static final String SELECT_BY_BRAND_IDS = "select p from ProductPojo p where p.brandCategoryId IN :brandIds order by p.createdAt desc";
 
 
     public List<ProductPojo> selectByBarcodes(List<String> barcodes) {
         TypedQuery<ProductPojo> query = createQuery(SELECT_BY_BARCODES);
-//        TODO this logic should be on api level
 
         query.setParameter("barcodes", barcodes);
         return getResultList(query);
@@ -27,11 +26,19 @@ public class ProductDao extends AbstractDao<ProductPojo> {
         return getResultList(query);
     }
 
+    public List<ProductPojo> selectByFilter(List<Integer> brandIds, Integer pageNo, Integer pageSize) {
+        TypedQuery<ProductPojo> query = createQuery(SELECT_BY_BRAND_IDS)
+                .setMaxResults(pageSize)
+                .setFirstResult((pageNo - 1) * pageSize);
+        query.setParameter("brandIds", brandIds);
+        return getResultList(query);
+    }
+
     public ProductPojo selectBarcode(String barcode) {
         TypedQuery<ProductPojo> query = createQuery(SELECT_BY_BARCODES);
-//        TODO this logic should be on api level
 
         query.setParameter("barcodes", Collections.singletonList(barcode));
         return getSingleResult(query);
     }
+
 }
